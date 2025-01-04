@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
 import org.poo.user.UserRegistry;
@@ -80,6 +81,12 @@ public final class SendMoneyCommand implements Command {
             receiverAccount = userRegistry.getAccountByAlias(receiverIBAN);
         }
         if (receiverAccount == null) {
+            ObjectNode objectNode = output.addObject();
+            objectNode.put("command", "sendMoney");
+            ObjectNode outputNode = objectNode.putObject("output");
+            outputNode.put("description", "User not found");
+            outputNode.put("timestamp", timestamp);
+            objectNode.put("timestamp", timestamp);
             return;
         }
 
@@ -98,7 +105,7 @@ public final class SendMoneyCommand implements Command {
         // check if the currency of the giver is the same as the currency of the receiver
         if (currencyFrom.equals(currencyTo)) {
             // add the commission to the amount for the giver
-            double amountWithCommission = giver.addCommission(amount);
+            double amountWithCommission = giver.addCommission(amount, exchangeRates, currencyFrom);
             if (giverAccount.getBalance() < amountWithCommission) {
                 // if the giver does not have enough money,
                 // create a transaction with the message "Insufficient funds"
@@ -132,7 +139,7 @@ public final class SendMoneyCommand implements Command {
         double exchangeRate = exchangeRates.convertExchangeRate(currencyFrom, currencyTo);
         double amountToTransfer = amount * exchangeRate;
 
-        double amountWithCommission = giver.addCommission(amount);
+        double amountWithCommission = giver.addCommission(amount, exchangeRates, currencyFrom);
 
         // check if the giver has enough money
         if (giverAccount.getBalance() < amountWithCommission) {

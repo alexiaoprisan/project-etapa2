@@ -32,6 +32,14 @@ public final class Commerciant {
         this.timestamp = timestamp;
     }
 
+    public Commerciant(final String name, final int id, final String iban, final String type, final String cashbackStrategy) {
+        this.commerciant = name;
+        this.id = id;
+        this.iban = iban;
+        this.type = type;
+        this.cashbackStrategy = cashbackStrategy;
+    }
+
     /**
      * Constructor for the Commerciant class.
      */

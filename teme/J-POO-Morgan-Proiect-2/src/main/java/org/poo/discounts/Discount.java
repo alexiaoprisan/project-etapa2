@@ -1,4 +1,4 @@
-package org.poo.commerciants;
+package org.poo.discounts;
 
 public class Discount {
     private double value;

@@ -2,6 +2,13 @@ package org.poo.commands;
 
 import org.poo.account.Account;
 import org.poo.account.ClassicAccount;
+import org.poo.cashback.CashbackManager;
+import org.poo.cashback.NrOfTransactionsCashback;
+import org.poo.cashback.SpendingThresholdCashback;
+import org.poo.commerciants.CommerciantRegistry;
+import org.poo.discounts.Discount;
+import org.poo.discounts.DiscountStrategy;
+import org.poo.discounts.DiscountStrategyFactory;
 import org.poo.user.UserRegistry;
 import org.poo.commerciants.Commerciant;
 import org.poo.report.ClassicReport;
@@ -27,7 +34,7 @@ import org.poo.utils.Utils;
  */
 public final class PayOnlineCommand implements Command {
     private final UserRegistry userRegistry;
-    private final ExchangeRates exchangeRates;
+    final ExchangeRates exchangeRates;
     private final ArrayNode output;
     private final int timestamp;
     private final String cardNumber;
@@ -37,6 +44,7 @@ public final class PayOnlineCommand implements Command {
     private final String commerciant;
     private final String email;
     private static final int MIN_DIFFERENCE = 30;
+    private final CommerciantRegistry commerciantRegistry;
 
     /**
      * Constructor for the PayOnlineCommand class.
@@ -59,7 +67,8 @@ public final class PayOnlineCommand implements Command {
                             final String cardNumber,
                             final double amount, final String currency,
                             final String description, final String commerciant,
-                            final String email) {
+                            final String email,
+                            final CommerciantRegistry commerciantRegistry) {
         this.userRegistry = userRegistry;
         this.exchangeRates = exchangeRates;
         this.output = output;
@@ -70,6 +79,7 @@ public final class PayOnlineCommand implements Command {
         this.description = description;
         this.commerciant = commerciant;
         this.email = email;
+        this.commerciantRegistry = commerciantRegistry;
     }
 
     /**
@@ -113,7 +123,7 @@ public final class PayOnlineCommand implements Command {
                     return;
                 }
 
-                double amountToPay = user.addCommission(amount);
+                double amountToPay = user.addCommission(amount, exchangeRates, cardCurrency);
 
                 // check if the account has enough funds
                 if (account.getBalance() >= amountToPay) {
@@ -147,14 +157,49 @@ public final class PayOnlineCommand implements Command {
                     account.setBalance(account.getBalance() - amountToPay);
 
 
-
                     // create a transaction for the payment
                     Transaction transaction = new CardPaymentTransaction(timestamp,
                             "Card payment", amount, commerciant);
                     user.addTransaction(transaction);
 
-                    Commerciant newCommerciant = new Commerciant(commerciant,
-                            amount, timestamp);
+                    // create a commerciant object to save in the list of commerciants of the account
+                    Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
+                    newCommerciant.setAmountSpent(amount);
+                    newCommerciant.setTimestamp(timestamp);
+
+                    // add the commerciant to the list of commerciants in the account
+                    account.addCommerciant(newCommerciant);
+
+                    Commerciant currentCommerciant = account.getCommerciantByCommerciantName(commerciant);
+
+                    // check if the account can receive cashback
+
+                    // use the strategy pattern to apply the cashback
+                    // i saved the discounts in the account with this strategy
+                    CashbackManager cashbackManager = new CashbackManager();
+
+                    if (currentCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+                        cashbackManager.setStrategy(new SpendingThresholdCashback(user.getServicePlan()));
+                    } else if (currentCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
+                        cashbackManager.setStrategy(new NrOfTransactionsCashback());
+                    }
+
+                    cashbackManager.applyCashback(currentCommerciant, account, amount, cardCurrency, exchangeRates);
+
+                    // now check if i had any discounts to apply to receive cashback and apply them
+                    // Apply discounts based on commerciant type
+                    DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(currentCommerciant.getType());
+                    if (commerciantStrategy != null) {
+                        commerciantStrategy.applyDiscount(account, currentCommerciant, amount);
+                    }
+
+                    // Apply the spending threshold discount
+                    DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
+                    if (spendingThresholdStrategy != null) {
+                        spendingThresholdStrategy.applyDiscount(account, currentCommerciant, amount);
+                    }
+
+
 
                     // verify if the account is a classic account
                     // in order to save the transaction for the report and the spending report
@@ -170,8 +215,7 @@ public final class PayOnlineCommand implements Command {
                         report.addTransaction(transaction);
                         paymentsRecord.addTransaction(transaction);
 
-                        // add the commerciant to the list of commerciants in the account
-                        classicAccount.addCommerciant(newCommerciant);
+
                     }
 
                     // check if the card is a oneTimePay card

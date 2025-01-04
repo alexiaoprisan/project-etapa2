@@ -1,5 +1,6 @@
 package org.poo.commands;
 
+import org.poo.commerciants.CommerciantRegistry;
 import org.poo.user.UserRegistry;
 import org.poo.fileio.CommandInput;
 import org.poo.exchangeRates.ExchangeRates;
@@ -15,6 +16,7 @@ public final class CommandFactory {
     private final UserRegistry userRegistry;
     private final ExchangeRates exchangeRates;
     private final ArrayNode output;
+    private final CommerciantRegistry commerciantRegistry;
 
     /**
      * Constructor for the CommandFactory class.
@@ -25,10 +27,12 @@ public final class CommandFactory {
      */
     public CommandFactory(final UserRegistry userRegistry,
                           final ArrayNode output,
-                          final ExchangeRates exchangeRates) {
+                          final ExchangeRates exchangeRates,
+                          final CommerciantRegistry commerciantRegistry) {
         this.userRegistry = userRegistry;
         this.output = output;
         this.exchangeRates = exchangeRates;
+        this.commerciantRegistry = commerciantRegistry;
     }
 
     /**
@@ -71,7 +75,8 @@ public final class CommandFactory {
             case "payOnline":
                 return new PayOnlineCommand(userRegistry, exchangeRates, output, timestamp,
                         input.getCardNumber(), input.getAmount(), input.getCurrency(),
-                        input.getDescription(), input.getCommerciant(), input.getEmail());
+                        input.getDescription(), input.getCommerciant(), input.getEmail(),
+                        commerciantRegistry);
 
             case "sendMoney":
                 return new SendMoneyCommand(userRegistry, output, timestamp,

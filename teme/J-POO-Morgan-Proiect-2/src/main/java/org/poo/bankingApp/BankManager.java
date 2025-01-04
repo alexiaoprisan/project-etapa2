@@ -3,12 +3,11 @@ package org.poo.bankingApp;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.commands.Command;
 import org.poo.commands.CommandFactory;
+import org.poo.commerciants.Commerciant;
+import org.poo.commerciants.CommerciantRegistry;
 import org.poo.exchangeRates.ExchangeInputFormat;
 import org.poo.exchangeRates.ExchangeRates;
-import org.poo.fileio.CommandInput;
-import org.poo.fileio.ExchangeInput;
-import org.poo.fileio.ObjectInput;
-import org.poo.fileio.UserInput;
+import org.poo.fileio.*;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 import org.poo.utils.Utils;
@@ -28,6 +27,12 @@ public final class BankManager {
         // clear the exchange rates
         exchangeRates.reset();
 
+        // create a new instance of the commerciants registry, singleton pattern
+        CommerciantRegistry commerciantRegistry = CommerciantRegistry.getInstance();
+
+        // clear the commerciants registry
+        commerciantRegistry.reset();
+
         // holds all the users
         UserRegistry userRegistry = UserRegistry.getInstance();
 
@@ -40,13 +45,16 @@ public final class BankManager {
         // add all the users to the user registry
         processUsers(inputData);
 
+        // add all the commerciants to the commerciants registry
+        processCommerciants(inputData);
+
         // save the exchange rates to the exchange rates registry
         processExchageRates(inputData);
 
         // try to find new exchange rates based on the existing ones
         exchangeRates.findNewExchangeRates();
 
-        CommandFactory commandFactory = new CommandFactory(userRegistry, output, exchangeRates);
+        CommandFactory commandFactory = new CommandFactory(userRegistry, output, exchangeRates, commerciantRegistry);
         for (CommandInput input : inputData.getCommands()) {
             String commandType = input.getCommand();
 
@@ -68,7 +76,8 @@ public final class BankManager {
     public void processUsers(final ObjectInput inputData) {
         UserRegistry userRegistry = UserRegistry.getInstance();
         for (UserInput user : inputData.getUsers()) {
-            User newUser = new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getBirthDate(), user.getOccupation());
+            User newUser = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getBirthDate(), user.getOccupation());
 
             if (user.getOccupation().equals("student")) {
                 newUser.setServicePlan("student");
@@ -97,6 +106,16 @@ public final class BankManager {
             exchangeInputData.setTimestamp(exchange.getTimestamp());
 
             exchangeRates.addExchangeRate(exchangeInputData);
+        }
+    }
+
+    public void processCommerciants(final ObjectInput inputData) {
+        CommerciantRegistry commerciantRegistry = CommerciantRegistry.getInstance();
+        for (CommerciantInput commerciant : inputData.getCommerciants()) {
+            Commerciant newCommerciant = new Commerciant(commerciant.getCommerciant(), commerciant.getId(),
+                    commerciant.getAccount(), commerciant.getType(), commerciant.getCashbackStrategy());
+
+            commerciantRegistry.addCommerciant(newCommerciant);
         }
     }
 }

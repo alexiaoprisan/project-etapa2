@@ -81,7 +81,7 @@ public class CashWithdrawalCommand implements Command {
         double exchangeRate = exchangeRates.convertExchangeRate("RON", account.getCurrency());
         double convertedSum = amount * exchangeRate;
 
-        double amountToPay = user.addCommission(convertedSum);
+        double amountToPay = user.addCommission(convertedSum, exchangeRates, account.getCurrency());
 
         if (account.getBalance() < amountToPay) {
             Transaction transaction = new CashWithdrawalError(timestamp, "Insufficient funds");

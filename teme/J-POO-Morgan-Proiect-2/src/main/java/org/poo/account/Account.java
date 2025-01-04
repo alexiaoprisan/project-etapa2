@@ -1,6 +1,8 @@
 package org.poo.account;
 
 import org.poo.card.Card;
+import org.poo.commerciants.Commerciant;
+import org.poo.discounts.Discount;
 import org.poo.transaction.Transaction;
 
 import java.util.ArrayList;
@@ -149,5 +151,34 @@ public interface Account {
      * @param transaction
      */
     void addTransaction(Transaction transaction);
+
+    /**
+     * Getter for the list of commerciants, which the user has sent money to
+     * in online transactions.
+     *
+     * @return the list of commerciants
+     */
+    public ArrayList<Commerciant> getCommerciantList();
+
+    /**
+     * Method to add a commerciant to the list of commerciants.
+     *
+     * @param commerciant
+     */
+    public void addCommerciant(final Commerciant commerciant);
+
+    public Commerciant getCommerciantByCommerciantName(final String commerciantName);
+
+    double getAmountSpentOnSTCommerciants();
+
+    void setAmountSpentOnSTCommerciants(double amountSpentOnSTCommerciants);
+
+    public void addAmountSpentOnSTCommerciants(double amountSpent);
+
+    public ArrayList<Discount> getDiscounts();
+
+    public void addDiscount(final Discount discount);
+
+    public Discount getDiscountByType(final String type);
 
 }

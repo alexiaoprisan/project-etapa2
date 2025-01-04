@@ -1,0 +1,16 @@
+package org.poo.discounts;
+
+import org.poo.account.Account;
+import org.poo.commerciants.Commerciant;
+
+public class SpendingThresholdDiscountStrategy implements DiscountStrategy {
+    @Override
+    public void applyDiscount(Account account, Commerciant commerciant, double amount) {
+        Discount discount = account.getDiscountByType("SpendingThreshold");
+        if (discount != null && !discount.isUsed()) {
+            account.setBalance(account.getBalance() + discount.getValue() * amount);
+            discount.setUsed(true);
+        }
+        System.out.println(commerciant.getCommerciant() + "  " + account.getIBAN() + "  " + account.getBalance());
+    }
+}

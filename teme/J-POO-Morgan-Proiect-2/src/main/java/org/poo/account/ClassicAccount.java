@@ -3,7 +3,7 @@ package org.poo.account;
 import org.poo.card.Card;
 import org.poo.card.CardFactory;
 import org.poo.commerciants.Commerciant;
-import org.poo.commerciants.Discount;
+import org.poo.discounts.Discount;
 import org.poo.report.ClassicReport;
 import org.poo.report.PaymentsRecord;
 import org.poo.transaction.Transaction;
@@ -222,37 +222,6 @@ public final class ClassicAccount implements Account {
         report.addTransaction(transaction);
     }
 
-    /**
-     * Getter for the list of commerciants, which the user has sent money to
-     * in online transactions.
-     *
-     * @return the list of commerciants
-     */
-    public ArrayList<Commerciant> getCommerciantList() {
-        return commerciantsList;
-    }
-
-    /**
-     * Method to add a commerciant to the list of commerciants.
-     *
-     * @param commerciant
-     */
-    public void addCommerciant(final Commerciant commerciant) {
-        for (Commerciant c : commerciantsList) {
-            if (c.getCommerciant().equals(commerciant.getCommerciant())) {
-                return;
-            }
-        }
-
-        int index = 0;
-        for (Commerciant c : commerciantsList) {
-            if (c.getCommerciant().compareTo(commerciant.getCommerciant()) > 0) {
-                break;
-            }
-            index++;
-        }
-        commerciantsList.add(index, commerciant);
-    }
 
     /**
      * Getter for the report of the account.
@@ -287,6 +256,49 @@ public final class ClassicAccount implements Account {
         return paymentsRecord;
     }
 
+    /**
+     * Getter for the list of commerciants, which the user has sent money to
+     * in online transactions.
+     *
+     * @return the list of commerciants
+     */
+    public ArrayList<Commerciant> getCommerciantList() {
+        return commerciantsList;
+    }
+
+    /**
+     * Method to add a commerciant to the list of commerciants.
+     *
+     * @param commerciant
+     */
+    public void addCommerciant(final Commerciant commerciant) {
+        for (Commerciant c : commerciantsList) {
+            if (c.getCommerciant().equals(commerciant.getCommerciant())) {
+                c.addAmountSpent(commerciant.getAmountSpent());
+                c.incrementNrOfTransactions();
+                return;
+            }
+        }
+
+        int index = 0;
+        for (Commerciant c : commerciantsList) {
+            if (c.getCommerciant().compareTo(commerciant.getCommerciant()) > 0) {
+                break;
+            }
+            index++;
+        }
+        commerciantsList.add(index, commerciant);
+    }
+
+    public Commerciant getCommerciantByCommerciantName(final String commerciantName) {
+        for (Commerciant commerciant : commerciantsList) {
+            if (commerciant.getCommerciant().equals(commerciantName)) {
+                return commerciant;
+            }
+        }
+        return null;
+    }
+
     public double getAmountSpentOnSTCommerciants() {
         return amountSpentOnSTCommerciants;
     }
@@ -295,11 +307,29 @@ public final class ClassicAccount implements Account {
         this.amountSpentOnSTCommerciants = amountSpentOnSTCommerciants;
     }
 
+    public void addAmountSpentOnSTCommerciants(double amountSpent) {
+        this.amountSpentOnSTCommerciants += amountSpent;
+    }
+
     public ArrayList<Discount> getDiscounts() {
         return discounts;
     }
 
     public void addDiscount(final Discount discount) {
+        for (Discount d : discounts) {
+            if (d.getType().equals(discount.getType()) && d.getValue() == discount.getValue()) {
+                return;
+            }
+        }
         discounts.add(discount);
+    }
+
+    public Discount getDiscountByType(final String type) {
+        for (Discount discount : discounts) {
+            if (discount.getType().equals(type)) {
+                return discount;
+            }
+        }
+        return null;
     }
 }

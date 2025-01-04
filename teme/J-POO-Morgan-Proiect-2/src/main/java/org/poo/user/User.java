@@ -2,6 +2,7 @@ package org.poo.user;
 
 import org.poo.account.Account;
 import org.poo.account.AccountFactory;
+import org.poo.exchangeRates.ExchangeRates;
 import org.poo.transaction.TransactionReport;
 import org.poo.transaction.Transaction;
 import org.poo.transaction.UpgradePlanTransaction;
@@ -322,7 +323,7 @@ public class User {
         addTransaction(transaction);
     }
 
-    public double addCommission(double amount) {
+    public double addCommission(double amount, ExchangeRates exchangeRates, String currency) {
 
         if (getServicePlan().equals("student")) {
             return amount;
@@ -331,7 +332,9 @@ public class User {
             return amount + 0.002 * amount;
         }
         else if (getServicePlan().equals("silver")) {
-            if (amount < 500) {
+            double rate = exchangeRates.convertExchangeRate(currency, "RON");
+            double amountInRON = amount * rate;
+            if (amountInRON < 500) {
                 return amount;
             }
             else {
