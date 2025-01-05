@@ -9,6 +9,7 @@ import org.poo.transaction.UpgradePlanTransaction;
 import org.poo.transaction.UpgradePlanError;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Represents a user.
@@ -33,7 +34,7 @@ public class User {
 
     // 0 means the user did not decide yet, 1 means the user accepts custom split payment, 2 means the user did not accept custom split payment
     private int acceptCustomSplitPayment = 0;
-    private int acceptNormalSplitPayment = 0;
+    private int acceptEqualSplitPayment = 0;
 
     /**
      * Constructs a User instance with the specified details.
@@ -251,7 +252,11 @@ public class User {
      */
     public void addTransaction(final Transaction transaction) {
         transactionReport.addTransaction(transaction);
+
+        // Sort the transactions by timestamp after adding the new transaction
+        transactionReport.getTransactions().sort(Comparator.comparing(Transaction::getTimestamp));
     }
+
 
     public double getAge() {
         // calculate the age of the user
@@ -364,7 +369,7 @@ public class User {
             setAcceptCustomSplitPayment(1);
         }
         else {
-            setAcceptNormalSplitPayment(1);
+            setAcceptEqualSplitPayment(1);
         }
     }
 
@@ -373,15 +378,29 @@ public class User {
             setAcceptCustomSplitPayment(2);
         }
         else {
-            setAcceptNormalSplitPayment(2);
+            setAcceptEqualSplitPayment(2);
         }
     }
 
-    public void setAcceptNormalSplitPayment(int acceptNormalSplitPayment) {
-        this.acceptNormalSplitPayment = acceptNormalSplitPayment;
+    public void setAcceptEqualSplitPayment(int acceptEqualSplitPayment) {
+        this.acceptEqualSplitPayment = acceptEqualSplitPayment;
     }
 
-    public int getAcceptNormalSplitPayment() {
-        return acceptNormalSplitPayment;
+    public int getAcceptEqualSplitPayment() {
+        return acceptEqualSplitPayment;
+    }
+
+    public boolean hasAcceptedCustomPayment() {
+        if (acceptCustomSplitPayment == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasAcceptedEqualPayment() {
+        if (acceptEqualSplitPayment == 1) {
+            return true;
+        }
+        return false;
     }
 }

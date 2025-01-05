@@ -8,6 +8,7 @@ import org.poo.commerciants.CommerciantRegistry;
 import org.poo.exchangeRates.ExchangeInputFormat;
 import org.poo.exchangeRates.ExchangeRates;
 import org.poo.fileio.*;
+import org.poo.splitPayment.SplitPaymentsRegistry;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 import org.poo.utils.Utils;
@@ -39,6 +40,12 @@ public final class BankManager {
         // clear the user registry
         userRegistry.reset();
 
+        // holds all the split payments
+        SplitPaymentsRegistry splitPaymentsRegistry = SplitPaymentsRegistry.getInstance();
+
+        // clear the split payments registry
+        splitPaymentsRegistry.reset();
+
         // reset the random seed for account IBAN and card number generation
         Utils.resetRandom();
 
@@ -54,7 +61,8 @@ public final class BankManager {
         // try to find new exchange rates based on the existing ones
         exchangeRates.findNewExchangeRates();
 
-        CommandFactory commandFactory = new CommandFactory(userRegistry, output, exchangeRates, commerciantRegistry);
+        CommandFactory commandFactory = new CommandFactory(userRegistry, output, exchangeRates,
+                commerciantRegistry, splitPaymentsRegistry);
         for (CommandInput input : inputData.getCommands()) {
             String commandType = input.getCommand();
 

@@ -137,7 +137,7 @@ public final class PayOnlineCommand implements Command {
                                 "You have reached the minimum amount "
                                         + "of funds, the card will be frozen");
                         user.addTransaction(transactionErorr);
-                        //return;
+                        return;
                     }
 
                     // make the card status "warning" if the balance is less than the
@@ -157,11 +157,15 @@ public final class PayOnlineCommand implements Command {
                     double roundedAmount = Math.round((account.getBalance() - amountToPay) * 100.0) / 100.0;
                     account.setBalance(roundedAmount);
 
-
-                    // create a transaction for the payment
                     Transaction transaction = new CardPaymentTransaction(timestamp,
                             "Card payment", amount, commerciant);
-                    user.addTransaction(transaction);
+
+                    // create a transaction for the payment
+                    if (amount != 0) {
+                        user.addTransaction(transaction);
+
+                    }
+
 
                     Commerciant existingCommerciant = account.getCommerciantByCommerciantName(commerciant);
                     if (existingCommerciant == null) {

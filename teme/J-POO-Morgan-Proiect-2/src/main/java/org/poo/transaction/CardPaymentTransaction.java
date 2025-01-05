@@ -50,7 +50,8 @@ public final class CardPaymentTransaction extends Transaction {
      */
     @Override
     public void toJson(final ObjectNode node) {
-        node.put("amount", getAmount());
+        double roundedAmount = Math.round(getAmount() * 100.0) / 100.0;
+        node.put("amount", roundedAmount);
         node.put("commerciant", getCommerciant());
         node.put("description", getDescription());
         node.put("timestamp", getTimestamp());

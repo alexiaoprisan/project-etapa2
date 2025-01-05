@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import org.poo.commerciants.CommerciantRegistry;
+import org.poo.splitPayment.SplitPaymentsRegistry;
 import org.poo.user.UserRegistry;
 import org.poo.fileio.CommandInput;
 import org.poo.exchangeRates.ExchangeRates;
@@ -17,6 +18,7 @@ public final class CommandFactory {
     private final ExchangeRates exchangeRates;
     private final ArrayNode output;
     private final CommerciantRegistry commerciantRegistry;
+    private final SplitPaymentsRegistry splitPaymentsRegistry;
 
     /**
      * Constructor for the CommandFactory class.
@@ -28,11 +30,13 @@ public final class CommandFactory {
     public CommandFactory(final UserRegistry userRegistry,
                           final ArrayNode output,
                           final ExchangeRates exchangeRates,
-                          final CommerciantRegistry commerciantRegistry) {
+                          final CommerciantRegistry commerciantRegistry,
+                          final SplitPaymentsRegistry splitPaymentsRegistry) {
         this.userRegistry = userRegistry;
         this.output = output;
         this.exchangeRates = exchangeRates;
         this.commerciantRegistry = commerciantRegistry;
+        this.splitPaymentsRegistry = splitPaymentsRegistry;
     }
 
     /**
@@ -103,18 +107,20 @@ public final class CommandFactory {
                 if (input.getSplitPaymentType().equals("custom"))
                     return new SplitPaymentCommandCustom(userRegistry, output, timestamp,
                             input.getAmount(), input.getCurrency(), input.getAccounts(), exchangeRates,
-                            input.getAmountForUsers());
+                            input.getAmountForUsers(), splitPaymentsRegistry);
                 else
-                    return new SplitPaymentCommand(userRegistry, output, timestamp,
-                        input.getAmount(), input.getCurrency(), input.getAccounts(), exchangeRates);
+                    return new SplitPaymentCommandEqual(userRegistry, output, timestamp,
+                        input.getAmount(), input.getCurrency(), input.getAccounts(), exchangeRates,
+                            splitPaymentsRegistry);
 
             case "acceptSplitPayment":
                 return new AcceptSplitPaymentCommand(userRegistry, output, timestamp,
-                        input.getEmail(), input.getSplitPaymentType());
+                        input.getEmail(), input.getSplitPaymentType(), splitPaymentsRegistry,
+                        exchangeRates);
 
             case "rejectionSplitPayment":
                 return new RejectionSplitPaymentCommand(userRegistry, output, timestamp,
-                        input.getEmail(), input.getSplitPaymentType());
+                        input.getEmail(), input.getSplitPaymentType(), splitPaymentsRegistry, exchangeRates);
 
             case "changeInterestRate":
                 return new ChangeInterestRateCommand(userRegistry, output, timestamp,
