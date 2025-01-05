@@ -77,18 +77,19 @@ public final class SpendingsReport {
             output.put("command", "spendingsReport");
 
             ObjectNode accountNode = output.putObject("output");
-            accountNode.put("balance", account.getBalance());
+            double roundedBalance = Math.round(account.getBalance() * 100.0) / 100.0;
+            accountNode.put("balance", roundedBalance);
 
             // add commerciants to the spendings report
             ArrayNode commerciantsArray = accountNode.putArray("commerciants");
             for (Commerciant commerciant : commerciants) {
-                if (commerciant.getTimestamp() >= timestampStart
-                        && commerciant.getTimestamp() <= timestampEnd) {
+               // if (commerciant.getTimestamp() >= timestampStart
+                //        && commerciant.getTimestamp() <= timestampEnd) {
                     // check if the timestamp of the commerciant is within the time range
                     ObjectNode commerciantNode = commerciantsArray.addObject();
                     commerciantNode.put("commerciant", commerciant.getCommerciant());
                     commerciantNode.put("total", commerciant.getAmountSpent());
-                }
+              //  }
             }
 
             accountNode.put("currency", account.getCurrency());

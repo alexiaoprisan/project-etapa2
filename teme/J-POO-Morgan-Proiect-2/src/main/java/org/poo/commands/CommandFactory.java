@@ -51,7 +51,7 @@ public final class CommandFactory {
 
             case "addAccount":
                 return new AddAccountCommand(userRegistry, timestamp,
-                        input.getEmail(), input.getAccountType(), input.getCurrency());
+                        input.getEmail(), input.getAccountType(), input.getCurrency(), input.getInterestRate());
 
             case "createCard":
                 return new CreateCardCommand(userRegistry, output, timestamp,
@@ -98,18 +98,31 @@ public final class CommandFactory {
             case "setMinimumBalance":
                 return new SetMinimumBalanceCommand(userRegistry, timestamp,
                         input.getAccount(), input.getAmount());
-//
-//            case "splitPayment":
-//                return new SplitPaymentCommand(userRegistry, output, timestamp,
-//                        input.getAmount(), input.getCurrency(), input.getAccounts(), exchangeRates);
-//
-//            case "changeInterestRate":
-//                return new ChangeInterestRateCommand(userRegistry, output, timestamp,
-//                        input.getAccount(), input.getInterestRate());
-//
-//            case "addInterest":
-//                return new AddInterestCommand(userRegistry, output, timestamp,
-//                        input.getAccount());
+
+            case "splitPayment":
+                if (input.getSplitPaymentType().equals("custom"))
+                    return new SplitPaymentCommandCustom(userRegistry, output, timestamp,
+                            input.getAmount(), input.getCurrency(), input.getAccounts(), exchangeRates,
+                            input.getAmountForUsers());
+                else
+                    return new SplitPaymentCommand(userRegistry, output, timestamp,
+                        input.getAmount(), input.getCurrency(), input.getAccounts(), exchangeRates);
+
+            case "acceptSplitPayment":
+                return new AcceptSplitPaymentCommand(userRegistry, output, timestamp,
+                        input.getEmail(), input.getSplitPaymentType());
+
+            case "rejectionSplitPayment":
+                return new RejectionSplitPaymentCommand(userRegistry, output, timestamp,
+                        input.getEmail(), input.getSplitPaymentType());
+
+            case "changeInterestRate":
+                return new ChangeInterestRateCommand(userRegistry, output, timestamp,
+                        input.getAccount(), input.getInterestRate());
+
+            case "addInterest":
+                return new AddInterestCommand(userRegistry, output, timestamp,
+                        input.getAccount());
 
             case "withdrawSavings":
                 return new WithdrawSavingsCommand(userRegistry, output, timestamp, exchangeRates,
@@ -128,10 +141,10 @@ public final class CommandFactory {
 //                        input.getEndTimestamp(),
 //                        input.getAccount(), timestamp);
 //
-//            case "spendingsReport":
-//                return new SpendingsReportCommand(userRegistry, output,
-//                        input.getStartTimestamp(), input.getEndTimestamp(),
-//                        input.getAccount(), timestamp);
+            case "spendingsReport":
+                return new SpendingsReportCommand(userRegistry, output,
+                        input.getStartTimestamp(), input.getEndTimestamp(),
+                        input.getAccount(), timestamp);
 
 
 

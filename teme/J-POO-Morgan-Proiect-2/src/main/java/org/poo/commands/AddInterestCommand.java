@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.account.SavingsAccount;
+import org.poo.transaction.Transaction;
+import org.poo.transaction.InterestRateIncome;
+import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
 /**
@@ -45,13 +48,24 @@ public final class AddInterestCommand implements Command {
             return;
         }
 
+        User user = userRegistry.getUserByIBAN(accountIBAN);
+        if (user == null) {
+            return;
+        }
+
         // check if the account is a savings account
         if (account.getType().equals("savings")) {
             SavingsAccount savingsAccount = (SavingsAccount) account;
             double interestRate = savingsAccount.getInterestRate();
+            double sumAdded = savingsAccount.getBalance() * interestRate;
             double newSum = savingsAccount.getBalance() * interestRate
                     + savingsAccount.getBalance();
             savingsAccount.setBalance(newSum);
+
+            Transaction transaction = new InterestRateIncome(timestamp,
+                    "Interest rate income", sumAdded, savingsAccount.getCurrency());
+            user.addTransaction(transaction);
+
         } else {
             // print an error message if the account is not a savings account
             ObjectNode node = output.addObject();

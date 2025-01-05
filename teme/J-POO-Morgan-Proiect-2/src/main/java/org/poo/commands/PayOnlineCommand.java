@@ -137,7 +137,7 @@ public final class PayOnlineCommand implements Command {
                                 "You have reached the minimum amount "
                                         + "of funds, the card will be frozen");
                         user.addTransaction(transactionErorr);
-                        return;
+                        //return;
                     }
 
                     // make the card status "warning" if the balance is less than the
@@ -154,7 +154,8 @@ public final class PayOnlineCommand implements Command {
 //                    }
 
                     // if the cases above are not true, the payment can be made
-                    account.setBalance(account.getBalance() - amountToPay);
+                    double roundedAmount = Math.round((account.getBalance() - amountToPay) * 100.0) / 100.0;
+                    account.setBalance(roundedAmount);
 
 
                     // create a transaction for the payment
@@ -162,41 +163,38 @@ public final class PayOnlineCommand implements Command {
                             "Card payment", amount, commerciant);
                     user.addTransaction(transaction);
 
-                    // create a commerciant object to save in the list of commerciants of the account
-                    Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
-                    newCommerciant.setAmountSpent(amount);
-                    newCommerciant.setTimestamp(timestamp);
-
-                    // add the commerciant to the list of commerciants in the account
-                    account.addCommerciant(newCommerciant);
-
-                    Commerciant currentCommerciant = account.getCommerciantByCommerciantName(commerciant);
-
+                    Commerciant existingCommerciant = account.getCommerciantByCommerciantName(commerciant);
+                    if (existingCommerciant == null) {
+                        Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
+                        account.addCommerciant(newCommerciant);
+                        existingCommerciant = newCommerciant;
+                    }
+                    existingCommerciant.addAmountSpent(amount);
                     // check if the account can receive cashback
 
                     // use the strategy pattern to apply the cashback
                     // i saved the discounts in the account with this strategy
                     CashbackManager cashbackManager = new CashbackManager();
 
-                    if (currentCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+                    if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
                         cashbackManager.setStrategy(new SpendingThresholdCashback(user.getServicePlan()));
-                    } else if (currentCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
+                    } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
                         cashbackManager.setStrategy(new NrOfTransactionsCashback());
                     }
 
-                    cashbackManager.applyCashback(currentCommerciant, account, amount, cardCurrency, exchangeRates);
+                    cashbackManager.applyCashback(existingCommerciant, account, amount, cardCurrency, exchangeRates);
 
                     // now check if i had any discounts to apply to receive cashback and apply them
                     // Apply discounts based on commerciant type
-                    DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(currentCommerciant.getType());
+                    DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
                     if (commerciantStrategy != null) {
-                        commerciantStrategy.applyDiscount(account, currentCommerciant, amount);
+                        commerciantStrategy.applyDiscount(account, existingCommerciant, amount);
                     }
 
                     // Apply the spending threshold discount
                     DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
                     if (spendingThresholdStrategy != null) {
-                        spendingThresholdStrategy.applyDiscount(account, currentCommerciant, amount);
+                        spendingThresholdStrategy.applyDiscount(account, existingCommerciant, amount);
                     }
 
 

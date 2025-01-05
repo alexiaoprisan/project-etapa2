@@ -76,7 +76,7 @@ public class WithdrawSavingsCommand implements Command {
         }
 
         if (foundAccount == 0) {
-            Transaction transaction = new WithdrawSavingsTransaction(timestamp, "You do not have a classic savingsAccount.");
+            Transaction transaction = new WithdrawSavingsTransaction(timestamp, "You do not have a classic account.");
             user.addTransaction(transaction);
             return;
         }

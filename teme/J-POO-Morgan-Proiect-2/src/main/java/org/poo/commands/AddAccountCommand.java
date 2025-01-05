@@ -17,6 +17,7 @@ public final class AddAccountCommand implements Command {
     private final String email;
     private final String accountType;
     private final String currency;
+    final double interestRate;
 
     /**
      * Constructor for the AddAccountCommand.
@@ -31,12 +32,14 @@ public final class AddAccountCommand implements Command {
                              final int timestamp,
                              final String email,
                              final String accountType,
-                             final String currency) {
+                             final String currency,
+                             final double interestRate) {
         this.userRegistry = userRegistry;
         this.timestamp = timestamp;
         this.email = email;
         this.accountType = accountType;
         this.currency = currency;
+        this.interestRate = interestRate;
     }
 
     /**
@@ -61,7 +64,7 @@ public final class AddAccountCommand implements Command {
         User user = userRegistry.getUserByEmail(email);
 
         String iban = Utils.generateIBAN();
-        user.addAccount(accountType, currency, iban);
+        user.addAccount(accountType, currency, iban, interestRate);
 
         Account account = user.getAccountByIBAN(iban);
 

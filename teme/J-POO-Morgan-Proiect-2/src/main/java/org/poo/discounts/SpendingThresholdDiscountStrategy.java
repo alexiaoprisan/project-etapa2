@@ -11,6 +11,5 @@ public class SpendingThresholdDiscountStrategy implements DiscountStrategy {
             account.setBalance(account.getBalance() + discount.getValue() * amount);
             discount.setUsed(true);
         }
-        System.out.println(commerciant.getCommerciant() + "  " + account.getIBAN() + "  " + account.getBalance());
     }
 }

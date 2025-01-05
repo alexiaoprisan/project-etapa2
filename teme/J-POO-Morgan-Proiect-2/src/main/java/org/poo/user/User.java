@@ -31,6 +31,10 @@ public class User {
     // the transaction report for the user
     private TransactionReport transactionReport = new TransactionReport();
 
+    // 0 means the user did not decide yet, 1 means the user accepts custom split payment, 2 means the user did not accept custom split payment
+    private int acceptCustomSplitPayment = 0;
+    private int acceptNormalSplitPayment = 0;
+
     /**
      * Constructs a User instance with the specified details.
      *
@@ -162,11 +166,11 @@ public class User {
      * @param currency    the currency of the account
      * @param iban        the IBAN of the account
      */
-    public void addAccount(final String accountType, final String currency, final String iban) {
+    public void addAccount(final String accountType, final String currency, final String iban, double interestRate) {
         // create a new account based on the account type, using the factory pattern
         AccountFactory.AccountType type = AccountFactory.AccountType.valueOf(accountType);
         Account newAccount = AccountFactory.createAccount(type,
-                currency, iban, 0, 0, "alias", 0);
+                currency, iban, 0, 0, "alias", interestRate);
 
         // add the new account to the list of accounts
         accounts.add(newAccount);
@@ -345,5 +349,39 @@ public class User {
             return amount;
         }
         return amount;
+    }
+
+    public void setAcceptCustomSplitPayment(int acceptCustomSplitPayment) {
+        this.acceptCustomSplitPayment = acceptCustomSplitPayment;
+    }
+
+    public int getAcceptCustomSplitPayment() {
+        return acceptCustomSplitPayment;
+    }
+
+    public void acceptSplitPayment(String splitPaymentType) {
+        if (splitPaymentType.equals("custom")) {
+            setAcceptCustomSplitPayment(1);
+        }
+        else {
+            setAcceptNormalSplitPayment(1);
+        }
+    }
+
+    public void rejectSplitPayment(String splitPaymentType) {
+        if (splitPaymentType.equals("custom")) {
+            setAcceptCustomSplitPayment(2);
+        }
+        else {
+            setAcceptNormalSplitPayment(2);
+        }
+    }
+
+    public void setAcceptNormalSplitPayment(int acceptNormalSplitPayment) {
+        this.acceptNormalSplitPayment = acceptNormalSplitPayment;
+    }
+
+    public int getAcceptNormalSplitPayment() {
+        return acceptNormalSplitPayment;
     }
 }
