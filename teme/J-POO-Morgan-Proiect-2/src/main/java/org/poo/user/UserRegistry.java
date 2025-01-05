@@ -107,6 +107,19 @@ public final class UserRegistry {
         return null;
     }
 
+    public Account getAccountByCardNumber(final String cardNumber) {
+        for (final User user : users) {
+            for (final Account account : user.getAccounts()) {
+                for (final Card card : account.getCards()) {
+                    if (card.getCardNumber().equals(cardNumber)) {
+                        return account;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Finds a card by its card number, searching through all users.
      *

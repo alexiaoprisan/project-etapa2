@@ -5,10 +5,7 @@ import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
 import org.poo.splitPayment.SplitPayment;
 import org.poo.splitPayment.SplitPaymentsRegistry;
-import org.poo.transaction.ErrorSplitPaymentTransaction;
-import org.poo.transaction.SplitPaymentCustomTransaction;
-import org.poo.transaction.SplitPaymentTransaction;
-import org.poo.transaction.Transaction;
+import org.poo.transaction.*;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
@@ -108,20 +105,44 @@ public class AcceptSplitPaymentCommand implements Command {
                 double amount = amountsForEachUser.get(i);
                 double totalAmount = splitPayment.getTotalAmount();
 
-                // create a transaction for each account
-                Transaction transaction = new ErrorSplitPaymentTransaction(
-                        splitPayment.getTimestamp(), String.format("Split payment of %.2f %s", totalAmount, currency),
-                        amount, currency, accountsIBAN.toArray(new String[0]),
-                        "Account " + poorAccount + " has insufficient funds "
-                                + "for a split payment."
-                );
-                // add the transaction to the user, for printTransaction
-                user.addTransaction(transaction);
-                // add the transaction to the account, for the report
-                account.addTransaction(transaction);
-            }
+                if (splitPaymentType.equals("custom")) {
+                    // create a transaction for each account
+                    Transaction transaction = new SplitPaymentCustomTransactionError(
+                            splitPayment.getTimestamp(),
+                            String.format("Split payment of %.2f %s", totalAmount, currency), // Ensures two decimal places
+                            amountsForEachUser,
+                            currency,
+                            accountsIBAN,
+                            splitPaymentType,
+                            String.format("Account %s has insufficient funds for a split payment.", poorAccount) // Proper formatting for the error message
+                    );
 
+                    // add the transaction to the user, for printTransaction
+                    user.addTransaction(transaction);
+                    // add the transaction to the account, for the report
+                    account.addTransaction(transaction);
+
+                } else {
+                    Transaction transaction = new SplitPaymentTransactionError(
+                            splitPayment.getTimestamp(),
+                            String.format("Split payment of %.2f %s", totalAmount, currency), // Ensures two decimal places
+                            amount,
+                            currency,
+                            accountsIBAN,
+                            String.format("Account %s has insufficient funds for a split payment.", poorAccount), // Properly formatted error message
+                            splitPaymentType
+                    );
+                    user.addTransaction(transaction);
+                    // add the transaction to the account, for the report
+                    account.addTransaction(transaction);
+                }
+
+
+            }
+            splitPaymentsRegistry.removeSplitPayment(splitPayment);
             return; // Exit if any account does not have enough balance
+
+
         }
 
         // Deduct the amounts and log transactions
@@ -146,15 +167,14 @@ public class AcceptSplitPaymentCommand implements Command {
             String description = String.format("Split payment of %.2f %s",
                     totalAmount, currency);
 
-            //public SplitPaymentCustomTransaction(int timestamp, String description, double[] amountForUsers, String currency, String[] involvedAccounts, String splitPaymentType) {
-            //        super(timestamp, description);
-            //        this.amountForUsers = amountForUsers;
-            //        this.currency = currency;
-            //        this.involvedAccounts = involvedAccounts;
-            //        this.splitPaymentType = splitPaymentType;
-            //    }
-            Transaction transaction = new SplitPaymentCustomTransaction(splitPayment.getTimestamp(), description, amountsForEachUser, currency, accountsIBAN, splitPaymentType);
-            user.addTransaction(transaction);
+
+            if (splitPaymentType.equals("custom")) {
+                Transaction transaction = new SplitPaymentCustomTransaction(splitPayment.getTimestamp(), description, amountsForEachUser, currency, accountsIBAN, splitPaymentType);
+                user.addTransaction(transaction);
+            } else {
+                Transaction transaction = new SplitPaymentTransaction(splitPayment.getTimestamp(), description, amount, currency, accountsIBAN);
+                user.addTransaction(transaction);
+            }
         }
 
         splitPaymentsRegistry.removeSplitPayment(splitPayment);

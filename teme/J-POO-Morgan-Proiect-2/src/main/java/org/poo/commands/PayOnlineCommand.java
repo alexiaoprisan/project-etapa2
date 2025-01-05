@@ -92,56 +92,73 @@ public final class PayOnlineCommand implements Command {
             return;
         }
 
-        // auxiliar variable to check if the card was found
-        int foundCard = 0;
+        Card card = userRegistry.getCardByNumber(cardNumber);
+        if (card == null) {
+            ObjectNode outputNode = output.addObject();
+            outputNode.put("command", "payOnline");
+            ObjectNode outputObject = outputNode.putObject("output");
+            outputObject.put("description", "Card not found");
+            outputObject.put("timestamp", timestamp);
+            outputNode.put("timestamp", timestamp);
+            return;
+        }
 
-        for (Account account : user.getAccounts()) {
-            Card card = account.getCardByNumber(cardNumber);
-            if (card != null) {
-                // the card was found
-                foundCard = 1;
+        Account account = userRegistry.getAccountByCardNumber(cardNumber);
 
-                String cardCurrency = account.getCurrency();
+        // check if it may be a business account
+        if (!card.getOwnerEmail().equals(email)) {
+            // if it is not a business account, than it is a classic or savings account
+            // and it must belong to the user, so the email is wrong - error
+            if (!account.getType().equals("business")) {
+                return;
+            }
+            else {
+                // check if the user
+            }
+        }
 
-                // check if the card currency is different from the payment currency
-                if (!cardCurrency.equals(currency)) {
-                    double rate = exchangeRates.convertExchangeRate(cardCurrency, currency);
-                    // check if the exchange rate was found
-                    if (rate != 0) {
-                        // calculate the amount in the card currency
-                        amount = amount / rate;
-                    }
-                }
 
-                // check if the card is frozen
-                if (card.getStatus().equals("frozen")) {
-                    // create a transaction for the frozen card
-                    // the card cannot be used to make payments
-                    Transaction transaction = new FrozenCard(timestamp,
-                            "The card is frozen");
-                    user.addTransaction(transaction);
-                    return;
-                }
+        String cardCurrency = account.getCurrency();
 
-                double amountToPay = user.addCommission(amount, exchangeRates, cardCurrency);
+        // check if the card currency is different from the payment currency
+        if (!cardCurrency.equals(currency)) {
+            double rate = exchangeRates.convertExchangeRate(cardCurrency, currency);
+            // check if the exchange rate was found
+            if (rate != 0) {
+                // calculate the amount in the card currency
+                amount = amount / rate;
+            }
+        }
 
-                // check if the account has enough funds
-                if (account.getBalance() >= amountToPay) {
+        // check if the card is frozen
+        if (card.getStatus().equals("frozen")) {
+            // create a transaction for the frozen card
+            // the card cannot be used to make payments
+            Transaction transaction = new FrozenCard(timestamp,
+                    "The card is frozen");
+            user.addTransaction(transaction);
+            return;
+        }
 
-                    // freeze the card if the balance is less than the minimum balance
-                    if (account.getBalance() - amountToPay <= account.getMinBalance()) {
-                        card.setStatus("frozen");
+        double amountToPay = user.addCommission(amount, exchangeRates, cardCurrency);
 
-                        // create a transaction to warn the user that the card will be frozen
-                        Transaction transactionErorr = new WarningForPay(timestamp,
-                                "You have reached the minimum amount "
-                                        + "of funds, the card will be frozen");
-                        user.addTransaction(transactionErorr);
-                        return;
-                    }
+        // check if the account has enough funds
+        if (account.getBalance() >= amountToPay) {
 
-                    // make the card status "warning" if the balance is less than the
-                    // minimum balance + 30
+            // freeze the card if the balance is less than the minimum balance
+            if (account.getBalance() - amountToPay <= account.getMinBalance()) {
+                card.setStatus("frozen");
+
+                // create a transaction to warn the user that the card will be frozen
+                Transaction transactionErorr = new WarningForPay(timestamp,
+                        "You have reached the minimum amount "
+                                + "of funds, the card will be frozen");
+                user.addTransaction(transactionErorr);
+                return;
+            }
+
+            // make the card status "warning" if the balance is less than the
+            // minimum balance + 30
 //                    if (account.getBalance() - account.getMinBalance() - amountToPay < MIN_DIFFERENCE) {
 //
 //                        // create a transaction to warn the user that the card will be frozen
@@ -153,113 +170,109 @@ public final class PayOnlineCommand implements Command {
 //
 //                    }
 
-                    // if the cases above are not true, the payment can be made
-                    double roundedAmount = Math.round((account.getBalance() - amountToPay) * 100.0) / 100.0;
-                    account.setBalance(roundedAmount);
+            // if the cases above are not true, the payment can be made
+            double roundedAmount = Math.round((account.getBalance() - amountToPay) * 100.0) / 100.0;
+            account.setBalance(roundedAmount);
 
-                    Transaction transaction = new CardPaymentTransaction(timestamp,
-                            "Card payment", amount, commerciant);
+            Transaction transaction = new CardPaymentTransaction(timestamp,
+                    "Card payment", amount, commerciant);
 
-                    // create a transaction for the payment
-                    if (amount != 0) {
-                        user.addTransaction(transaction);
+            // create a transaction for the payment
+            if (amount != 0) {
+                user.addTransaction(transaction);
+            }
 
-                    }
-
-
-                    Commerciant existingCommerciant = account.getCommerciantByCommerciantName(commerciant);
-                    if (existingCommerciant == null) {
-                        Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
-                        account.addCommerciant(newCommerciant);
-                        existingCommerciant = newCommerciant;
-                    }
-                    existingCommerciant.addAmountSpent(amount);
-                    // check if the account can receive cashback
-
-                    // use the strategy pattern to apply the cashback
-                    // i saved the discounts in the account with this strategy
-                    CashbackManager cashbackManager = new CashbackManager();
-
-                    if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
-                        cashbackManager.setStrategy(new SpendingThresholdCashback(user.getServicePlan()));
-                    } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
-                        cashbackManager.setStrategy(new NrOfTransactionsCashback());
-                    }
-
-                    cashbackManager.applyCashback(existingCommerciant, account, amount, cardCurrency, exchangeRates);
-
-                    // now check if i had any discounts to apply to receive cashback and apply them
-                    // Apply discounts based on commerciant type
-                    DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
-                    if (commerciantStrategy != null) {
-                        commerciantStrategy.applyDiscount(account, existingCommerciant, amount);
-                    }
-
-                    // Apply the spending threshold discount
-                    DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
-                    if (spendingThresholdStrategy != null) {
-                        spendingThresholdStrategy.applyDiscount(account, existingCommerciant, amount);
-                    }
-
-
-
-                    // verify if the account is a classic account
-                    // in order to save the transaction for the report and the spending report
-                    if (account.getType().equals("classic")) {
-                        // save the commerciant in the account
-
-                        // add the transaction to the report and the payments record
-                        // (for the spending report)
-                        ClassicAccount classicAccount = (ClassicAccount) account;
-                        ClassicReport report = classicAccount.getReport();
-                        PaymentsRecord paymentsRecord = classicAccount.getPaymentsRecord();
-
-                        report.addTransaction(transaction);
-                        paymentsRecord.addTransaction(transaction);
-
-
-                    }
-
-                    // check if the card is a oneTimePay card
-                    if (card.getType().equals("oneTimePay")) {
-                        // the card will be used only once, then it will be destroyed
-                        // and a new card will be created
-
-                        // generate a new card number
-                        String newCardNumber = Utils.generateCardNumber();
-                        card.setCardNumber(newCardNumber);
-
-                        // create a transaction for the destroyed card and the new card
-                        Transaction transactionCardDestroyed = new CardDestroyed(timestamp,
-                                "The card has been destroyed", account.getIBAN(),
-                                cardNumber, user.getEmail());
-                        user.addTransaction(transactionCardDestroyed);
-
-                        Transaction transactionNewCard = new NewCardCreatedTransaction(timestamp,
-                                "New card created", account.getIBAN(),
-                                newCardNumber, user.getEmail());
-                        user.addTransaction(transactionNewCard);
-                    }
-
-                } else {
-                    // if the payment cannot be made, create a transaction for insufficient funds
-                    Transaction transaction = new InsufficientFunds(timestamp,
-                            "Insufficient funds");
-                    user.addTransaction(transaction);
+            double rateForRon = exchangeRates.convertExchangeRate(account.getCurrency(), "RON");
+            double amountRon = amount * rateForRon;
+            if (amountRon > 300) {
+                user.incrementPaymentsOverThreeHundred();
+                if (user.getPaymentsOverThreeHundred() == 5) {
+                    user.setServicePlan("gold");
                 }
+            }
+
+            Commerciant existingCommerciant = account.getCommerciantByCommerciantName(commerciant);
+            if (existingCommerciant == null) {
+                Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
+                account.addCommerciant(newCommerciant);
+                existingCommerciant = newCommerciant;
+            }
+            existingCommerciant.addAmountSpent(amount);
+            // check if the account can receive cashback
+
+            // use the strategy pattern to apply the cashback
+            // i saved the discounts in the account with this strategy
+            CashbackManager cashbackManager = new CashbackManager();
+
+            if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+                cashbackManager.setStrategy(new SpendingThresholdCashback(user.getServicePlan()));
+            } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
+                cashbackManager.setStrategy(new NrOfTransactionsCashback());
+            }
+
+            cashbackManager.applyCashback(existingCommerciant, account, amount, cardCurrency, exchangeRates);
+
+            // now check if i had any discounts to apply to receive cashback and apply them
+            // Apply discounts based on commerciant type
+            DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
+            if (commerciantStrategy != null) {
+                commerciantStrategy.applyDiscount(account, existingCommerciant, amount);
+            }
+
+            // Apply the spending threshold discount
+            DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
+            if (spendingThresholdStrategy != null) {
+                spendingThresholdStrategy.applyDiscount(account, existingCommerciant, amount);
+            }
+
+
+
+            // verify if the account is a classic account
+            // in order to save the transaction for the report and the spending report
+            if (account.getType().equals("classic")) {
+                // save the commerciant in the account
+
+                // add the transaction to the report and the payments record
+                // (for the spending report)
+                ClassicAccount classicAccount = (ClassicAccount) account;
+                ClassicReport report = classicAccount.getReport();
+                PaymentsRecord paymentsRecord = classicAccount.getPaymentsRecord();
+
+                report.addTransaction(transaction);
+                paymentsRecord.addTransaction(transaction);
+
 
             }
+
+            // check if the card is a oneTimePay card
+            if (card.getType().equals("oneTimePay")) {
+                // the card will be used only once, then it will be destroyed
+                // and a new card will be created
+
+                // generate a new card number
+                String newCardNumber = Utils.generateCardNumber();
+                card.setCardNumber(newCardNumber);
+
+                // create a transaction for the destroyed card and the new card
+                Transaction transactionCardDestroyed = new CardDestroyed(timestamp,
+                        "The card has been destroyed", account.getIBAN(),
+                        cardNumber, user.getEmail());
+                user.addTransaction(transactionCardDestroyed);
+
+                Transaction transactionNewCard = new NewCardCreatedTransaction(timestamp,
+                        "New card created", account.getIBAN(),
+                        newCardNumber, user.getEmail());
+                user.addTransaction(transactionNewCard);
+            }
+
+        } else {
+            // if the payment cannot be made, create a transaction for insufficient funds
+            Transaction transaction = new InsufficientFunds(timestamp,
+                    "Insufficient funds");
+            user.addTransaction(transaction);
         }
 
-        // if the card was not found, print an error message
-        if (foundCard == 0) {
-            ObjectNode outputNode = output.addObject();
-            outputNode.put("command", "payOnline");
-            ObjectNode outputObject = outputNode.putObject("output");
-            outputObject.put("description", "Card not found");
-            outputObject.put("timestamp", timestamp);
-            outputNode.put("timestamp", timestamp);
-        }
+
 
     }
 }

@@ -72,14 +72,16 @@ public final class CreateCardCommand implements Command {
         // generate a card number
         String cardNumber = Utils.generateCardNumber();
 
+        Account account = user.getAccountByIBAN(iban);
+
         // create the card
         for (Account acc : user.getAccounts()) {
             if (acc.getIBAN().equals(iban)) {
-                acc.createCard(type, cardNumber);
+                acc.createCard(type, cardNumber, email);
             }
         }
 
-        Account account = user.getAccountByIBAN(iban);
+
 
         // add the transactions to the user transactions list and the account report
         addTransaction(user, account, cardNumber);

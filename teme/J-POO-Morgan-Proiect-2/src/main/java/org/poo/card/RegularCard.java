@@ -8,15 +8,17 @@ public final class RegularCard implements Card {
     private String cardNumber;
     private static String type = "regular";
     private String status;
+    private String ownerEmail;
 
     /**
      * Constructor for a regular card.
      *
      * @param cardNumber The card number, generated previously.
      */
-    public RegularCard(final String cardNumber) {
+    public RegularCard(final String cardNumber, final String ownerEmail) {
         this.cardNumber = cardNumber;
         this.status = "active";
+        this.ownerEmail = ownerEmail;
     }
 
     /**
@@ -66,6 +68,14 @@ public final class RegularCard implements Card {
     @Override
     public void setType(final String type) {
         this.type = type;
+    }
+
+    public void setOwnerEmail(final String ownerEmail) {
+        this.ownerEmail = ownerEmail;
+    }
+
+    public String getOwnerEmail() {
+        return ownerEmail;
     }
 
 }

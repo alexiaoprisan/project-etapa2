@@ -5,15 +5,18 @@ import org.poo.card.CardFactory;
 import org.poo.commerciants.Commerciant;
 import org.poo.discounts.Discount;
 import org.poo.transaction.Transaction;
+import org.poo.user.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BusinessAccount implements Account {
     private String iban;
     private String accountType;
     private String currency;
     private double balance;
-    private double minBalance;
+    private double minBalance = 500;
+    private double maxSpendLimit = 500;
     private String alias;
 
     // cards is a list of all the cards that the user has in a specific account
@@ -31,12 +34,17 @@ public class BusinessAccount implements Account {
     // discounts is a list of all the discounts that the user has
     private ArrayList<Discount> discounts = new ArrayList<>();
 
-    public BusinessAccount(final String currency, final String iban, final double balance, final double minBalance) {
+    private User owner;
+    private List<User> managers = new ArrayList<>();
+    private List<User> employees = new ArrayList<>();
+
+    public BusinessAccount(final String currency, final String iban, final double balance, final double minBalance, User owner) {
         this.iban = iban;
         this.currency = currency;
         this.balance = 0;
-        this.minBalance = minBalance;
+        this.minBalance = 500;
         this.accountType = "business";
+        this.owner = owner;
     }
 
     @Override
@@ -111,9 +119,9 @@ public class BusinessAccount implements Account {
     }
 
     @Override
-    public void createCard(String type, String cardNumber) {
+    public void createCard(String type, String cardNumber, String email) {
         // Create a new card
-        Card newCard = CardFactory.createCard(type, cardNumber);
+        Card newCard = CardFactory.createCard(type, cardNumber, email);
 
         // Add the card to the list of cards
         cards.add(newCard);
@@ -143,6 +151,40 @@ public class BusinessAccount implements Account {
     public void addTransaction(Transaction transaction) {
 
     }
+
+    public double getMaxSpendLimit() {
+        return maxSpendLimit;
+    }
+
+    public void setMaxSpendLimit(double maxSpendLimit) {
+        this.maxSpendLimit = maxSpendLimit;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public List<User> getManagers() {
+        return managers;
+    }
+
+    public void addManager(User manager) {
+        managers.add(manager);
+    }
+
+    public List<User> getEmployees() {
+        return employees;
+    }
+
+    public void addEmployee(User employee) {
+        employees.add(employee);
+    }
+
+
 
     /**
      * Getter for the list of commerciants, which the user has sent money to

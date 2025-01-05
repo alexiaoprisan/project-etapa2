@@ -3,15 +3,18 @@ package org.poo.transaction;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.util.List;
+
 /**
  * Represents a transaction with an error in a split payment.
  */
-public final class ErrorSplitPaymentTransaction extends Transaction {
+public final class SplitPaymentTransactionError extends Transaction {
 
     private final double amount;
     private final String currency;
-    private final String[] involvedAccounts;
+    private final List<String> involvedAccounts;
     private final String error;
+    private String splitPaymentType;
 
     /**
      * Creates an instance of ErrorSplitPaymentTransaction.
@@ -23,17 +26,19 @@ public final class ErrorSplitPaymentTransaction extends Transaction {
      * @param involvedAccounts the accounts involved in the transaction
      * @param error            the error message
      */
-    public ErrorSplitPaymentTransaction(final int timestamp,
+    public SplitPaymentTransactionError(final int timestamp,
                                         final String description,
                                         final double amount,
                                         final String currency,
-                                        final String[] involvedAccounts,
-                                        final String error) {
+                                        final List<String> involvedAccounts,
+                                        final String error,
+                                        final String splitPaymentType) {
         super(timestamp, description);
         this.amount = amount;
         this.currency = currency;
         this.involvedAccounts = involvedAccounts;
         this.error = error;
+        this.splitPaymentType = splitPaymentType;
     }
 
     /**
@@ -68,7 +73,7 @@ public final class ErrorSplitPaymentTransaction extends Transaction {
      *
      * @return an array of involved account IDs
      */
-    public String[] getInvolvedAccounts() {
+    public List<String> getInvolvedAccounts() {
         return involvedAccounts;
     }
 
@@ -86,5 +91,7 @@ public final class ErrorSplitPaymentTransaction extends Transaction {
         for (String account : getInvolvedAccounts()) {
             accountsArray.add(account);
         }
+        node.put("splitPaymentType", splitPaymentType);
+
     }
 }

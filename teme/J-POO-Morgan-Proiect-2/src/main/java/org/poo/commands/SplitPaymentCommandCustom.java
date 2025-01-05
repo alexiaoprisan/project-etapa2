@@ -5,15 +5,10 @@ import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
 import org.poo.splitPayment.SplitPayment;
 import org.poo.splitPayment.SplitPaymentsRegistry;
-import org.poo.transaction.ErrorSplitPaymentTransaction;
-import org.poo.transaction.SplitPaymentTransaction;
-import org.poo.transaction.Transaction;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SplitPaymentCommandCustom implements Command {
     private UserRegistry userRegistry;

@@ -20,12 +20,12 @@ public final class CardFactory {
      * @param cardNumber the card number, which was generated previously
      * @return the created card
      */
-    public static Card createCard(final String type, final String cardNumber) {
+    public static Card createCard(final String type, final String cardNumber, final String ownerEmail) {
         switch (type) {
             case "oneTimePay":
-                return new OneTimePayCard(cardNumber);
+                return new OneTimePayCard(cardNumber, ownerEmail);
             case "regular":
-                return new RegularCard(cardNumber);
+                return new RegularCard(cardNumber, ownerEmail);
             default:
                 throw new IllegalArgumentException("The card type " + type + " is not recognized.");
         }

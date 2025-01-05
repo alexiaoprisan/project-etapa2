@@ -3,6 +3,8 @@ package org.poo.transaction;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.util.List;
+
 /**
  * SplitPaymentTransaction class represents a split payment transaction.
  */
@@ -10,7 +12,7 @@ public final class SplitPaymentTransaction extends Transaction {
 
     private final double amount;
     private final String currency;
-    private final String[] involvedAccounts;
+    private final List<String> involvedAccounts;
 
     /**
      * Constructor for SplitPaymentTransaction.
@@ -25,7 +27,7 @@ public final class SplitPaymentTransaction extends Transaction {
                                    final String description,
                                    final double amount,
                                    final String currency,
-                                   final String[] involvedAccounts) {
+                                   final List<String> involvedAccounts) {
         super(timestamp, description);
         this.amount = amount;
         this.currency = currency;
@@ -55,7 +57,7 @@ public final class SplitPaymentTransaction extends Transaction {
      *
      * @return The accounts involved in the transaction.
      */
-    public String[] getInvolvedAccounts() {
+    public List<String> getInvolvedAccounts() {
         return involvedAccounts;
     }
 

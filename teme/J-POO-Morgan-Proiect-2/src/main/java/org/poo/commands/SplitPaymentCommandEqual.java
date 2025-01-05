@@ -3,11 +3,9 @@ package org.poo.commands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
+import org.poo.splitPayment.SplitPayment;
 import org.poo.splitPayment.SplitPaymentsRegistry;
 import org.poo.user.UserRegistry;
-import org.poo.transaction.ErrorSplitPaymentTransaction;
-import org.poo.transaction.SplitPaymentTransaction;
-import org.poo.transaction.Transaction;
 import org.poo.user.User;
 
 import java.util.List;
@@ -61,91 +59,35 @@ public final class SplitPaymentCommandEqual implements Command {
      */
     @Override
     public void execute() {
-//        // Calculate the amount to be deducted from each account
-//        double amount = totalAmount / accountsIBAN.size();
-//
-//        // auxiliar variable to check if the split payment is possible
-//        int canDoSplit = 1;
-//
-//        // auxiliar variable to store the IBAN of the account with insufficient funds
-//        String poorAccount = "";
-//
-//        // Validate all accounts exist and check if the split payment is possible
-//        for (String accountIBAN : accountsIBAN) {
-//
-//            // get the account
-//            Account account = userRegistry.getAccountByIBAN(accountIBAN);
-//            if (account == null) {
-//                return;
-//            }
-//
-//            double requiredAmount = amount;
-//            // check if the account has the same currency as the total amount
-//            if (!account.getCurrency().equals(currency)) {
-//                double exchangeRate = exchangeRates.convertExchangeRate(account.getCurrency(),
-//                        currency);
-//                if (exchangeRate == 0) {
-//                    return;
-//                }
-//                // calculate the amount to be deducted from the account
-//                requiredAmount = amount / exchangeRate;
-//            }
-//
-//            // check if the account has enough money to perform the split payment
-//            if (account.getBalance() < requiredAmount) {
-//                poorAccount = accountIBAN;
-//                canDoSplit = 0;
-//            }
-//        }
-//
-//        // if the split payment is not possible, log an error transaction for each account
-//        if (canDoSplit == 0) {
-//
-//            for (String accountIBAN : accountsIBAN) {
-//
-//                User user = userRegistry.getUserByIBAN(accountIBAN);
-//
-//                // create a transaction for each account
-//                Transaction transaction = new ErrorSplitPaymentTransaction(
-//                        timestamp, String.format("Split payment of %.2f %s", totalAmount, currency),
-//                        amount, currency, accountsIBAN.toArray(new String[0]),
-//                        "Account " + poorAccount + " has insufficient funds "
-//                                + "for a split payment."
-//                );
-//                // add the transaction to the user, for printTransaction
-//                user.addTransaction(transaction);
-//                // add the transaction to the account, for the report
-//                Account account = userRegistry.getAccountByIBAN(accountIBAN);
-//                account.addTransaction(transaction);
-//            }
-//
-//            return; // Exit if any account does not have enough balance
-//        }
-//
-//        // Deduct the amounts and log transactions
-//        for (String accountIBAN : accountsIBAN) {
-//            Account account = userRegistry.getAccountByIBAN(accountIBAN);
-//
-//            double deductionAmount = amount;
-//            if (!account.getCurrency().equals(currency)) {
-//                double exchangeRate =
-//                        exchangeRates.convertExchangeRate(account.getCurrency(),
-//                                currency);
-//                deductionAmount = amount / exchangeRate;
-//            }
-//
-//            account.setBalance(account.getBalance() - deductionAmount);
-//
-//            // Add transaction to the user for printTransaction
-//            User user = userRegistry.getUserByIBAN(account.getIBAN());
-//            String description = String.format("Split payment of %.2f %s",
-//                    totalAmount, currency);
-//            Transaction transaction = new SplitPaymentTransaction(
-//                    timestamp, description, amount, currency, accountsIBAN.toArray(new String[0])
-//            );
-//            user.addTransaction(transaction);
-//        }
-    }
+        // check if all accounts exist
+        for (String accountIBAN : accountsIBAN) {
+            Account account = userRegistry.getAccountByIBAN(accountIBAN);
+            if (account == null) {
+                return;
+            }
 
+            User user = userRegistry.getUserByIBAN(accountIBAN);
+            if (user == null) {
+                return;
+            }
+        }
+
+        double amountForEachAccount = totalAmount / accountsIBAN.size();
+
+
+        // create the split payment to store in the split payments registry
+        SplitPayment splitPayment = new SplitPayment();
+        splitPayment.setCurrency(currency);
+        splitPayment.setSplitPaymentType("equal");
+        splitPayment.setTotalAmount(totalAmount);
+        splitPayment.setTimestamp(timestamp);
+        for (int i = 0; i < accountsIBAN.size(); i++) {
+            String accountIBAN = accountsIBAN.get(i);
+            splitPayment.addUserPayment(accountsIBAN.get(i), amountForEachAccount, userRegistry.getUserByIBAN(accountIBAN));
+        }
+
+        // add the split payment to the split payments registry
+        splitPaymentsRegistry.addSplitPayment(splitPayment);
+    }
 
 }

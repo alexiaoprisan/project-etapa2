@@ -48,4 +48,8 @@ public interface Card {
      * @param type the new card type.
      */
     void setType(String type);
+
+    void setOwnerEmail(String ownerEmail);
+
+    String getOwnerEmail();
 }

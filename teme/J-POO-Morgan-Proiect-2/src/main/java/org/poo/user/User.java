@@ -36,6 +36,10 @@ public class User {
     private int acceptCustomSplitPayment = 0;
     private int acceptEqualSplitPayment = 0;
 
+    // how many times a user has made payments over 300 RON
+    // if he makes more than 5, he will be upgraded to gold
+    private int paymentsOverThreeHundred = 0;
+
     /**
      * Constructs a User instance with the specified details.
      *
@@ -160,6 +164,14 @@ public class User {
         return accounts;
     }
 
+    public int getPaymentsOverThreeHundred() {
+        return paymentsOverThreeHundred;
+    }
+
+    public void incrementPaymentsOverThreeHundred() {
+        paymentsOverThreeHundred++;
+    }
+
     /**
      * Adds a new account for the user.
      *
@@ -167,11 +179,11 @@ public class User {
      * @param currency    the currency of the account
      * @param iban        the IBAN of the account
      */
-    public void addAccount(final String accountType, final String currency, final String iban, double interestRate) {
+    public void addAccount(final String accountType, final String currency, final String iban, double interestRate, User owner) {
         // create a new account based on the account type, using the factory pattern
         AccountFactory.AccountType type = AccountFactory.AccountType.valueOf(accountType);
         Account newAccount = AccountFactory.createAccount(type,
-                currency, iban, 0, 0, "alias", interestRate);
+                currency, iban, 0, 0, "alias", interestRate, owner);
 
         // add the new account to the list of accounts
         accounts.add(newAccount);

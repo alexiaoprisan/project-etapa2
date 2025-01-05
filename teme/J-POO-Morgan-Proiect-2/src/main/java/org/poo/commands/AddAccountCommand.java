@@ -64,7 +64,7 @@ public final class AddAccountCommand implements Command {
         User user = userRegistry.getUserByEmail(email);
 
         String iban = Utils.generateIBAN();
-        user.addAccount(accountType, currency, iban, interestRate);
+        user.addAccount(accountType, currency, iban, interestRate, user);
 
         Account account = user.getAccountByIBAN(iban);
 

@@ -177,9 +177,9 @@ public final class ClassicAccount implements Account {
      * {@inheritDoc}
      */
     @Override
-    public void createCard(final String type, final String cardNumber) {
+    public void createCard(final String type, final String cardNumber, String email) {
         // Create a new card
-        Card newCard = CardFactory.createCard(type, cardNumber);
+        Card newCard = CardFactory.createCard(type, cardNumber, email);
 
         // Add the card to the list of cards
         cards.add(newCard);

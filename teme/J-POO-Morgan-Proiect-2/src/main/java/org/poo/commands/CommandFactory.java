@@ -152,7 +152,18 @@ public final class CommandFactory {
                         input.getStartTimestamp(), input.getEndTimestamp(),
                         input.getAccount(), timestamp);
 
+            case "addNewBusinessAssociate":
+                return new AddNewBusinessAssociateCommand(userRegistry, output, timestamp,
+                        input.getEmail(), input.getAccount(), input.getRole());
 
+            case "changeSpendingLimit":
+                return new ChangeSpendingLimitCommand(userRegistry, output, timestamp,
+                        input.getAccount(), input.getEmail(), input.getAmount());
+
+            case "businessReport":
+                return new BusinessReportCommand(userRegistry, output,
+                        input.getStartTimestamp(), input.getEndTimestamp(),
+                        input.getAccount(), input.getType(), timestamp);
 
             default:
                 // Log unknown command type and skip

@@ -128,7 +128,7 @@ public interface Account {
      * @param type       (regular or oneTimeCard)
      * @param cardNumber (generated when it is created)
      */
-    void createCard(String type, String cardNumber);
+    void createCard(String type, String cardNumber, String email);
 
     /**
      * Method to check if the account has cards

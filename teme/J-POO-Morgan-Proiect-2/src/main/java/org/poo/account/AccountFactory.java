@@ -1,5 +1,7 @@
 package org.poo.account;
 
+import org.poo.user.User;
+
 /**
  * Factory class to create instances of different account types.
  * This class cannot be instantiated.
@@ -39,14 +41,15 @@ public final class AccountFactory {
                                         final double balance,
                                         final double minBalance,
                                         final String alias,
-                                        final double interestRate) {
+                                        final double interestRate,
+                                        final User owner) {
         switch (accountType) {
             case classic:
                 return new ClassicAccount(currency, iban, balance, minBalance);
             case savings:
                 return new SavingsAccount(currency, iban, balance, minBalance, interestRate);
             case business:
-                return new BusinessAccount(currency, iban, balance, minBalance);
+                return new BusinessAccount(currency, iban, balance, minBalance, owner);
             default:
                 throw new IllegalArgumentException("The account type "
                         + accountType + " is not recognized.");

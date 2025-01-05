@@ -190,9 +190,9 @@ public final class SavingsAccount implements Account {
      * {@inheritDoc}
      */
     @Override
-    public void createCard(final String type, final String cardNumber) {
+    public void createCard(final String type, final String cardNumber, String email) {
         // Create and add a new card
-        Card newCard = CardFactory.createCard(type, cardNumber);
+        Card newCard = CardFactory.createCard(type, cardNumber, email);
         cards.add(newCard);
     }
 
