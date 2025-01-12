@@ -90,6 +90,7 @@ public class AcceptSplitPaymentCommand implements Command {
             if (account.getBalance() < requiredAmount) {
                 poorAccount = accountsIBAN.get(i);
                 canDoSplit = 0;
+                break;
             }
         }
 

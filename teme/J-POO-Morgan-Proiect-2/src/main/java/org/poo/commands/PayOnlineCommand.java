@@ -172,7 +172,7 @@ public final class PayOnlineCommand implements Command {
 
             // if the cases above are not true, the payment can be made
             double roundedAmount = Math.round((account.getBalance() - amountToPay) * 100.0) / 100.0;
-            account.setBalance(roundedAmount);
+            account.setBalance(account.getBalance() - amountToPay);
 
             Transaction transaction = new CardPaymentTransaction(timestamp,
                     "Card payment", amount, commerciant);

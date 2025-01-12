@@ -77,8 +77,8 @@ public final class SpendingsReport {
             output.put("command", "spendingsReport");
 
             ObjectNode accountNode = output.putObject("output");
-            double roundedBalance = Math.round(account.getBalance() * 100.0) / 100.0;
-            accountNode.put("balance", roundedBalance);
+           // double roundedBalance = Math.round(account.getBalance() * 100.0) / 100.0;
+            accountNode.put("balance", account.getBalance());
 
             // add commerciants to the spendings report
             ArrayNode commerciantsArray = accountNode.putArray("commerciants");

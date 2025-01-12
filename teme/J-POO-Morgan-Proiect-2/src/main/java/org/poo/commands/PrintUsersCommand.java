@@ -55,8 +55,8 @@ public final class PrintUsersCommand implements Command {
                 for (Account account : user.getAccounts()) {
                     ObjectNode accountNode = accountsArray.addObject();
                     accountNode.put("IBAN", account.getIBAN());
-                    double balanceRounded = Math.round(account.getBalance() * 100.0) / 100.0;
-                    accountNode.put("balance", balanceRounded);
+                    //double balanceRounded = Math.round(account.getBalance() * 100.0) / 100.0;
+                    accountNode.put("balance", account.getBalance());
                     accountNode.put("currency", account.getCurrency());
                     accountNode.put("type", account.getType());
 
