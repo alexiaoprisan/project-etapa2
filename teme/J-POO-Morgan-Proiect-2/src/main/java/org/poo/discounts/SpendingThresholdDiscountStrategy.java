@@ -7,10 +7,11 @@ public class SpendingThresholdDiscountStrategy implements DiscountStrategy {
     @Override
     public void applyDiscount(Account account, Commerciant commerciant, double amount) {
         Discount discount = account.getDiscountByType("SpendingThreshold");
-        if (discount != null && !discount.isUsed()) {
-            System.out.println("SpendingThreshold discount applied  " + account.getIBAN());
+        if (discount != null) {
+            System.out.println("SpendingThreshold discount applied  " + discount.getValue() + " " + amount + " " + discount.getValue());
             account.setBalance(account.getBalance() + discount.getValue() * amount);
             discount.setUsed(true);
+            account.removeDiscount(discount);
         }
     }
 }

@@ -119,6 +119,8 @@ public final class PayOnlineCommand implements Command {
 
         String cardCurrency = account.getCurrency();
 
+
+
         // check if the card currency is different from the payment currency
         if (!cardCurrency.equals(currency)) {
             double rate = exchangeRates.convertExchangeRate(cardCurrency, currency);
@@ -138,7 +140,6 @@ public final class PayOnlineCommand implements Command {
             user.addTransaction(transaction);
             return;
         }
-
 
         double amountToPay = user.addCommission(amount, exchangeRates, cardCurrency);
 
@@ -200,7 +201,7 @@ public final class PayOnlineCommand implements Command {
                 user.addTransaction(transaction);
             }
 
-            double rateForRon = exchangeRates.convertExchangeRate(currency, "RON");
+            double rateForRon = exchangeRates.convertExchangeRate(cardCurrency, "RON");
             double amountRon = amountToPay * rateForRon;
 
 
@@ -229,14 +230,13 @@ public final class PayOnlineCommand implements Command {
             CashbackManager cashbackManager = new CashbackManager();
 
             if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
-             //   account.addAmountSpentOnSTCommerciants(amount);
+                account.addAmountSpentOnSTCommerciants(amountRon);
                 cashbackManager.setStrategy(new SpendingThresholdCashback(user.getServicePlan()));
             } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
                 cashbackManager.setStrategy(new NrOfTransactionsCashback());
             }
 
             cashbackManager.applyCashback(existingCommerciant, account, amount, cardCurrency, exchangeRates);
-
 
             // Apply the spending threshold discount
             DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
@@ -245,7 +245,6 @@ public final class PayOnlineCommand implements Command {
             }
 
             if (amountRon > 300 && user.getServicePlan().equals("silver")) {
-                System.out.println("suma peste 300 " + user.getEmail() + " " + user.getPaymentsOverThreeHundred() + " " +timestamp);
                 user.incrementPaymentsOverThreeHundred();
                 if (user.getPaymentsOverThreeHundred() == 5) {
                     user.setServicePlan("gold");

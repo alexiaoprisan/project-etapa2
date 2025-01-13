@@ -281,6 +281,10 @@ public final class SavingsAccount implements Account {
         commerciantsList.add(index, newCommerciant);
     }
 
+    public void removeDiscount(final Discount discount) {
+        discounts.remove(discount);
+    }
+
     public Commerciant getCommerciantByCommerciantName(final String commerciantName) {
         for (Commerciant commerciant : commerciantsList) {
             if (commerciant.getCommerciant().equals(commerciantName)) {

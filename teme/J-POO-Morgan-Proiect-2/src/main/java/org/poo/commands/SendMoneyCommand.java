@@ -233,6 +233,7 @@ public final class SendMoneyCommand implements Command {
             CashbackManager cashbackManager = new CashbackManager();
 
             if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+                giverAccount.addAmountSpentOnSTCommerciants(amountRon);
                 cashbackManager.setStrategy(new SpendingThresholdCashback(giver.getServicePlan()));
             } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
                 cashbackManager.setStrategy(new NrOfTransactionsCashback());
@@ -250,7 +251,7 @@ public final class SendMoneyCommand implements Command {
                 spendingThresholdStrategy.applyDiscount(giverAccount, existingCommerciant, amount);
             }
 
-            if (amountRon > 300) {
+            if (amountRon > 300 && giver.getServicePlan().equals("silver")) {
                 giver.incrementPaymentsOverThreeHundred();
                 if (giver.getPaymentsOverThreeHundred() == 5) {
                     giver.setServicePlan("gold");

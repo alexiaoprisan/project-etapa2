@@ -181,6 +181,8 @@ public interface Account {
 
     public void addDiscount(final Discount discount);
 
+    public void removeDiscount(final Discount discount);
+
     public Discount getDiscountByType(final String type);
 
 }

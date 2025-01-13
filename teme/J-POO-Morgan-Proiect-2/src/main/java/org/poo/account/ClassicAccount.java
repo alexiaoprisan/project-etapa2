@@ -344,4 +344,8 @@ public final class ClassicAccount implements Account {
         }
         return null;
     }
+
+    public void removeDiscount(final Discount discount) {
+        discounts.remove(discount);
+    }
 }
