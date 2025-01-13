@@ -11,6 +11,7 @@ import org.poo.commerciants.CommerciantRegistry;
 import org.poo.discounts.DiscountStrategy;
 import org.poo.discounts.DiscountStrategyFactory;
 import org.poo.exchangeRates.ExchangeRates;
+import org.poo.transaction.UpgradePlanTransaction;
 import org.poo.user.UserRegistry;
 import org.poo.transaction.Transaction;
 import org.poo.transaction.InsufficientFunds;
@@ -222,6 +223,11 @@ public final class SendMoneyCommand implements Command {
             existingCommerciant.addAmountSpent(amount);
             // check if the account can receive cashback
 
+            DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
+            if (commerciantStrategy != null) {
+                commerciantStrategy.applyDiscount(giverAccount, existingCommerciant, amount);
+            }
+
             // use the strategy pattern to apply the cashback
             // i saved the discounts in the account with this strategy
             CashbackManager cashbackManager = new CashbackManager();
@@ -236,10 +242,7 @@ public final class SendMoneyCommand implements Command {
 
             // now check if i had any discounts to apply to receive cashback and apply them
             // Apply discounts based on commerciant type
-            DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
-            if (commerciantStrategy != null) {
-                commerciantStrategy.applyDiscount(giverAccount, existingCommerciant, amount);
-            }
+
 
             // Apply the spending threshold discount
             DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
@@ -251,6 +254,9 @@ public final class SendMoneyCommand implements Command {
                 giver.incrementPaymentsOverThreeHundred();
                 if (giver.getPaymentsOverThreeHundred() == 5) {
                     giver.setServicePlan("gold");
+                    Transaction transaction1 = new UpgradePlanTransaction(timestamp,
+                            "Upgrade plan", "gold", giverAccount.getIBAN());
+                    giver.addTransaction(transaction1);
                 }
             }
 

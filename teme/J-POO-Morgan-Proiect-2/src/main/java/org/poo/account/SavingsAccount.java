@@ -261,18 +261,24 @@ public final class SavingsAccount implements Account {
         for (Commerciant c : commerciantsList) {
             if (c.getCommerciant().equals(commerciant.getCommerciant())) {
                 c.addAmountSpent(commerciant.getAmountSpent());
+                //c.incrementNrOfTransactions();
+                System.out.println(this.iban + " " + commerciant.getCommerciant());
                 return;
             }
         }
 
+        System.out.println("new");
+
         int index = 0;
-        for (Commerciant c : commerciantsList) {
+        for (Commerciant c : this.commerciantsList) {
             if (c.getCommerciant().compareTo(commerciant.getCommerciant()) > 0) {
                 break;
             }
             index++;
         }
-        commerciantsList.add(index, commerciant);
+        Commerciant newCommerciant = new Commerciant(commerciant.getCommerciant(), commerciant.getId(),
+                commerciant.getIban(), commerciant.getType(), commerciant.getCashbackStrategy());
+        commerciantsList.add(index, newCommerciant);
     }
 
     public Commerciant getCommerciantByCommerciantName(final String commerciantName) {

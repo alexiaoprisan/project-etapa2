@@ -10,6 +10,7 @@ import org.poo.commerciants.CommerciantRegistry;
 import org.poo.discounts.Discount;
 import org.poo.discounts.DiscountStrategy;
 import org.poo.discounts.DiscountStrategyFactory;
+import org.poo.transaction.*;
 import org.poo.user.UserRegistry;
 import org.poo.commerciants.Commerciant;
 import org.poo.report.ClassicReport;
@@ -17,13 +18,6 @@ import org.poo.report.PaymentsRecord;
 import org.poo.user.User;
 import org.poo.card.Card;
 import org.poo.exchangeRates.ExchangeRates;
-import org.poo.transaction.Transaction;
-import org.poo.transaction.CardPaymentTransaction;
-import org.poo.transaction.CardDestroyed;
-import org.poo.transaction.FrozenCard;
-import org.poo.transaction.InsufficientFunds;
-import org.poo.transaction.NewCardCreatedTransaction;
-import org.poo.transaction.WarningForPay;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -206,29 +200,20 @@ public final class PayOnlineCommand implements Command {
                 user.addTransaction(transaction);
             }
 
-            double rateForRon = exchangeRates.convertExchangeRate(account.getCurrency(), "RON");
-            double amountRon = amount * rateForRon;
+            double rateForRon = exchangeRates.convertExchangeRate(currency, "RON");
+            double amountRon = amountToPay * rateForRon;
+
+
+            Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
+            account.addCommerciant(newCommerciant);
 
             Commerciant existingCommerciant = account.getCommerciantByCommerciantName(commerciant);
-            if (existingCommerciant == null) {
-                Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
-                account.addCommerciant(newCommerciant);
-                existingCommerciant = newCommerciant;
-            }
-            existingCommerciant.addAmountSpent(amount);
+
+
+            System.out.println(user.getEmail() + " " + existingCommerciant.getCommerciant() + " " + existingCommerciant.getNrOfTransactions()
+                    + " " + amountRon + " " + amountToPay + " " + currency + " "
+                    + timestamp);
             // check if the account can receive cashback
-
-            // use the strategy pattern to apply the cashback
-            // i saved the discounts in the account with this strategy
-            CashbackManager cashbackManager = new CashbackManager();
-
-            if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
-                cashbackManager.setStrategy(new SpendingThresholdCashback(user.getServicePlan()));
-            } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
-                cashbackManager.setStrategy(new NrOfTransactionsCashback());
-            }
-
-            cashbackManager.applyCashback(existingCommerciant, account, amount, cardCurrency, exchangeRates);
 
             // now check if i had any discounts to apply to receive cashback and apply them
             // Apply discounts based on commerciant type
@@ -237,19 +222,39 @@ public final class PayOnlineCommand implements Command {
                 commerciantStrategy.applyDiscount(account, existingCommerciant, amount);
             }
 
+            existingCommerciant.addAmountSpent(amount);
+
+            // use the strategy pattern to apply the cashback
+            // i saved the discounts in the account with this strategy
+            CashbackManager cashbackManager = new CashbackManager();
+
+            if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+             //   account.addAmountSpentOnSTCommerciants(amount);
+                cashbackManager.setStrategy(new SpendingThresholdCashback(user.getServicePlan()));
+            } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
+                cashbackManager.setStrategy(new NrOfTransactionsCashback());
+            }
+
+            cashbackManager.applyCashback(existingCommerciant, account, amount, cardCurrency, exchangeRates);
+
+
             // Apply the spending threshold discount
             DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
             if (spendingThresholdStrategy != null) {
                 spendingThresholdStrategy.applyDiscount(account, existingCommerciant, amount);
             }
 
-            if (amountRon > 300) {
+            if (amountRon > 300 && user.getServicePlan().equals("silver")) {
+                System.out.println("suma peste 300 " + user.getEmail() + " " + user.getPaymentsOverThreeHundred() + " " +timestamp);
                 user.incrementPaymentsOverThreeHundred();
                 if (user.getPaymentsOverThreeHundred() == 5) {
                     user.setServicePlan("gold");
+                    Transaction transaction1 = new UpgradePlanTransaction(timestamp,
+                            "Upgrade plan", "gold", account.getIBAN());
+                    user.addTransaction(transaction1);
+                    System.out.println("Upgrade plan to gold" + " " + user.getEmail() + " " + timestamp);
                 }
             }
-
 
 
             // verify if the account is a classic account

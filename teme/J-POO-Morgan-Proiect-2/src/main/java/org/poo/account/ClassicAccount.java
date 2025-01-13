@@ -263,7 +263,7 @@ public final class ClassicAccount implements Account {
      * @return the list of commerciants
      */
     public ArrayList<Commerciant> getCommerciantList() {
-        return commerciantsList;
+        return this.commerciantsList;
     }
 
     /**
@@ -274,24 +274,27 @@ public final class ClassicAccount implements Account {
     public void addCommerciant(final Commerciant commerciant) {
         for (Commerciant c : commerciantsList) {
             if (c.getCommerciant().equals(commerciant.getCommerciant())) {
-                c.addAmountSpent(commerciant.getAmountSpent());
-                c.incrementNrOfTransactions();
+                //c.addAmountSpent(commerciant.getAmountSpent());
+                //c.incrementNrOfTransactions();
+                System.out.println(this.iban + " " + commerciant.getCommerciant());
                 return;
             }
         }
 
         int index = 0;
-        for (Commerciant c : commerciantsList) {
+        for (Commerciant c : this.commerciantsList) {
             if (c.getCommerciant().compareTo(commerciant.getCommerciant()) > 0) {
                 break;
             }
             index++;
         }
-        commerciantsList.add(index, commerciant);
+        Commerciant newCommerciant = new Commerciant(commerciant.getCommerciant(), commerciant.getId(),
+                commerciant.getIban(), commerciant.getType(), commerciant.getCashbackStrategy());
+        commerciantsList.add(index, newCommerciant);
     }
 
     public Commerciant getCommerciantByCommerciantName(final String commerciantName) {
-        for (Commerciant commerciant : commerciantsList) {
+        for (Commerciant commerciant : this.commerciantsList) {
             if (commerciant.getCommerciant().equals(commerciantName)) {
                 return commerciant;
             }
@@ -300,7 +303,7 @@ public final class ClassicAccount implements Account {
     }
 
     public Commerciant getCommerciantByIBAN(final String IBAN) {
-        for (Commerciant commerciant : commerciantsList) {
+        for (Commerciant commerciant : this.commerciantsList) {
             if (commerciant.getIban().equals(IBAN)) {
                 return commerciant;
             }

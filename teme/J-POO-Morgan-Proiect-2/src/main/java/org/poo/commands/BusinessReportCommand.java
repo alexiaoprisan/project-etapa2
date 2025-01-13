@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.account.BusinessAccount;
+import org.poo.report.BusinessCommerciantReport;
 import org.poo.report.BusinessTransactionReport;
 import org.poo.user.UserRegistry;
 
@@ -49,8 +50,8 @@ public class BusinessReportCommand implements Command {
             // output.add(report.generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, account));
         } else {
             // Generate a business spendings report
-            // SpendingsReport report = new SpendingsReport();
-            // output.add(report.generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, account));
+            ObjectNode report = new BusinessCommerciantReport().generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, businessAccount);
+            output.add(report);;
         }
 
     }
