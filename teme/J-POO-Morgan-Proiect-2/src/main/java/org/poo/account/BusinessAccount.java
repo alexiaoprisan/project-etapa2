@@ -1,22 +1,28 @@
 package org.poo.account;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.card.Card;
 import org.poo.card.CardFactory;
 import org.poo.commerciants.Commerciant;
 import org.poo.discounts.Discount;
+import org.poo.report.BusinessTransactionReport;
 import org.poo.transaction.Transaction;
 import org.poo.user.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BusinessAccount implements Account {
     private String iban;
-    private String accountType;
+    private String accountType = "business";
     private String currency;
     private double balance;
     private double minBalance = 500;
     private double maxSpendLimit = 500;
+    private double maxDepositedLimit = 500;
     private String alias;
 
     // cards is a list of all the cards that the user has in a specific account
@@ -35,16 +41,35 @@ public class BusinessAccount implements Account {
     private ArrayList<Discount> discounts = new ArrayList<>();
 
     private User owner;
+
+    // managers and employees are lists of users that have access to the account
     private List<User> managers = new ArrayList<>();
     private List<User> employees = new ArrayList<>();
 
-    public BusinessAccount(final String currency, final String iban, final double balance, final double minBalance, User owner) {
+    // maps for the amount spent by the managers and employees, will help in transaction report
+    private Map<User, Double> managerSpentAmounts = new HashMap<>();
+    private Map<User, Double> employeeSpentAmount = new HashMap<>();
+
+    // maps for the amount deposited by the managers and employees, will help in transaction report
+    private Map<User, Double> managerDepositedAmounts = new HashMap<>();
+    private Map<User, Double> employeeDepositedAmounts = new HashMap<>();
+
+    // total spent and total deposited will help in the commerciant report
+    private Double totalSpent = 0.0;
+    private Double totalDeposited = 0.0;
+
+    private BusinessTransactionReport businessTransactionReport = new BusinessTransactionReport();
+
+    public BusinessAccount(final String currency, final String iban, final double balance,
+                           final double minBalance, User owner, final double businessLimit) {
         this.iban = iban;
         this.currency = currency;
         this.balance = 0;
         this.minBalance = 500;
         this.accountType = "business";
         this.owner = owner;
+        this.maxSpendLimit = businessLimit;
+        this.maxDepositedLimit = businessLimit;
     }
 
     @Override
@@ -118,6 +143,7 @@ public class BusinessAccount implements Account {
         return alias;
     }
 
+
     @Override
     public void createCard(String type, String cardNumber, String email) {
         // Create a new card
@@ -152,6 +178,8 @@ public class BusinessAccount implements Account {
 
     }
 
+
+
     public double getMaxSpendLimit() {
         return maxSpendLimit;
     }
@@ -159,6 +187,121 @@ public class BusinessAccount implements Account {
     public void setMaxSpendLimit(double maxSpendLimit) {
         this.maxSpendLimit = maxSpendLimit;
     }
+
+    public double getMaxDepositedLimit() {
+        return maxDepositedLimit;
+    }
+
+    public void setMaxDepositedLimit(double maxDepositedLimit) {
+        this.maxDepositedLimit = maxDepositedLimit;
+    }
+
+    public Map<User, Double> getManagerSpentAmounts() {
+        return managerSpentAmounts;
+    }
+
+    public Map<User, Double> getEmployeeSpentAmount() {
+        return employeeSpentAmount;
+    }
+
+    public void setManagerSpentAmounts(Map<User, Double> managerSpentAmounts) {
+        if (managerSpentAmounts == null) {
+            throw new IllegalArgumentException("Manager spent amounts map cannot be null");
+        }
+        this.managerSpentAmounts = managerSpentAmounts;
+    }
+
+    public void addManagerSpentAmount(User manager, double amount) {
+        if (managerSpentAmounts.containsKey(manager)) {
+            managerSpentAmounts.put(manager, managerSpentAmounts.get(manager) + amount);
+        } else {
+            managerSpentAmounts.put(manager, amount);
+        }
+    }
+
+    public void addEmployeeSpentAmount(User employee, double amount) {
+        if (employeeSpentAmount.containsKey(employee)) {
+            employeeSpentAmount.put(employee, employeeSpentAmount.get(employee) + amount);
+        } else {
+            employeeSpentAmount.put(employee, amount);
+        }
+    }
+
+    public void setEmployeeSpentAmount(Map<User, Double> employeeSpentAmount) {
+        if (employeeSpentAmount == null) {
+            throw new IllegalArgumentException("Employee spent amounts map cannot be null");
+        }
+        this.employeeSpentAmount = employeeSpentAmount;
+    }
+
+    public Map<User, Double> getManagerDepositedAmounts() {
+        return managerDepositedAmounts;
+    }
+
+    public void setManagerDepositedAmounts(Map<User, Double> managerDepositedAmounts) {
+        if (managerDepositedAmounts == null) {
+            throw new IllegalArgumentException("Manager deposited amounts map cannot be null");
+        }
+        this.managerDepositedAmounts = managerDepositedAmounts;
+    }
+
+    public void addManagerDepositedAmount(User manager, double amount) {
+        if (managerDepositedAmounts.containsKey(manager)) {
+            managerDepositedAmounts.put(manager, managerDepositedAmounts.get(manager) + amount);
+        } else {
+            managerDepositedAmounts.put(manager, amount);
+        }
+    }
+
+    public Map<User, Double> getEmployeeDepositedAmounts() {
+        return employeeDepositedAmounts;
+    }
+
+    public void setEmployeeDepositedAmounts(Map<User, Double> employeeDepositedAmounts) {
+        if (employeeDepositedAmounts == null) {
+            throw new IllegalArgumentException("Employee deposited amounts map cannot be null");
+        }
+        this.employeeDepositedAmounts = employeeDepositedAmounts;
+    }
+
+    public void addEmployeeDepositedAmount(User employee, double amount) {
+        if (employeeDepositedAmounts.containsKey(employee)) {
+            employeeDepositedAmounts.put(employee, employeeDepositedAmounts.get(employee) + amount);
+        } else {
+            employeeDepositedAmounts.put(employee, amount);
+        }
+    }
+
+    public Commerciant getCommerciantByIBAN(final String IBAN) {
+        for (Commerciant commerciant : commerciantsList) {
+            if (commerciant.getIban().equals(IBAN)) {
+                return commerciant;
+            }
+        }
+        return null;
+    }
+
+    public Double getTotalSpent() {
+        return totalSpent;
+    }
+
+    public void setTotalSpent(Double totalSpent) {
+        this.totalSpent = totalSpent;
+    }
+
+    public void addTotalSpent(Double totalSpent) {
+        this.totalSpent += totalSpent;
+    }
+
+    public Double getTotalDeposited() {
+        return totalDeposited;
+    }
+
+    public void setTotalDeposited(Double totalDeposited) {
+        this.totalDeposited = totalDeposited;
+    }
+
+
 
     public User getOwner() {
         return owner;
@@ -184,7 +327,13 @@ public class BusinessAccount implements Account {
         employees.add(employee);
     }
 
+    public boolean isEmployee(User user) {
+        return employees.contains(user);
+    }
 
+    public boolean isManager(User user) {
+        return managers.contains(user);
+    }
 
     /**
      * Getter for the list of commerciants, which the user has sent money to
@@ -255,5 +404,10 @@ public class BusinessAccount implements Account {
             }
         }
         return null;
+    }
+
+    public ObjectNode getBusinessTransactionReport(int startTimestamp, int endTimestamp, int timestamp) {
+        return businessTransactionReport.generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, this);
+
     }
 }

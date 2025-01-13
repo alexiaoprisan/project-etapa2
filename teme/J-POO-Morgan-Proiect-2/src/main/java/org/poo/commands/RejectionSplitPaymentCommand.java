@@ -1,10 +1,13 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
 import org.poo.splitPayment.SplitPayment;
 import org.poo.splitPayment.SplitPaymentsRegistry;
+import org.poo.transaction.SplitPaymentCustomReject;
+import org.poo.transaction.Transaction;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
@@ -41,6 +44,12 @@ public class RejectionSplitPaymentCommand implements Command {
         // find the user by email
         User user = userRegistry.getUserByEmail(email);
         if (user == null) {
+            ObjectNode error = output.addObject();
+            error.put("command", "rejectSplitPayment");
+            ObjectNode outputNode = error.putObject("output");
+            outputNode.put("description", "User not found");
+            outputNode.put("timestamp", timestamp);
+            error.put("timestamp", timestamp);
             return;
         }
 
@@ -48,8 +57,14 @@ public class RejectionSplitPaymentCommand implements Command {
         user.rejectSplitPayment(splitPaymentType);
 
         // find the split payment in the registry to delete it
-        SplitPayment splitPayment = splitPaymentsRegistry.getSplitPaymentByUserEmail(email);
+        SplitPayment splitPayment = splitPaymentsRegistry.getSplitPaymentByUserEmail(email, splitPaymentType);
         if (splitPayment == null) {
+            ObjectNode error = output.addObject();
+            error.put("command", "rejectSplitPayment");
+            ObjectNode outputNode = error.putObject("output");
+            outputNode.put("description", "User not found");
+            outputNode.put("timestamp", timestamp);
+            error.put("timestamp", timestamp);
             return;
         }
 
@@ -58,7 +73,12 @@ public class RejectionSplitPaymentCommand implements Command {
             // set the split payment as uninitialized for all users involved
             userInvolved.setAcceptEqualSplitPayment(0);
 
-            // afisare one user has rejected the payment
+            String description = String.format("Split payment of %.2f %s",
+                    splitPayment.getTotalAmount(), splitPayment.getCurrency());
+
+            // print the transaction for each user involved
+            Transaction transaction = new SplitPaymentCustomReject(splitPayment.getTimestamp(), description, splitPayment.getAmountForEachAccount(), splitPayment.getCurrency(), splitPayment.getAccountsIBAN(), splitPaymentType);
+            userInvolved.addTransaction(transaction);
         }
 
         splitPaymentsRegistry.removeSplitPayment(splitPayment);

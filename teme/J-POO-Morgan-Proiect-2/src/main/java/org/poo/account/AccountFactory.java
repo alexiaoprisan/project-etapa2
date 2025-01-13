@@ -1,5 +1,6 @@
 package org.poo.account;
 
+import org.poo.exchangeRates.ExchangeRates;
 import org.poo.user.User;
 
 /**
@@ -42,14 +43,15 @@ public final class AccountFactory {
                                         final double minBalance,
                                         final String alias,
                                         final double interestRate,
-                                        final User owner) {
+                                        final User owner,
+                                        final double businessLimit) {
         switch (accountType) {
             case classic:
                 return new ClassicAccount(currency, iban, balance, minBalance);
             case savings:
                 return new SavingsAccount(currency, iban, balance, minBalance, interestRate);
             case business:
-                return new BusinessAccount(currency, iban, balance, minBalance, owner);
+                return new BusinessAccount(currency, iban, balance, minBalance, owner, businessLimit);
             default:
                 throw new IllegalArgumentException("The account type "
                         + accountType + " is not recognized.");

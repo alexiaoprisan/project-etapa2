@@ -5,42 +5,43 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.List;
 
-/**
- * SplitPaymentTransaction class represents a split payment transaction.
- */
-public final class SplitPaymentTransaction extends Transaction {
+public class SplitPaymentCustomReject extends Transaction {
 
-    private final double amount;
+    private final List<Double> amountForUsers;
     private final String currency;
     private final List<String> involvedAccounts;
+    private final String splitPaymentType;
 
     /**
-     * Constructor for SplitPaymentTransaction.
+     * Constructor for SplitPaymentCustomTransaction.
      *
      * @param timestamp        The timestamp of the transaction.
      * @param description      The description of the transaction.
-     * @param amount           The amount of the transaction.
+     * @param amountForUsers   The amounts for each user involved in the transaction.
      * @param currency         The currency of the transaction.
      * @param involvedAccounts The accounts involved in the transaction.
+     * @param splitPaymentType The type of split payment.
      */
-    public SplitPaymentTransaction(final int timestamp,
-                                   final String description,
-                                   final double amount,
-                                   final String currency,
-                                   final List<String> involvedAccounts) {
+    public SplitPaymentCustomReject(final int timestamp,
+                                         final String description,
+                                         final List<Double> amountForUsers,
+                                         final String currency,
+                                         final List<String> involvedAccounts,
+                                         final String splitPaymentType) {
         super(timestamp, description);
-        this.amount = amount;
+        this.amountForUsers = amountForUsers;
         this.currency = currency;
         this.involvedAccounts = involvedAccounts;
+        this.splitPaymentType = splitPaymentType;
     }
 
     /**
-     * Getter for amount.
+     * Getter for amountForUsers.
      *
-     * @return The amount of the transaction.
+     * @return The amounts for each user involved in the transaction.
      */
-    public double getAmount() {
-        return amount;
+    public List<Double> getAmountForUsers() {
+        return amountForUsers;
     }
 
     /**
@@ -62,19 +63,31 @@ public final class SplitPaymentTransaction extends Transaction {
     }
 
     /**
+     * Getter for splitPaymentType.
+     *
+     * @return The type of split payment.
+     */
+    public String getSplitPaymentType() {
+        return splitPaymentType;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public void toJson(final ObjectNode node) {
         node.put("timestamp", getTimestamp());
         node.put("description", getDescription());
+        node.put("error", "One user rejected the payment.");
+        ArrayNode amountsArray = node.putArray("amountForUsers");
+        for (double amount : getAmountForUsers()) {
+            amountsArray.add(amount);
+        }
         node.put("currency", getCurrency());
-        node.put("amount", getAmount());
-        node.put("splitPaymentType", "equal");
         ArrayNode accountsArray = node.putArray("involvedAccounts");
         for (String account : getInvolvedAccounts()) {
             accountsArray.add(account);
         }
+        node.put("splitPaymentType", getSplitPaymentType());
     }
-
 }

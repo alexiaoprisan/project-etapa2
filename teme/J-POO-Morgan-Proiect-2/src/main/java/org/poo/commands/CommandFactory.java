@@ -55,7 +55,8 @@ public final class CommandFactory {
 
             case "addAccount":
                 return new AddAccountCommand(userRegistry, timestamp,
-                        input.getEmail(), input.getAccountType(), input.getCurrency(), input.getInterestRate());
+                        input.getEmail(), input.getAccountType(), input.getCurrency(), input.getInterestRate(),
+                        exchangeRates);
 
             case "createCard":
                 return new CreateCardCommand(userRegistry, output, timestamp,
@@ -66,7 +67,8 @@ public final class CommandFactory {
                         input.getEmail(), input.getAccount(), "createOneTimeCard");
 
             case "addFunds":
-                return new AddFundsCommand(userRegistry, input.getAccount(), input.getAmount());
+                return new AddFundsCommand(userRegistry, input.getAccount(), input.getAmount(),
+                        input.getEmail());
 
             case "deleteAccount":
                 return new DeleteAccountCommand(userRegistry, output, timestamp,
@@ -85,7 +87,7 @@ public final class CommandFactory {
             case "sendMoney":
                 return new SendMoneyCommand(userRegistry, output, timestamp,
                         input.getAccount(), input.getReceiver(), input.getAmount(),
-                        input.getEmail(), input.getDescription(), exchangeRates);
+                        input.getEmail(), input.getDescription(), exchangeRates, commerciantRegistry);
 
             case "printTransactions":
                 return new PrintTransactionsCommand(userRegistry, output, timestamp,
@@ -118,7 +120,7 @@ public final class CommandFactory {
                         input.getEmail(), input.getSplitPaymentType(), splitPaymentsRegistry,
                         exchangeRates);
 
-            case "rejectionSplitPayment":
+            case "rejectSplitPayment":
                 return new RejectionSplitPaymentCommand(userRegistry, output, timestamp,
                         input.getEmail(), input.getSplitPaymentType(), splitPaymentsRegistry, exchangeRates);
 
@@ -141,12 +143,12 @@ public final class CommandFactory {
             case "cashWithdrawal":
                 return new CashWithdrawalCommand(userRegistry, output, timestamp, exchangeRates,
                         input.getCardNumber(), input.getAmount(), input.getLocation(), input.getEmail());
-//
-//            case "report":
-//                return new ReportCommand(userRegistry, output, input.getStartTimestamp(),
-//                        input.getEndTimestamp(),
-//                        input.getAccount(), timestamp);
-//
+
+            case "report":
+                return new ReportCommand(userRegistry, output, input.getStartTimestamp(),
+                        input.getEndTimestamp(),
+                        input.getAccount(), timestamp);
+
             case "spendingsReport":
                 return new SpendingsReportCommand(userRegistry, output,
                         input.getStartTimestamp(), input.getEndTimestamp(),
@@ -164,6 +166,10 @@ public final class CommandFactory {
                 return new BusinessReportCommand(userRegistry, output,
                         input.getStartTimestamp(), input.getEndTimestamp(),
                         input.getAccount(), input.getType(), timestamp);
+
+            case "changeDepositLimit":
+                return new ChangeDepositLimitCommand(userRegistry, output, timestamp,
+                        input.getAccount(), input.getEmail(), input.getAmount());
 
             default:
                 // Log unknown command type and skip

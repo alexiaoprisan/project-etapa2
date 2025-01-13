@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import org.poo.account.Account;
+import org.poo.account.BusinessAccount;
 import org.poo.account.ClassicAccount;
 import org.poo.cashback.CashbackManager;
 import org.poo.cashback.NrOfTransactionsCashback;
@@ -105,6 +106,8 @@ public final class PayOnlineCommand implements Command {
 
         Account account = userRegistry.getAccountByCardNumber(cardNumber);
 
+        User businessUser = userRegistry.getUserByEmail(email);
+
         // check if it may be a business account
         if (!card.getOwnerEmail().equals(email)) {
             // if it is not a business account, than it is a classic or savings account
@@ -113,10 +116,12 @@ public final class PayOnlineCommand implements Command {
                 return;
             }
             else {
-                // check if the user
+                // check if the user is the owner of the business account
+                BusinessAccount businessAccount = (BusinessAccount) account;
+                User owner = businessAccount.getOwner();
+                user = owner;
             }
         }
-
 
         String cardCurrency = account.getCurrency();
 
@@ -139,6 +144,7 @@ public final class PayOnlineCommand implements Command {
             user.addTransaction(transaction);
             return;
         }
+
 
         double amountToPay = user.addCommission(amount, exchangeRates, cardCurrency);
 
@@ -171,7 +177,25 @@ public final class PayOnlineCommand implements Command {
 //                    }
 
             // if the cases above are not true, the payment can be made
-            double roundedAmount = Math.round((account.getBalance() - amountToPay) * 100.0) / 100.0;
+           // double roundedAmount = Math.round((account.getBalance() - amountToPay) * 100.0) / 100.0;
+
+
+            if (account.getType().equals("business")) {
+                BusinessAccount businessAccount = (BusinessAccount) account;
+
+                if (businessAccount.isManager(businessUser)) {
+                    businessAccount.addManagerSpentAmount(businessUser, amount);
+                    businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
+
+                } else if (businessAccount.isEmployee(businessUser)) {
+                    if (amountToPay > businessAccount.getMaxSpendLimit()) {
+                        return;
+                    }
+                    businessAccount.addEmployeeSpentAmount(businessUser, amount);
+                    businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
+                }
+            }
+
             account.setBalance(account.getBalance() - amountToPay);
 
             Transaction transaction = new CardPaymentTransaction(timestamp,
@@ -184,12 +208,6 @@ public final class PayOnlineCommand implements Command {
 
             double rateForRon = exchangeRates.convertExchangeRate(account.getCurrency(), "RON");
             double amountRon = amount * rateForRon;
-            if (amountRon > 300) {
-                user.incrementPaymentsOverThreeHundred();
-                if (user.getPaymentsOverThreeHundred() == 5) {
-                    user.setServicePlan("gold");
-                }
-            }
 
             Commerciant existingCommerciant = account.getCommerciantByCommerciantName(commerciant);
             if (existingCommerciant == null) {
@@ -223,6 +241,13 @@ public final class PayOnlineCommand implements Command {
             DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
             if (spendingThresholdStrategy != null) {
                 spendingThresholdStrategy.applyDiscount(account, existingCommerciant, amount);
+            }
+
+            if (amountRon > 300) {
+                user.incrementPaymentsOverThreeHundred();
+                if (user.getPaymentsOverThreeHundred() == 5) {
+                    user.setServicePlan("gold");
+                }
             }
 
 

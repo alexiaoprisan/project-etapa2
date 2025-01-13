@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import org.poo.account.Account;
+import org.poo.account.BusinessAccount;
 import org.poo.user.UserRegistry;
 import org.poo.user.User;
 
@@ -12,6 +13,7 @@ public final class AddFundsCommand implements Command {
     private final UserRegistry userRegistry;
     private final String iban;
     private final double amount;
+    private final String email;
 
     /**
      * Constructor for the AddFundsCommand.
@@ -22,10 +24,12 @@ public final class AddFundsCommand implements Command {
      */
     public AddFundsCommand(final UserRegistry userRegistry,
                            final String iban,
-                           final double amount) {
+                           final double amount,
+                           final String email) {
         this.userRegistry = userRegistry;
         this.iban = iban;
         this.amount = amount;
+        this.email = email;
     }
 
     /**
@@ -33,13 +37,34 @@ public final class AddFundsCommand implements Command {
      */
     @Override
     public void execute() {
-        for (User user : userRegistry.getUsers()) {
-            Account account = user.getAccountByIBAN(iban);
-            if (account != null) {
-                account.setBalance(account.getBalance() + amount);
-                return;
+        User user = userRegistry.getUserByEmail(email);
+        if (user == null) {
+            return;
+        }
+
+        Account account = userRegistry.getAccountByIBAN(iban);
+        if (account == null) {
+            return;
+        }
+
+        if (account.getType().equals("business")) {
+            BusinessAccount businessAccount = (BusinessAccount) account;
+
+            if (businessAccount.isEmployee(user)) {
+                if (amount > businessAccount.getMaxDepositedLimit()) {
+                    return;
+                }
+               businessAccount.addEmployeeDepositedAmount(user, amount);
+               businessAccount.setTotalDeposited(businessAccount.getTotalDeposited() + amount);
+            }
+            else if (businessAccount.isManager(user)) {
+               businessAccount.addManagerDepositedAmount(user, amount);
+               businessAccount.setTotalDeposited(businessAccount.getTotalDeposited() + amount);
             }
         }
+
+        account.setBalance(account.getBalance() + amount);
+
     }
 
 }

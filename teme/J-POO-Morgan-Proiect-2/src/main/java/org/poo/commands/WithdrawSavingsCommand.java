@@ -3,8 +3,10 @@ package org.poo.commands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
+import org.poo.transaction.NewAccountCreated;
 import org.poo.transaction.WithdrawSavingsTransaction;
 import org.poo.transaction.Transaction;
+import org.poo.transaction.WithdrawSavingsTransactionSucces;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
@@ -78,6 +80,8 @@ public class WithdrawSavingsCommand implements Command {
         if (foundAccount == 0) {
             Transaction transaction = new WithdrawSavingsTransaction(timestamp, "You do not have a classic account.");
             user.addTransaction(transaction);
+            savingsAccount.addTransaction(transaction);
+
             return;
         }
 
@@ -95,7 +99,10 @@ public class WithdrawSavingsCommand implements Command {
         classicAccount.setBalance(classicAccount.getBalance() + amount);
 
         Transaction transaction = new WithdrawSavingsTransaction(timestamp, "Savings withdrawal.");
-        user.addTransaction(transaction);
 
+        Transaction transactionReport = new WithdrawSavingsTransactionSucces(timestamp, "Savings withdrawal", amount, classicAccount.getIBAN(), savingsAccount.getIBAN());
+        savingsAccount.addTransaction(transactionReport);
+        user.addTransaction(transactionReport);
+        user.addTransaction(transactionReport);
     }
 }

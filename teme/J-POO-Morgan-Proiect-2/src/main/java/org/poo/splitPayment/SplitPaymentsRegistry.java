@@ -54,9 +54,9 @@ public final class SplitPaymentsRegistry {
         splitPayments.clear();
     }
 
-    public SplitPayment getSplitPaymentByUserEmail(String email) {
+    public SplitPayment getSplitPaymentByUserEmail(String email, String splitPaymentType) {
         for (SplitPayment splitPayment : splitPayments) {
-            if (splitPayment.checkIfUserIsInPaymentByEmail(email)) {
+            if (splitPayment.checkIfUserIsInPaymentByEmail(email) && splitPayment.getSplitPaymentType().equals(splitPaymentType)) {
                 return splitPayment;
             }
 

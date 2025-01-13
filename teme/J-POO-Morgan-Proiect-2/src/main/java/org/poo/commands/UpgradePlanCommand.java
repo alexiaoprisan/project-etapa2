@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
 import org.poo.transaction.Transaction;
@@ -36,6 +37,12 @@ public class UpgradePlanCommand implements Command {
         // get the user by iban
         User user = userRegistry.getUserByIBAN(iban);
         if (user == null) {
+            ObjectNode error = output.addObject();
+            error.put("command", "upgradePlan");
+            ObjectNode outputNode = error.putObject("output");
+            outputNode.put("description", "Account not found");
+            outputNode.put("timestamp", timestamp);
+            error.put("timestamp", timestamp);
             return;
         }
 
@@ -43,6 +50,21 @@ public class UpgradePlanCommand implements Command {
         if (account == null) {
             Transaction transaction = new UpgradePlanError(timestamp, "Account not found");
             user.addTransaction(transaction);
+
+            ObjectNode error = output.addObject();
+            error.put("command", "upgradePlan");
+            ObjectNode outputNode = error.putObject("output");
+            outputNode.put("description", "Account not found");
+            outputNode.put("timestamp", timestamp);
+            error.put("timestamp", timestamp);
+            return;
+        }
+
+        if (user.getServicePlan().equals("standard") && newServicePlan.equals("student")) {
+            return;
+        }
+
+        if (user.getServicePlan().equals("student") && newServicePlan.equals("standard")) {
             return;
         }
 
@@ -50,6 +72,7 @@ public class UpgradePlanCommand implements Command {
         if (user.getServicePlan().equals(newServicePlan)) {
             Transaction transaction = new UpgradePlanError(timestamp, "The user already has the " + newServicePlan + " plan.");
             user.addTransaction(transaction);
+            account.addTransaction(transaction);
             return;
         }
 

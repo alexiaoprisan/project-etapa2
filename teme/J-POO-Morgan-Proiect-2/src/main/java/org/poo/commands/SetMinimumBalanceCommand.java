@@ -1,6 +1,8 @@
 package org.poo.commands;
 
 import org.poo.account.Account;
+import org.poo.account.BusinessAccount;
+import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
 /**
@@ -39,6 +41,17 @@ public final class SetMinimumBalanceCommand implements Command {
         Account account = userRegistry.getAccountByIBAN(iban);
         if (account == null) {
             return;
+        }
+
+        User user = userRegistry.getUserByIBAN(iban);
+
+        // Check if the account is a BusinessAccount, because only the owner can set the minimum balance
+        if (account.getType().equals("business")) {
+            BusinessAccount businessAccount = (BusinessAccount) account;
+            User owner = businessAccount.getOwner();
+            if (!owner.equals(user)) {
+                return;
+            }
         }
 
         // Set the minimum balance of the account

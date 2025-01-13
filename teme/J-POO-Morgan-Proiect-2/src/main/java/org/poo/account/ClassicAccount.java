@@ -299,6 +299,15 @@ public final class ClassicAccount implements Account {
         return null;
     }
 
+    public Commerciant getCommerciantByIBAN(final String IBAN) {
+        for (Commerciant commerciant : commerciantsList) {
+            if (commerciant.getIban().equals(IBAN)) {
+                return commerciant;
+            }
+        }
+        return null;
+    }
+
     public double getAmountSpentOnSTCommerciants() {
         return amountSpentOnSTCommerciants;
     }

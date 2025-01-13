@@ -1,13 +1,12 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.account.BusinessAccount;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
-public class ChangeSpendingLimitCommand implements Command {
+public class ChangeDepositLimitCommand implements Command {
 
     private UserRegistry userRegistry;
     private int timestamp;
@@ -16,7 +15,7 @@ public class ChangeSpendingLimitCommand implements Command {
     private double amount;
     private ArrayNode output;
 
-    public ChangeSpendingLimitCommand(UserRegistry userRegistry, ArrayNode output, int timestamp,
+    public ChangeDepositLimitCommand(UserRegistry userRegistry, ArrayNode output, int timestamp,
                                       String accountIban, String email, double amount) {
         this.userRegistry = userRegistry;
         this.timestamp = timestamp;
@@ -49,16 +48,9 @@ public class ChangeSpendingLimitCommand implements Command {
         // check if the user is the owner of the account, because only the owner can change the spending limit
         User owner = businessAccount.getOwner();
         if (!owner.equals(user)) {
-            ObjectNode error = output.addObject();
-            error.put("command", "changeSpendingLimit");
-            ObjectNode outputNode = error.putObject("output");
-            outputNode.put("description", "You must be owner in order to change spending limit.");
-            outputNode.put("timestamp", timestamp);
-            error.put("timestamp", timestamp);
             return;
-
         }
 
-        businessAccount.setMaxSpendLimit(amount);
+        businessAccount.setMaxDepositedLimit(amount);
     }
 }

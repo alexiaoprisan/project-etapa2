@@ -169,6 +169,8 @@ public interface Account {
 
     public Commerciant getCommerciantByCommerciantName(final String commerciantName);
 
+    public Commerciant getCommerciantByIBAN(final String IBAN);
+
     double getAmountSpentOnSTCommerciants();
 
     void setAmountSpentOnSTCommerciants(double amountSpentOnSTCommerciants);

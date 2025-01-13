@@ -65,6 +65,7 @@ public final class AddInterestCommand implements Command {
             Transaction transaction = new InterestRateIncome(timestamp,
                     "Interest rate income", sumAdded, savingsAccount.getCurrency());
             user.addTransaction(transaction);
+            savingsAccount.addTransaction(transaction);
 
         } else {
             // print an error message if the account is not a savings account

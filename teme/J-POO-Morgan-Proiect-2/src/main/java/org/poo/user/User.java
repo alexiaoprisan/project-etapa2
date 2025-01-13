@@ -56,6 +56,9 @@ public class User {
         this.occupation = occupation;
     }
 
+    public User(User user) {
+    }
+
     /**
      * Gets the user's first name.
      *
@@ -179,11 +182,11 @@ public class User {
      * @param currency    the currency of the account
      * @param iban        the IBAN of the account
      */
-    public void addAccount(final String accountType, final String currency, final String iban, double interestRate, User owner) {
+    public void addAccount(final String accountType, final String currency, final String iban, double interestRate, User owner, double businessAmount) {
         // create a new account based on the account type, using the factory pattern
         AccountFactory.AccountType type = AccountFactory.AccountType.valueOf(accountType);
         Account newAccount = AccountFactory.createAccount(type,
-                currency, iban, 0, 0, "alias", interestRate, owner);
+                currency, iban, 0, 0, "alias", interestRate, owner, businessAmount);
 
         // add the new account to the list of accounts
         accounts.add(newAccount);
@@ -342,6 +345,7 @@ public class User {
         }
         Transaction transaction = new UpgradePlanTransaction(timestamp, "Upgrade plan", newServicePlan, account.getIBAN());
         addTransaction(transaction);
+        account.addTransaction(transaction);
     }
 
     public double addCommission(double amount, ExchangeRates exchangeRates, String currency) {

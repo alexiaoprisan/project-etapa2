@@ -41,5 +41,14 @@ public class CommerciantRegistry {
         return null;
     }
 
+    public Commerciant getCommerciantByIBAN(final String IBAN) {
+        for (Commerciant commerciant : commerciants) {
+            if (commerciant.getIban().equals(IBAN)) {
+                return commerciant;
+            }
+        }
+        return null;
+    }
+
 
 }

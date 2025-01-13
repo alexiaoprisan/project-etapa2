@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
 import org.poo.splitPayment.SplitPayment;
@@ -63,11 +64,23 @@ public final class SplitPaymentCommandEqual implements Command {
         for (String accountIBAN : accountsIBAN) {
             Account account = userRegistry.getAccountByIBAN(accountIBAN);
             if (account == null) {
+//                ObjectNode error = output.addObject();
+//                error.put("command", "SplitPayment");
+//                ObjectNode outputNode = error.putObject("output");
+//                outputNode.put("description", "User not found");
+//                outputNode.put("timestamp", timestamp);
+//                error.put("timestamp", timestamp);
                 return;
             }
 
             User user = userRegistry.getUserByIBAN(accountIBAN);
             if (user == null) {
+//                ObjectNode error = output.addObject();
+//                error.put("command", "SplitPayment");
+//                ObjectNode outputNode = error.putObject("output");
+//                outputNode.put("description", "User not found");
+//                outputNode.put("timestamp", timestamp);
+//                error.put("timestamp", timestamp);
                 return;
             }
         }

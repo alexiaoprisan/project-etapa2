@@ -312,4 +312,13 @@ public final class SavingsAccount implements Account {
         }
         return null;
     }
+
+    public Commerciant getCommerciantByIBAN(final String IBAN) {
+        for (Commerciant commerciant : commerciantsList) {
+            if (commerciant.getIban().equals(IBAN)) {
+                return commerciant;
+            }
+        }
+        return null;
+    }
 }

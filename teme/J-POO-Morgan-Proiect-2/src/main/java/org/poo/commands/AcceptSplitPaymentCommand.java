@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
 import org.poo.splitPayment.SplitPayment;
@@ -41,12 +42,18 @@ public class AcceptSplitPaymentCommand implements Command {
     public void execute() {
         User userToAccept = userRegistry.getUserByEmail(email);
         if (userToAccept == null) {
+            ObjectNode error = output.addObject();
+            error.put("command", "acceptSplitPayment");
+            ObjectNode outputNode = error.putObject("output");
+            outputNode.put("description", "User not found");
+            outputNode.put("timestamp", timestamp);
+            error.put("timestamp", timestamp);
             return;
         }
 
         userToAccept.acceptSplitPayment(splitPaymentType);
 
-        SplitPayment splitPayment = splitPaymentsRegistry.getSplitPaymentByUserEmail(email);
+        SplitPayment splitPayment = splitPaymentsRegistry.getSplitPaymentByUserEmail(email, splitPaymentType);
         if (splitPayment == null) {
             return;
         }
@@ -142,7 +149,6 @@ public class AcceptSplitPaymentCommand implements Command {
             }
             splitPaymentsRegistry.removeSplitPayment(splitPayment);
             return; // Exit if any account does not have enough balance
-
 
         }
 

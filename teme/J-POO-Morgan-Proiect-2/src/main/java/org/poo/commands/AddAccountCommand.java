@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import org.poo.account.Account;
+import org.poo.exchangeRates.ExchangeRates;
 import org.poo.user.UserRegistry;
 import org.poo.transaction.NewAccountCreated;
 import org.poo.transaction.Transaction;
@@ -18,6 +19,7 @@ public final class AddAccountCommand implements Command {
     private final String accountType;
     private final String currency;
     final double interestRate;
+    final ExchangeRates exchangeRates;
 
     /**
      * Constructor for the AddAccountCommand.
@@ -33,13 +35,15 @@ public final class AddAccountCommand implements Command {
                              final String email,
                              final String accountType,
                              final String currency,
-                             final double interestRate) {
+                             final double interestRate,
+                             final ExchangeRates exchangeRates) {
         this.userRegistry = userRegistry;
         this.timestamp = timestamp;
         this.email = email;
         this.accountType = accountType;
         this.currency = currency;
         this.interestRate = interestRate;
+        this.exchangeRates = exchangeRates;
     }
 
     /**
@@ -63,8 +67,11 @@ public final class AddAccountCommand implements Command {
         // Get the user from the user registry by email
         User user = userRegistry.getUserByEmail(email);
 
+        double rate = exchangeRates.convertExchangeRate("RON", currency);
+        double auxiliarAmountBusiness = 500 * rate;
+
         String iban = Utils.generateIBAN();
-        user.addAccount(accountType, currency, iban, interestRate, user);
+        user.addAccount(accountType, currency, iban, interestRate, user, auxiliarAmountBusiness);
 
         Account account = user.getAccountByIBAN(iban);
 
