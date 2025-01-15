@@ -48,7 +48,16 @@ public final class AddFundsCommand implements Command {
         }
 
         if (account.getType().equals("business")) {
+
+
             BusinessAccount businessAccount = (BusinessAccount) account;
+
+            User owner = businessAccount.getOwner();
+
+            if (!businessAccount.isManager(user) && !businessAccount.isEmployee(user) && !owner.equals(user)) {
+                System.out.println("User is not allowed to deposit funds " + amount);
+                return;
+            }
 
             if (businessAccount.isEmployee(user)) {
                 if (amount > businessAccount.getMaxDepositedLimit()) {

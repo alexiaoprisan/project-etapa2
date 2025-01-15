@@ -71,6 +71,10 @@ public class SplitPaymentCommandCustom implements Command {
             if (user == null) {
                 return;
             }
+
+            if (account.getType().equals("business")) {
+                return;
+            }
         }
 
         // check if the sum of the amounts for each account is equal to the total amount - nu stiu daca e nevoie

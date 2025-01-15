@@ -70,7 +70,7 @@ public final class CheckCardStatusCommand implements Command {
 
         // Check if the card needs to be frozen
         if (account.getBalance() - account.getMinBalance() < MINIMUM_BALANCE_DIFFERENCE) {
-            card.setStatus("frozen");
+            //card.setStatus("frozen");
 
             // Create a new transaction and add it to the user and account
             Transaction transaction = new WarningForPay(timestamp,

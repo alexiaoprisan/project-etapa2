@@ -10,6 +10,8 @@ import org.poo.commerciants.CommerciantRegistry;
 import org.poo.discounts.Discount;
 import org.poo.discounts.DiscountStrategy;
 import org.poo.discounts.DiscountStrategyFactory;
+import org.poo.report.BusinessCommerciantReport;
+import org.poo.report.CommerciantBusiness;
 import org.poo.transaction.*;
 import org.poo.user.UserRegistry;
 import org.poo.commerciants.Commerciant;
@@ -107,11 +109,29 @@ public final class PayOnlineCommand implements Command {
             // if it is not a business account, than it is a classic or savings account
             // and it must belong to the user, so the email is wrong - error
             if (!account.getType().equals("business")) {
+                ObjectNode outputNode = output.addObject();
+                outputNode.put("command", "payOnline");
+                ObjectNode outputObject = outputNode.putObject("output");
+                outputObject.put("description", "Card not found");
+                outputObject.put("timestamp", timestamp);
+                outputNode.put("timestamp", timestamp);
                 return;
             }
             else {
                 // check if the user is the owner of the business account
                 BusinessAccount businessAccount = (BusinessAccount) account;
+
+                // check if the user is associated with the business account
+                if (!businessAccount.isEmployee(businessUser) && !businessAccount.isManager(businessUser) && !businessAccount.getOwner().equals(businessUser)) {
+                    ObjectNode outputNode = output.addObject();
+                    outputNode.put("command", "payOnline");
+                    ObjectNode outputObject = outputNode.putObject("output");
+                    outputObject.put("description", "Card not found");
+                    outputObject.put("timestamp", timestamp);
+                    outputNode.put("timestamp", timestamp);
+                    return;
+                }
+
                 User owner = businessAccount.getOwner();
                 user = owner;
             }
@@ -131,32 +151,33 @@ public final class PayOnlineCommand implements Command {
             }
         }
 
-        // check if the card is frozen
-        if (card.getStatus().equals("frozen")) {
-            // create a transaction for the frozen card
-            // the card cannot be used to make payments
-            Transaction transaction = new FrozenCard(timestamp,
-                    "The card is frozen");
-            user.addTransaction(transaction);
-            return;
-        }
+//        // check if the card is frozen
+//        if (card.getStatus().equals("frozen")) {
+//            // create a transaction for the frozen card
+//            // the card cannot be used to make payments
+//            Transaction transaction = new FrozenCard(timestamp,
+//                    "The card is frozen");
+//            user.addTransaction(transaction);
+//            return;
+//        }
 
         double amountToPay = user.addCommission(amount, exchangeRates, cardCurrency);
+        System.out.println("amount to pay: " + amountToPay + " " + businessUser.getEmail() + " " + commerciant);
 
         // check if the account has enough funds
         if (account.getBalance() >= amountToPay) {
 
             // freeze the card if the balance is less than the minimum balance
-            if (account.getBalance() - amountToPay <= account.getMinBalance()) {
-                card.setStatus("frozen");
-
-                // create a transaction to warn the user that the card will be frozen
-                Transaction transactionErorr = new WarningForPay(timestamp,
-                        "You have reached the minimum amount "
-                                + "of funds, the card will be frozen");
-                user.addTransaction(transactionErorr);
-                return;
-            }
+//            if (account.getBalance() - amountToPay <= account.getMinBalance()) {
+//                card.setStatus("frozen");
+//
+//                // create a transaction to warn the user that the card will be frozen
+//                Transaction transactionErorr = new WarningForPay(timestamp,
+//                        "You have reached the minimum amount "
+//                                + "of funds, the card will be frozen");
+//                user.addTransaction(transactionErorr);
+//                return;
+//            }
 
             // make the card status "warning" if the balance is less than the
             // minimum balance + 30
@@ -178,20 +199,54 @@ public final class PayOnlineCommand implements Command {
             if (account.getType().equals("business")) {
                 BusinessAccount businessAccount = (BusinessAccount) account;
 
-                if (businessAccount.isManager(businessUser)) {
-                    businessAccount.addManagerSpentAmount(businessUser, amount);
-                    businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
+                if (!businessAccount.getOwner().equals(businessUser) && amount != 0) {
+                    System.out.println(commerciant + " " + businessUser.getEmail());
+                    System.out.println("timestamp: " + timestamp + " amount: " + amount);
+                    // get the commerciant report for the business account
+                    BusinessCommerciantReport businessCommerciantReport = businessAccount.getBusinessCommerciantReport();
 
-                } else if (businessAccount.isEmployee(businessUser)) {
-                    if (amountToPay > businessAccount.getMaxSpendLimit()) {
-                        return;
+
+
+                    if (businessAccount.isManager(businessUser)) {
+                        // add the commerciant to the report
+                        System.out.println("manager" + businessUser.getEmail());
+                        CommerciantBusiness commerciantForReport = businessCommerciantReport.getCommerciantBusiness(commerciant);
+                        if (commerciantForReport == null) {
+                            commerciantForReport = new CommerciantBusiness(commerciant);
+                            businessCommerciantReport.addCommerciantBusiness(commerciantForReport);
+                        }
+
+                        CommerciantBusiness commerciantBusiness = businessCommerciantReport.getCommerciantBusiness(commerciant);
+                        businessAccount.addManagerSpentAmount(businessUser, amount);
+                        businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
+                        commerciantBusiness.addManager(businessUser);
+                        commerciantBusiness.addAmountSpent(amount);
+
+                    } else if (businessAccount.isEmployee(businessUser)) {
+                        System.out.println("employee" + businessUser.getEmail() );
+                        if (amountToPay > businessAccount.getMaxSpendLimit()) {
+                            return;
+                        }
+                        // add the commerciant to the report
+                        CommerciantBusiness commerciantForReport = businessCommerciantReport.getCommerciantBusiness(commerciant);
+                        if (commerciantForReport == null) {
+                            commerciantForReport = new CommerciantBusiness(commerciant);
+                            businessCommerciantReport.addCommerciantBusiness(commerciantForReport);
+                        }
+
+                        CommerciantBusiness commerciantBusiness = businessCommerciantReport.getCommerciantBusiness(commerciant);
+                        businessAccount.addEmployeeSpentAmount(businessUser, amount);
+                        businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
+                        commerciantBusiness.addEmployee(businessUser);
+                        commerciantBusiness.addAmountSpent(amount);
                     }
-                    businessAccount.addEmployeeSpentAmount(businessUser, amount);
-                    businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
                 }
             }
 
             account.setBalance(account.getBalance() - amountToPay);
+
+
+            System.out.println("balance " + account.getBalance());
 
             Transaction transaction = new CardPaymentTransaction(timestamp,
                     "Card payment", amount, commerciant);
@@ -210,10 +265,12 @@ public final class PayOnlineCommand implements Command {
 
             Commerciant existingCommerciant = account.getCommerciantByCommerciantName(commerciant);
 
+            System.out.println(commerciant + " " + account.getIBAN());
 
-            System.out.println(user.getEmail() + " " + existingCommerciant.getCommerciant() + " " + existingCommerciant.getNrOfTransactions()
-                    + " " + amountRon + " " + amountToPay + " " + currency + " "
-                    + timestamp);
+
+//            System.out.println(user.getEmail() + " " + existingCommerciant.getCommerciant() + " " + existingCommerciant.getNrOfTransactions()
+//                    + " " + amountRon + " " + amountToPay + " " + currency + " "
+//                    + timestamp);
             // check if the account can receive cashback
 
             // now check if i had any discounts to apply to receive cashback and apply them
@@ -224,6 +281,8 @@ public final class PayOnlineCommand implements Command {
             }
 
             existingCommerciant.addAmountSpent(amount);
+
+            System.out.println("amount spent: " + amountRon);
 
             // use the strategy pattern to apply the cashback
             // i saved the discounts in the account with this strategy
@@ -251,7 +310,6 @@ public final class PayOnlineCommand implements Command {
                     Transaction transaction1 = new UpgradePlanTransaction(timestamp,
                             "Upgrade plan", "gold", account.getIBAN());
                     user.addTransaction(transaction1);
-                    System.out.println("Upgrade plan to gold" + " " + user.getEmail() + " " + timestamp);
                 }
             }
 
@@ -270,6 +328,10 @@ public final class PayOnlineCommand implements Command {
                 report.addTransaction(transaction);
                 paymentsRecord.addTransaction(transaction);
 
+                Commerciant commerciantForSpendingReport = new Commerciant(commerciant, amount, timestamp);
+                classicAccount.addCommerciantForSpendingReport(commerciantForSpendingReport);
+
+                //classicAccount.addCommerciantForSpendingReport(existingCommerciant);
 
             }
 

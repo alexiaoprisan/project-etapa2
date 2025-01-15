@@ -61,7 +61,7 @@ public final class DeleteCardCommand implements Command {
 
         for (Account account : user.getAccounts()) {
             Card card = account.getCardByNumber(cardNumber);
-            if (card != null) {
+            if (card != null && account.getBalance() == 0) {
                 // Remove the card from the account
                 account.getCards().remove(card);
 

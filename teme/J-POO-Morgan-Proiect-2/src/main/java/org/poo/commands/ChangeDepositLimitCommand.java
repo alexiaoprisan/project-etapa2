@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.account.BusinessAccount;
 import org.poo.user.User;
@@ -48,6 +49,13 @@ public class ChangeDepositLimitCommand implements Command {
         // check if the user is the owner of the account, because only the owner can change the spending limit
         User owner = businessAccount.getOwner();
         if (!owner.equals(user)) {
+
+            ObjectNode outputNode = output.addObject();
+            outputNode.put("command", "changeDepositLimit");
+            ObjectNode outputObject = outputNode.putObject("output");
+            outputObject.put("description", "You must be owner in order to change deposit limit.");
+            outputObject.put("timestamp", timestamp);
+            outputNode.put("timestamp", timestamp);
             return;
         }
 

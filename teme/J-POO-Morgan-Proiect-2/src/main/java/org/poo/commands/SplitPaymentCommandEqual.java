@@ -83,6 +83,10 @@ public final class SplitPaymentCommandEqual implements Command {
 //                error.put("timestamp", timestamp);
                 return;
             }
+
+            if (account.getType().equals("business")) {
+                return;
+            }
         }
 
         double amountForEachAccount = totalAmount / accountsIBAN.size();

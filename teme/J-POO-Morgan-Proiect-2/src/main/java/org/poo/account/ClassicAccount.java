@@ -29,9 +29,11 @@ public final class ClassicAccount implements Account {
     private final ArrayList<Card> cards = new ArrayList<>();
 
     // commerciantsList is a list of all the commerciants that the user has sent money to
-    // it will help in the spending report
     // it will help with the cashback strategy, counting the number of transactions for each commerciant
     private final ArrayList<Commerciant> commerciantsList = new ArrayList<>();
+
+    // it will help in the spending report, because these commerciants come only from Online payments
+    private final ArrayList<Commerciant> commerciantsListForSpendingReport = new ArrayList<>();
 
     // amountSpentOnSTCommerciants is the amount of money spent on the commerciants who
     // have a cashback strategy of type SpendingThreshold
@@ -263,7 +265,7 @@ public final class ClassicAccount implements Account {
      * @return the list of commerciants
      */
     public ArrayList<Commerciant> getCommerciantList() {
-        return this.commerciantsList;
+        return commerciantsList;
     }
 
     /**
@@ -276,7 +278,7 @@ public final class ClassicAccount implements Account {
             if (c.getCommerciant().equals(commerciant.getCommerciant())) {
                 //c.addAmountSpent(commerciant.getAmountSpent());
                 //c.incrementNrOfTransactions();
-                System.out.println(this.iban + " " + commerciant.getCommerciant());
+               // System.out.println(this.iban + " " + commerciant.getCommerciant());
                 return;
             }
         }
@@ -348,4 +350,29 @@ public final class ClassicAccount implements Account {
     public void removeDiscount(final Discount discount) {
         discounts.remove(discount);
     }
+
+    public ArrayList<Commerciant> getCommerciantsListForSpendingReport() {
+        return commerciantsListForSpendingReport;
+    }
+
+    public void addCommerciantForSpendingReport(final Commerciant commerciant) {
+        for (Commerciant c : commerciantsListForSpendingReport) {
+            if (c.getCommerciant().equals(commerciant.getCommerciant())) {
+                c.setAmountSpent(c.getAmountSpent() + commerciant.getAmountSpent());
+                return;
+            }
+        }
+        // Find the correct position to insert the commerciant in alphabetical order
+        int insertIndex = 0;
+        for (int i = 0; i < commerciantsListForSpendingReport.size(); i++) {
+            if (commerciantsListForSpendingReport.get(i).getCommerciant()
+                    .compareTo(commerciant.getCommerciant()) > 0) {
+                insertIndex = i;
+                break;
+            }
+            insertIndex = i + 1; // If no smaller element is found, insert at the end
+        }
+        commerciantsListForSpendingReport.add(insertIndex, commerciant);
+    }
+
 }

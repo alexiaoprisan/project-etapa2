@@ -22,11 +22,8 @@ public class SpendingThresholdCashback implements CashbackStrategy {
 //            double rate = exchangeRates.convertExchangeRate(currency, "RON");
 //            totalSpent *= rate;
 //        }
-        System.out.println("intra");
-
         double cashbackRate = 0.0;
         if (totalSpent >= 500) {
-            System.out.println("SpendingThreshold cashback applied  " + account.getIBAN() + "   500" );
             cashbackRate = switch (plan) {
                 case "gold" -> 0.007;
                 case "silver" -> 0.005;
@@ -39,15 +36,12 @@ public class SpendingThresholdCashback implements CashbackStrategy {
                 default -> 0.002;
             };
         } else if (totalSpent >= 100) {
-            System.out.println("SpendingThreshold cashback applied  " + account.getIBAN() + "   100");
             cashbackRate = switch (plan) {
                 case "gold" -> 0.005;
                 case "silver" -> 0.003;
                 default -> 0.001;
             };
         }
-
-        System.out.println("SpendingThreshold cashback applied  " + account.getIBAN() + "   " + cashbackRate);
 
         if (cashbackRate > 0) {
             account.addDiscount(new Discount(cashbackRate, "SpendingThreshold"));

@@ -80,7 +80,7 @@ public final class SpendingsReportCommand implements Command {
 
             // get the payments record and the list of commerciants
             PaymentsRecord paymentsRecord = classicAccount.getPaymentsRecord();
-            ArrayList<Commerciant> commerciantsList = classicAccount.getCommerciantList();
+            ArrayList<Commerciant> commerciantsList = classicAccount.getCommerciantsListForSpendingReport();
 
             // create a SpendingsReport object
             SpendingsReport spendingsReport = new SpendingsReport(paymentsRecord, commerciantsList);

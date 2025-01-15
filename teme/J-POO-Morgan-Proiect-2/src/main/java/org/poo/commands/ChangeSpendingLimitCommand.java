@@ -41,6 +41,13 @@ public class ChangeSpendingLimitCommand implements Command {
         }
 
         if (!account.getType().equals("business")) {
+
+            ObjectNode error = output.addObject();
+            error.put("command", "changeSpendingLimit");
+            ObjectNode outputNode = error.putObject("output");
+            outputNode.put("description", "This is not a business account");
+            outputNode.put("timestamp", timestamp);
+            error.put("timestamp", timestamp);
             return;
         }
 

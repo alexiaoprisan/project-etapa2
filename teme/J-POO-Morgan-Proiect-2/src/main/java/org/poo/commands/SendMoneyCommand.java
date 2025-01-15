@@ -88,11 +88,11 @@ public final class SendMoneyCommand implements Command {
 
         // find the account of the receiver using the IBAN, then the alias
         Account receiverAccount = userRegistry.getAccountByIBAN(receiverIBAN);
-        Commerciant commerciant = commerciantRegistry.getCommerciantByIBAN(receiverIBAN);
+        Commerciant commerciantReceiver = commerciantRegistry.getCommerciantByIBAN(receiverIBAN);
         if (receiverAccount == null) {
             receiverAccount = userRegistry.getAccountByAlias(receiverIBAN);
         }
-        if (receiverAccount == null && commerciant == null) {
+        if (receiverAccount == null && commerciantReceiver == null) {
             ObjectNode objectNode = output.addObject();
             objectNode.put("command", "sendMoney");
             ObjectNode outputNode = objectNode.putObject("output");
@@ -213,16 +213,20 @@ public final class SendMoneyCommand implements Command {
             double rateForRon = exchangeRates.convertExchangeRate(currencyFrom, "RON");
             double amountRon = amount * rateForRon;
 
-            Commerciant existingCommerciant = giverAccount.getCommerciantByIBAN(receiverIBAN);
+            String commerciant = commerciantReceiver.getCommerciant();
 
-            if (existingCommerciant == null) {
-                Commerciant newCommerciant = commerciantRegistry.getCommerciantByIBAN(receiverIBAN);
-                giverAccount.addCommerciant(newCommerciant);
-                existingCommerciant = newCommerciant;
-            }
+            Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
+            giverAccount.addCommerciant(newCommerciant);
+
+            Commerciant existingCommerciant = giverAccount.getCommerciantByCommerciantName(commerciant);
+
+
+
             existingCommerciant.addAmountSpent(amount);
             // check if the account can receive cashback
 
+            // now check if i had any discounts to apply to receive cashback and apply them
+            // Apply discounts based on commerciant type
             DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
             if (commerciantStrategy != null) {
                 commerciantStrategy.applyDiscount(giverAccount, existingCommerciant, amount);
@@ -240,9 +244,6 @@ public final class SendMoneyCommand implements Command {
             }
 
             cashbackManager.applyCashback(existingCommerciant, giverAccount, amount, currencyFrom, exchangeRates);
-
-            // now check if i had any discounts to apply to receive cashback and apply them
-            // Apply discounts based on commerciant type
 
 
             // Apply the spending threshold discount

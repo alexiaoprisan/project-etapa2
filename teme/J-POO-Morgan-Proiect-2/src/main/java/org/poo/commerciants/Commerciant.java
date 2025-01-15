@@ -14,7 +14,7 @@ public final class Commerciant {
     String type;
     String cashbackStrategy;
 
-    // cate tranzactii a facut un cont la un comerciant (adica de cate ori a platit la kfc de exemplu)
+    // how many transactions the user has made to this commerciant
     int nrOfTransactions;
 
     private double amountSpent = 0;

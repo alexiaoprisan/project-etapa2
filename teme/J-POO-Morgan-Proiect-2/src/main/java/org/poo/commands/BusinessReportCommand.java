@@ -50,8 +50,9 @@ public class BusinessReportCommand implements Command {
             // output.add(report.generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, account));
         } else {
             // Generate a business spendings report
-            ObjectNode report = new BusinessCommerciantReport().generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, businessAccount);
-            output.add(report);;
+            BusinessCommerciantReport report = businessAccount.getBusinessCommerciantReport();
+            ObjectNode reportNode = report.generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, businessAccount);
+            output.add(reportNode);
         }
 
     }

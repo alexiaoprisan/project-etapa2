@@ -8,7 +8,6 @@ public class FoodDiscountStrategy implements DiscountStrategy {
     public void applyDiscount(Account account, Commerciant commerciant, double amount) {
         Discount discount = account.getDiscountByType("Food");
         if (discount != null && !discount.isUsed()) {
-            System.out.println("Food discount applied  " + account.getIBAN());
             account.setBalance(account.getBalance() + discount.getValue() * amount);
             discount.setUsed(true);
         }

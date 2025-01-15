@@ -59,12 +59,6 @@ public class RejectionSplitPaymentCommand implements Command {
         // find the split payment in the registry to delete it
         SplitPayment splitPayment = splitPaymentsRegistry.getSplitPaymentByUserEmail(email, splitPaymentType);
         if (splitPayment == null) {
-            ObjectNode error = output.addObject();
-            error.put("command", "rejectSplitPayment");
-            ObjectNode outputNode = error.putObject("output");
-            outputNode.put("description", "User not found");
-            outputNode.put("timestamp", timestamp);
-            error.put("timestamp", timestamp);
             return;
         }
 

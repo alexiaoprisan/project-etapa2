@@ -7,10 +7,45 @@ import org.poo.account.BusinessAccount;
 import org.poo.commerciants.Commerciant;
 import org.poo.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class BusinessCommerciantReport {
+
+    ArrayList<CommerciantBusiness> commerciantBusinesses = new ArrayList<>();
+
+    public BusinessCommerciantReport() {
+    }
+
+    public CommerciantBusiness getCommerciantBusiness(String commerciant) {
+        for (CommerciantBusiness commerciantBusiness : commerciantBusinesses) {
+            if (commerciantBusiness.getCommerciant().equals(commerciant)) {
+                return commerciantBusiness;
+            }
+        }
+        return null;
+    }
+
+    public void addCommerciantBusiness(CommerciantBusiness commerciantBusiness) {
+        // Add the commerciant alphabetically by its name
+        for (int i = 0; i < commerciantBusinesses.size(); i++) {
+            if (commerciantBusinesses.get(i).getCommerciant()
+                    .compareTo(commerciantBusiness.getCommerciant()) > 0) {
+                commerciantBusinesses.add(i, commerciantBusiness);
+                return;
+            }
+        }
+        // If no earlier position was found, add it at the end
+        commerciantBusinesses.add(commerciantBusiness);
+    }
+
+
+    public ArrayList<CommerciantBusiness> getCommerciantBusinesses() {
+        return commerciantBusinesses;
+    }
+
+
 
     public ObjectNode generateReportBetweenTimestamps(
             final int timestampStart,
@@ -36,10 +71,37 @@ public class BusinessCommerciantReport {
 
             ArrayNode commerciantsArray = accountNode.putArray("commerciants");
 
-            List<Commerciant> commerciants = account.getCommerciantList();
+            //"commerciants": [
+            //                {
+            //                    "commerciant": "Amazon",
+            //                    "employees": [
+            //                        "Voinea Valentin"
+            //                    ],
+            //                    "managers": [
+            //                    ],
+            //                    "total received": 220.04999999999998
+            //                },
+            //                {
 
-            for (Commerciant commerciant : commerciants) {
+            for (CommerciantBusiness commerciantBusiness : commerciantBusinesses) {
+                ObjectNode commerciantNode = mapper.createObjectNode();
+                commerciantNode.put("commerciant", commerciantBusiness.getCommerciant());
+                commerciantNode.put("total received", commerciantBusiness.getTotalAmountSpent());
 
+                ArrayNode employeesArray = commerciantNode.putArray("employees");
+                for (User employee : commerciantBusiness.getEmployees()) {
+                    String employeeName = employee.getLastName() + " " + employee.getFirstName();
+                    employeesArray.add(employeeName);
+                }
+
+                ArrayNode managersArray = commerciantNode.putArray("managers");
+                for (User manager : commerciantBusiness.getManagers()) {
+                    String managerName = manager.getLastName() + " " + manager.getFirstName();
+                    managersArray.add(managerName);
+                }
+
+
+                commerciantsArray.add(commerciantNode);
             }
 
             output.put("timestamp", timestamp);

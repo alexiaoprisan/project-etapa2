@@ -6,6 +6,7 @@ import org.poo.card.Card;
 import org.poo.card.CardFactory;
 import org.poo.commerciants.Commerciant;
 import org.poo.discounts.Discount;
+import org.poo.report.BusinessCommerciantReport;
 import org.poo.report.BusinessTransactionReport;
 import org.poo.transaction.Transaction;
 import org.poo.user.User;
@@ -59,6 +60,8 @@ public class BusinessAccount implements Account {
     private Double totalDeposited = 0.0;
 
     private BusinessTransactionReport businessTransactionReport = new BusinessTransactionReport();
+
+    private BusinessCommerciantReport businessCommerciantReport = new BusinessCommerciantReport();
 
     public BusinessAccount(final String currency, final String iban, final double balance,
                            final double minBalance, User owner, final double businessLimit) {
@@ -316,7 +319,10 @@ public class BusinessAccount implements Account {
     }
 
     public void addManager(User manager) {
-        managers.add(manager);
+        // Add the manager only if not present in employees
+        if (!employees.contains(manager) && owner != manager) {
+            managers.add(manager);
+        }
     }
 
     public List<User> getEmployees() {
@@ -324,7 +330,9 @@ public class BusinessAccount implements Account {
     }
 
     public void addEmployee(User employee) {
-        employees.add(employee);
+        if (!managers.contains(employee) && owner != employee) {
+            employees.add(employee);
+        }
     }
 
     public boolean isEmployee(User user) {
@@ -353,14 +361,12 @@ public class BusinessAccount implements Account {
     public void addCommerciant(final Commerciant commerciant) {
         for (Commerciant c : commerciantsList) {
             if (c.getCommerciant().equals(commerciant.getCommerciant())) {
-                c.addAmountSpent(commerciant.getAmountSpent());
+                //c.addAmountSpent(commerciant.getAmountSpent());
                 //c.incrementNrOfTransactions();
-                System.out.println(this.iban + " " + commerciant.getCommerciant());
+                //System.out.println(this.iban + " " + commerciant.getCommerciant());
                 return;
             }
         }
-
-        System.out.println("new");
 
         int index = 0;
         for (Commerciant c : this.commerciantsList) {
@@ -419,5 +425,13 @@ public class BusinessAccount implements Account {
     public ObjectNode getBusinessTransactionReport(int startTimestamp, int endTimestamp, int timestamp) {
         return businessTransactionReport.generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, this);
 
+    }
+
+    public BusinessCommerciantReport getBusinessCommerciantReport() {
+        return businessCommerciantReport;
+    }
+
+    public void setBusinessCommerciantReport (BusinessCommerciantReport businessCommerciantReport) {
+        this.businessCommerciantReport = businessCommerciantReport;
     }
 }
