@@ -6,7 +6,10 @@ import org.poo.account.BusinessAccount;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
-public class AddNewBusinessAssociateCommand implements Command {
+/**
+ * Command to add a new business associate (manager or employee) to a business account.
+ */
+public final class AddNewBusinessAssociateCommand implements Command {
 
     private final UserRegistry userRegistry;
     private final ArrayNode output;
@@ -15,7 +18,23 @@ public class AddNewBusinessAssociateCommand implements Command {
     private final String accountIban;
     private final String role;
 
-    public AddNewBusinessAssociateCommand(UserRegistry userRegistry, ArrayNode output, int timestamp, String email, String accountIban, String role) {
+    /**
+     * Constructs an AddNewBusinessAssociateCommand.
+     *
+     * @param userRegistry the registry of users
+     * @param output the output to write the result
+     * @param timestamp the command timestamp
+     * @param email the email of the user to be added
+     * @param accountIban the IBAN of the business account
+     * @param role the role of the user (manager or employee)
+     */
+    public AddNewBusinessAssociateCommand(
+            final UserRegistry userRegistry,
+            final ArrayNode output,
+            final int timestamp,
+            final String email,
+            final String accountIban,
+            final String role) {
         this.userRegistry = userRegistry;
         this.output = output;
         this.timestamp = timestamp;
@@ -24,9 +43,12 @@ public class AddNewBusinessAssociateCommand implements Command {
         this.role = role;
     }
 
+    /**
+     * Executes the command to add a business associate.
+     */
     @Override
     public void execute() {
-        // the user which will be added as a manager or employee
+        // the user to be added as a manager or employee
         User user = userRegistry.getUserByEmail(email);
         if (user == null) {
             return;
@@ -38,15 +60,15 @@ public class AddNewBusinessAssociateCommand implements Command {
             return;
         }
 
-        if (!account.getType().equals("business")) {
+        if (!"business".equals(account.getType())) {
             return;
         }
 
         BusinessAccount businessAccount = (BusinessAccount) account;
 
-        if (role.equals("manager")) {
+        if ("manager".equals(role)) {
             businessAccount.addManager(user);
-        } else if (role.equals("employee")) {
+        } else if ("employee".equals(role)) {
             businessAccount.addEmployee(user);
         }
     }

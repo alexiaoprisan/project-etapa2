@@ -7,12 +7,16 @@ import org.poo.cashback.CashbackManager;
 import org.poo.cashback.NrOfTransactionsCashback;
 import org.poo.cashback.SpendingThresholdCashback;
 import org.poo.commerciants.CommerciantRegistry;
-import org.poo.discounts.Discount;
 import org.poo.discounts.DiscountStrategy;
 import org.poo.discounts.DiscountStrategyFactory;
 import org.poo.report.BusinessCommerciantReport;
 import org.poo.report.CommerciantBusiness;
-import org.poo.transaction.*;
+import org.poo.transaction.CardDestroyed;
+import org.poo.transaction.CardPaymentTransaction;
+import org.poo.transaction.InsufficientFunds;
+import org.poo.transaction.NewCardCreatedTransaction;
+import org.poo.transaction.Transaction;
+import org.poo.transaction.UpgradePlanTransaction;
 import org.poo.user.UserRegistry;
 import org.poo.commerciants.Commerciant;
 import org.poo.report.ClassicReport;
@@ -31,7 +35,7 @@ import org.poo.utils.Utils;
  */
 public final class PayOnlineCommand implements Command {
     private final UserRegistry userRegistry;
-    final ExchangeRates exchangeRates;
+    private final ExchangeRates exchangeRates;
     private final ArrayNode output;
     private final int timestamp;
     private final String cardNumber;
@@ -42,6 +46,8 @@ public final class PayOnlineCommand implements Command {
     private final String email;
     private static final int MIN_DIFFERENCE = 30;
     private final CommerciantRegistry commerciantRegistry;
+    private static final int UPGRADE_LIMIT = 300;
+    private static final int UPGRADE_COUNT = 5;
 
     /**
      * Constructor for the PayOnlineCommand class.
@@ -63,7 +69,8 @@ public final class PayOnlineCommand implements Command {
                             final int timestamp,
                             final String cardNumber,
                             final double amount, final String currency,
-                            final String description, final String commerciant,
+                            final String description,
+                            final String commerciant,
                             final String email,
                             final CommerciantRegistry commerciantRegistry) {
         this.userRegistry = userRegistry;
@@ -77,6 +84,130 @@ public final class PayOnlineCommand implements Command {
         this.commerciant = commerciant;
         this.email = email;
         this.commerciantRegistry = commerciantRegistry;
+    }
+
+    /**
+     * Method to update the business account,
+     * only if the user is associated with the business account.
+     * It makes the necessary updates for the business account,
+     * like checking the role of the user, adding the amount spent by the user,
+     * adding details to the business report.
+     *
+     * @param account             the account
+     * @param businessUser        the business user
+     * @param amountToPay         the amount to pay
+     * @param businessCommerciant the commerciant
+     * @return true if the account was updated, false otherwise
+     */
+    public boolean updateBusinessAccount(final Account account,
+                                         final User businessUser,
+                                         final double amountToPay,
+                                         final String businessCommerciant) {
+
+        // cast the account to a business account
+        BusinessAccount businessAccount = (BusinessAccount) account;
+
+        // check if the user is the owner of the business account
+        if (!businessAccount.getOwner().equals(businessUser) && amount != 0) {
+
+            // get the commerciant report for the business account
+            BusinessCommerciantReport businessCommerciantReport =
+                    businessAccount.getBusinessCommerciantReport();
+
+            // check if the user is a manager or an employee
+            if (businessAccount.isManager(businessUser)) {
+                // add the commerciant to the report
+                CommerciantBusiness commerciantForReport =
+                        businessCommerciantReport.getCommerciantBusiness(businessCommerciant);
+                if (commerciantForReport == null) {
+                    commerciantForReport = new CommerciantBusiness(businessCommerciant);
+                    businessCommerciantReport.addCommerciantBusiness(commerciantForReport);
+                }
+
+                // get the commerciant business from the report
+                CommerciantBusiness commerciantBusiness =
+                        businessCommerciantReport.getCommerciantBusiness(businessCommerciant);
+
+                // add the amount spent by the manager
+                businessAccount.addManagerSpentAmount(businessUser, amount);
+                businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
+
+                // add the manager to the commerciant business
+                commerciantBusiness.addManager(businessUser);
+                commerciantBusiness.addAmountSpent(amount);
+
+            } else if (businessAccount.isEmployee(businessUser)) {
+
+                // check if the employee has the right to spend this amount
+                if (amountToPay > businessAccount.getMaxSpendLimit()) {
+                    return false;
+                }
+
+                // add the commerciant to the report
+                CommerciantBusiness commerciantForReport =
+                        businessCommerciantReport.getCommerciantBusiness(businessCommerciant);
+                if (commerciantForReport == null) {
+                    commerciantForReport = new CommerciantBusiness(businessCommerciant);
+                    businessCommerciantReport.addCommerciantBusiness(commerciantForReport);
+                }
+
+                // get the commerciant business from the report
+                CommerciantBusiness commerciantBusiness =
+                        businessCommerciantReport.getCommerciantBusiness(businessCommerciant);
+                businessAccount.addEmployeeSpentAmount(businessUser, amount);
+                businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
+                commerciantBusiness.addEmployee(businessUser);
+                commerciantBusiness.addAmountSpent(amount);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Method to check if the commerciant will give cashback and if any discounts apply.
+     * @param account the account
+     * @param user the user
+     * @param payAmount the amount
+     * @param amountRon the amount in Ron
+     * @param cardCurrency the card currency
+     * @param existingCommerciant the existing commerciant
+     */
+    public void checkCashback(final Account account,
+                              final User user,
+                              final double payAmount,
+                              final double amountRon,
+                              final String cardCurrency,
+                              final Commerciant existingCommerciant) {
+
+        // check if there are any discounts for the commerciant to apply
+        // Apply discounts based on commerciant type
+        DiscountStrategy commerciantStrategy =
+                DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
+        if (commerciantStrategy != null) {
+            commerciantStrategy.applyDiscount(account, existingCommerciant, payAmount);
+        }
+        existingCommerciant.addAmountSpent(payAmount);
+
+        // use the strategy pattern to apply the cashback
+        // i saved the discounts in the account with this strategy
+        CashbackManager cashbackManager = new CashbackManager();
+
+        if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+            account.addAmountSpentOnSTCommerciants(amountRon);
+            cashbackManager.setStrategy(new SpendingThresholdCashback(user.getServicePlan()));
+        } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
+            cashbackManager.setStrategy(new NrOfTransactionsCashback());
+        }
+
+        cashbackManager.applyCashback(existingCommerciant,
+                account, payAmount, cardCurrency, exchangeRates);
+
+        // Apply the spending threshold discount
+        DiscountStrategy spendingThresholdStrategy =
+                DiscountStrategyFactory.getStrategy("SpendingThreshold");
+        if (spendingThresholdStrategy != null) {
+            spendingThresholdStrategy.applyDiscount(account, existingCommerciant, payAmount);
+        }
     }
 
     /**
@@ -101,7 +232,6 @@ public final class PayOnlineCommand implements Command {
         }
 
         Account account = userRegistry.getAccountByCardNumber(cardNumber);
-
         User businessUser = userRegistry.getUserByEmail(email);
 
         // check if it may be a business account
@@ -116,13 +246,14 @@ public final class PayOnlineCommand implements Command {
                 outputObject.put("timestamp", timestamp);
                 outputNode.put("timestamp", timestamp);
                 return;
-            }
-            else {
+            } else {
                 // check if the user is the owner of the business account
                 BusinessAccount businessAccount = (BusinessAccount) account;
 
                 // check if the user is associated with the business account
-                if (!businessAccount.isEmployee(businessUser) && !businessAccount.isManager(businessUser) && !businessAccount.getOwner().equals(businessUser)) {
+                if (!businessAccount.isEmployee(businessUser)
+                        && !businessAccount.isManager(businessUser)
+                        && !businessAccount.getOwner().equals(businessUser)) {
                     ObjectNode outputNode = output.addObject();
                     outputNode.put("command", "payOnline");
                     ObjectNode outputObject = outputNode.putObject("output");
@@ -131,15 +262,11 @@ public final class PayOnlineCommand implements Command {
                     outputNode.put("timestamp", timestamp);
                     return;
                 }
-
                 User owner = businessAccount.getOwner();
                 user = owner;
             }
         }
-
         String cardCurrency = account.getCurrency();
-
-
 
         // check if the card currency is different from the payment currency
         if (!cardCurrency.equals(currency)) {
@@ -151,161 +278,42 @@ public final class PayOnlineCommand implements Command {
             }
         }
 
-//        // check if the card is frozen
-//        if (card.getStatus().equals("frozen")) {
-//            // create a transaction for the frozen card
-//            // the card cannot be used to make payments
-//            Transaction transaction = new FrozenCard(timestamp,
-//                    "The card is frozen");
-//            user.addTransaction(transaction);
-//            return;
-//        }
-
         double amountToPay = user.addCommission(amount, exchangeRates, cardCurrency);
-        System.out.println("amount to pay: " + amountToPay + " " + businessUser.getEmail() + " " + commerciant);
-
         // check if the account has enough funds
         if (account.getBalance() >= amountToPay) {
-
-            // freeze the card if the balance is less than the minimum balance
-//            if (account.getBalance() - amountToPay <= account.getMinBalance()) {
-//                card.setStatus("frozen");
-//
-//                // create a transaction to warn the user that the card will be frozen
-//                Transaction transactionErorr = new WarningForPay(timestamp,
-//                        "You have reached the minimum amount "
-//                                + "of funds, the card will be frozen");
-//                user.addTransaction(transactionErorr);
-//                return;
-//            }
-
-            // make the card status "warning" if the balance is less than the
-            // minimum balance + 30
-//                    if (account.getBalance() - account.getMinBalance() - amountToPay < MIN_DIFFERENCE) {
-//
-//                        // create a transaction to warn the user that the card will be frozen
-//                        Transaction transactionErorr = new WarningForPay(timestamp,
-//                                "You have reached the minimum amount "
-//                                        + "of funds, the card will be frozen");
-//                        user.addTransaction(transactionErorr);
-//                        card.setStatus("warning");
-//
-//                    }
-
-            // if the cases above are not true, the payment can be made
-           // double roundedAmount = Math.round((account.getBalance() - amountToPay) * 100.0) / 100.0;
-
-
             if (account.getType().equals("business")) {
-                BusinessAccount businessAccount = (BusinessAccount) account;
-
-                if (!businessAccount.getOwner().equals(businessUser) && amount != 0) {
-                    System.out.println(commerciant + " " + businessUser.getEmail());
-                    System.out.println("timestamp: " + timestamp + " amount: " + amount);
-                    // get the commerciant report for the business account
-                    BusinessCommerciantReport businessCommerciantReport = businessAccount.getBusinessCommerciantReport();
-
-
-
-                    if (businessAccount.isManager(businessUser)) {
-                        // add the commerciant to the report
-                        System.out.println("manager" + businessUser.getEmail());
-                        CommerciantBusiness commerciantForReport = businessCommerciantReport.getCommerciantBusiness(commerciant);
-                        if (commerciantForReport == null) {
-                            commerciantForReport = new CommerciantBusiness(commerciant);
-                            businessCommerciantReport.addCommerciantBusiness(commerciantForReport);
-                        }
-
-                        CommerciantBusiness commerciantBusiness = businessCommerciantReport.getCommerciantBusiness(commerciant);
-                        businessAccount.addManagerSpentAmount(businessUser, amount);
-                        businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
-                        commerciantBusiness.addManager(businessUser);
-                        commerciantBusiness.addAmountSpent(amount);
-
-                    } else if (businessAccount.isEmployee(businessUser)) {
-                        System.out.println("employee" + businessUser.getEmail() );
-                        if (amountToPay > businessAccount.getMaxSpendLimit()) {
-                            return;
-                        }
-                        // add the commerciant to the report
-                        CommerciantBusiness commerciantForReport = businessCommerciantReport.getCommerciantBusiness(commerciant);
-                        if (commerciantForReport == null) {
-                            commerciantForReport = new CommerciantBusiness(commerciant);
-                            businessCommerciantReport.addCommerciantBusiness(commerciantForReport);
-                        }
-
-                        CommerciantBusiness commerciantBusiness = businessCommerciantReport.getCommerciantBusiness(commerciant);
-                        businessAccount.addEmployeeSpentAmount(businessUser, amount);
-                        businessAccount.setTotalSpent(businessAccount.getTotalSpent() + amount);
-                        commerciantBusiness.addEmployee(businessUser);
-                        commerciantBusiness.addAmountSpent(amount);
-                    }
+                // check if updating the business account was successful
+                if (!updateBusinessAccount(account, businessUser,
+                        amountToPay, commerciant)) {
+                    return;
                 }
             }
-
+            // update the balance of the account
             account.setBalance(account.getBalance() - amountToPay);
 
-
-            System.out.println("balance " + account.getBalance());
-
+            // create a transaction for the payment
             Transaction transaction = new CardPaymentTransaction(timestamp,
                     "Card payment", amount, commerciant);
-
             // create a transaction for the payment
             if (amount != 0) {
                 user.addTransaction(transaction);
             }
-
             double rateForRon = exchangeRates.convertExchangeRate(cardCurrency, "RON");
             double amountRon = amountToPay * rateForRon;
-
 
             Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
             account.addCommerciant(newCommerciant);
 
             Commerciant existingCommerciant = account.getCommerciantByCommerciantName(commerciant);
 
-            System.out.println(commerciant + " " + account.getIBAN());
+            // check if the commerciant will give cashback and if any discounts apply
+            checkCashback(account, user, amount, amountRon,
+                    cardCurrency, existingCommerciant);
 
-
-//            System.out.println(user.getEmail() + " " + existingCommerciant.getCommerciant() + " " + existingCommerciant.getNrOfTransactions()
-//                    + " " + amountRon + " " + amountToPay + " " + currency + " "
-//                    + timestamp);
-            // check if the account can receive cashback
-
-            // now check if i had any discounts to apply to receive cashback and apply them
-            // Apply discounts based on commerciant type
-            DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
-            if (commerciantStrategy != null) {
-                commerciantStrategy.applyDiscount(account, existingCommerciant, amount);
-            }
-
-            existingCommerciant.addAmountSpent(amount);
-
-            System.out.println("amount spent: " + amountRon);
-
-            // use the strategy pattern to apply the cashback
-            // i saved the discounts in the account with this strategy
-            CashbackManager cashbackManager = new CashbackManager();
-
-            if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
-                account.addAmountSpentOnSTCommerciants(amountRon);
-                cashbackManager.setStrategy(new SpendingThresholdCashback(user.getServicePlan()));
-            } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
-                cashbackManager.setStrategy(new NrOfTransactionsCashback());
-            }
-
-            cashbackManager.applyCashback(existingCommerciant, account, amount, cardCurrency, exchangeRates);
-
-            // Apply the spending threshold discount
-            DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
-            if (spendingThresholdStrategy != null) {
-                spendingThresholdStrategy.applyDiscount(account, existingCommerciant, amount);
-            }
-
-            if (amountRon > 300 && user.getServicePlan().equals("silver")) {
+            // check if the user has to upgrade the service plan
+            if (amountRon > UPGRADE_LIMIT && user.getServicePlan().equals("silver")) {
                 user.incrementPaymentsOverThreeHundred();
-                if (user.getPaymentsOverThreeHundred() == 5) {
+                if (user.getPaymentsOverThreeHundred() == UPGRADE_COUNT) {
                     user.setServicePlan("gold");
                     Transaction transaction1 = new UpgradePlanTransaction(timestamp,
                             "Upgrade plan", "gold", account.getIBAN());
@@ -313,26 +321,19 @@ public final class PayOnlineCommand implements Command {
                 }
             }
 
-
             // verify if the account is a classic account
             // in order to save the transaction for the report and the spending report
             if (account.getType().equals("classic")) {
                 // save the commerciant in the account
-
                 // add the transaction to the report and the payments record
-                // (for the spending report)
                 ClassicAccount classicAccount = (ClassicAccount) account;
                 ClassicReport report = classicAccount.getReport();
                 PaymentsRecord paymentsRecord = classicAccount.getPaymentsRecord();
-
                 report.addTransaction(transaction);
                 paymentsRecord.addTransaction(transaction);
-
-                Commerciant commerciantForSpendingReport = new Commerciant(commerciant, amount, timestamp);
+                Commerciant commerciantForSpendingReport = new Commerciant(commerciant,
+                        amount, timestamp);
                 classicAccount.addCommerciantForSpendingReport(commerciantForSpendingReport);
-
-                //classicAccount.addCommerciantForSpendingReport(existingCommerciant);
-
             }
 
             // check if the card is a oneTimePay card
@@ -355,15 +356,11 @@ public final class PayOnlineCommand implements Command {
                         newCardNumber, user.getEmail());
                 user.addTransaction(transactionNewCard);
             }
-
         } else {
             // if the payment cannot be made, create a transaction for insufficient funds
             Transaction transaction = new InsufficientFunds(timestamp,
                     "Insufficient funds");
             user.addTransaction(transaction);
         }
-
-
-
     }
 }

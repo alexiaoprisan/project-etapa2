@@ -7,17 +7,31 @@ import org.poo.account.BusinessAccount;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
-public class ChangeDepositLimitCommand implements Command {
+/**
+ * Command to change the deposit limit of a business account.
+ */
+public final class ChangeDepositLimitCommand implements Command {
 
-    private UserRegistry userRegistry;
-    private int timestamp;
-    private String email;
-    private String accountIban;
-    private double amount;
-    private ArrayNode output;
+    private final UserRegistry userRegistry;
+    private final int timestamp;
+    private final String email;
+    private final String accountIban;
+    private final double amount;
+    private final ArrayNode output;
 
-    public ChangeDepositLimitCommand(UserRegistry userRegistry, ArrayNode output, int timestamp,
-                                      String accountIban, String email, double amount) {
+    /**
+     * Instantiates a new Change deposit limit command.
+     *
+     * @param userRegistry the user registry
+     * @param output the output
+     * @param timestamp the timestamp
+     * @param accountIban the account IBAN
+     * @param email the email
+     * @param amount the amount
+     */
+    public ChangeDepositLimitCommand(final UserRegistry userRegistry, final ArrayNode output,
+                                     final int timestamp, final String accountIban,
+                                     final String email, final double amount) {
         this.userRegistry = userRegistry;
         this.timestamp = timestamp;
         this.email = email;
@@ -26,6 +40,9 @@ public class ChangeDepositLimitCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
         // get the user by email
@@ -46,7 +63,8 @@ public class ChangeDepositLimitCommand implements Command {
 
         BusinessAccount businessAccount = (BusinessAccount) account;
 
-        // check if the user is the owner of the account, because only the owner can change the spending limit
+        // check if the user is the owner of the account,
+        // because only the owner can change the spending limit
         User owner = businessAccount.getOwner();
         if (!owner.equals(user)) {
 

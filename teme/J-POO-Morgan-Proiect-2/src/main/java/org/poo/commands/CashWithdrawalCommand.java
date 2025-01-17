@@ -10,9 +10,11 @@ import org.poo.transaction.CashWithdrawalTransaction;
 import org.poo.transaction.Transaction;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
-public class CashWithdrawalCommand implements Command {
+/**
+ * CashWithdrawalCommand class is a command that executes a cash withdrawal operation.
+ */
+public final class CashWithdrawalCommand implements Command {
     private final UserRegistry userRegistry;
     private final int timestamp;
     private final String cardNumber;
@@ -22,17 +24,26 @@ public class CashWithdrawalCommand implements Command {
     private final ExchangeRates exchangeRates;
     private final ArrayNode output;
 
-    //return new CashWithdrawalCommand(userRegistry, output, timestamp, exchangeRates,
-    //                        input.getCardNumber(), input.getAmount(), input.getLocation(), input.getEmail());
-
-    public CashWithdrawalCommand(UserRegistry userRegistry,
-                                 ArrayNode output,
-                                 int timestamp,
-                                 ExchangeRates exchangeRates,
-                                 String cardNumber,
-                                 double amount,
-                                 String location,
-                                 String email) {
+    /**
+     * Constructor for the CashWithdrawalCommand class.
+     *
+     * @param userRegistry  the user registry
+     * @param output        the output array
+     * @param timestamp     the timestamp
+     * @param exchangeRates the exchange rates
+     * @param cardNumber    the card number
+     * @param amount        the amount
+     * @param location      the location
+     * @param email         the email
+     */
+    public CashWithdrawalCommand(final UserRegistry userRegistry,
+                                 final ArrayNode output,
+                                 final int timestamp,
+                                 final ExchangeRates exchangeRates,
+                                 final String cardNumber,
+                                 final double amount,
+                                 final String location,
+                                 final String email) {
         this.userRegistry = userRegistry;
         this.timestamp = timestamp;
         this.cardNumber = cardNumber;
@@ -43,6 +54,9 @@ public class CashWithdrawalCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
         User user = userRegistry.getUserByEmail(email);
@@ -96,14 +110,16 @@ public class CashWithdrawalCommand implements Command {
         }
 
         if (account.getBalance() - amountToPay < account.getMinBalance()) {
-            Transaction transaction = new CashWithdrawalError(timestamp, "Cannot perform payment due to a minimum balance being set.");
+            Transaction transaction = new CashWithdrawalError(timestamp,
+                    "Cannot perform payment due to a minimum balance being set.");
             user.addTransaction(transaction);
             return;
         }
 
         account.setBalance(account.getBalance() - amountToPay);
 
-        Transaction transaction = new CashWithdrawalTransaction(timestamp, "Cash withdrawal of " + amount, amount);
+        Transaction transaction = new CashWithdrawalTransaction(timestamp,
+                "Cash withdrawal of " + amount, amount);
         user.addTransaction(transaction);
 
     }

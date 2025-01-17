@@ -55,7 +55,8 @@ public final class CommandFactory {
 
             case "addAccount":
                 return new AddAccountCommand(userRegistry, timestamp,
-                        input.getEmail(), input.getAccountType(), input.getCurrency(), input.getInterestRate(),
+                        input.getEmail(), input.getAccountType(), input.getCurrency(),
+                        input.getInterestRate(),
                         exchangeRates);
 
             case "createCard":
@@ -87,16 +88,17 @@ public final class CommandFactory {
             case "sendMoney":
                 return new SendMoneyCommand(userRegistry, output, timestamp,
                         input.getAccount(), input.getReceiver(), input.getAmount(),
-                        input.getEmail(), input.getDescription(), exchangeRates, commerciantRegistry);
+                        input.getEmail(), input.getDescription(),
+                        exchangeRates, commerciantRegistry);
 
             case "printTransactions":
                 return new PrintTransactionsCommand(userRegistry, output, timestamp,
                         input.getEmail());
-//
-//            case "setAlias":
-//                return new SetAliasCommand(userRegistry, timestamp,
-//                        input.getEmail(), input.getAccount(), input.getAlias());
-//
+
+            case "setAlias":
+                return new SetAliasCommand(userRegistry, timestamp,
+                        input.getEmail(), input.getAccount(), input.getAlias());
+
             case "checkCardStatus":
                 return new CheckCardStatusCommand(userRegistry, output,
                         input.getCardNumber(), timestamp);
@@ -106,14 +108,15 @@ public final class CommandFactory {
                         input.getAccount(), input.getAmount());
 
             case "splitPayment":
-                if (input.getSplitPaymentType().equals("custom"))
+                if (input.getSplitPaymentType().equals("custom")) {
                     return new SplitPaymentCommandCustom(userRegistry, output, timestamp,
-                            input.getAmount(), input.getCurrency(), input.getAccounts(), exchangeRates,
-                            input.getAmountForUsers(), splitPaymentsRegistry);
-                else
+                            input.getAmount(), input.getCurrency(), input.getAccounts(),
+                            exchangeRates, input.getAmountForUsers(), splitPaymentsRegistry);
+                } else {
                     return new SplitPaymentCommandEqual(userRegistry, output, timestamp,
-                        input.getAmount(), input.getCurrency(), input.getAccounts(), exchangeRates,
-                            splitPaymentsRegistry);
+                            input.getAmount(), input.getCurrency(), input.getAccounts(),
+                            exchangeRates, splitPaymentsRegistry);
+                }
 
             case "acceptSplitPayment":
                 return new AcceptSplitPaymentCommand(userRegistry, output, timestamp,
@@ -122,7 +125,8 @@ public final class CommandFactory {
 
             case "rejectSplitPayment":
                 return new RejectionSplitPaymentCommand(userRegistry, output, timestamp,
-                        input.getEmail(), input.getSplitPaymentType(), splitPaymentsRegistry, exchangeRates);
+                        input.getEmail(), input.getSplitPaymentType(), splitPaymentsRegistry,
+                        exchangeRates);
 
             case "changeInterestRate":
                 return new ChangeInterestRateCommand(userRegistry, output, timestamp,
@@ -142,7 +146,8 @@ public final class CommandFactory {
 
             case "cashWithdrawal":
                 return new CashWithdrawalCommand(userRegistry, output, timestamp, exchangeRates,
-                        input.getCardNumber(), input.getAmount(), input.getLocation(), input.getEmail());
+                        input.getCardNumber(), input.getAmount(), input.getLocation(),
+                        input.getEmail());
 
             case "report":
                 return new ReportCommand(userRegistry, output, input.getStartTimestamp(),

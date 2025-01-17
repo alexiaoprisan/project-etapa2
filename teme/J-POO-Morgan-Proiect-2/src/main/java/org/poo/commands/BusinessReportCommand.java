@@ -8,7 +8,10 @@ import org.poo.report.BusinessCommerciantReport;
 import org.poo.report.BusinessTransactionReport;
 import org.poo.user.UserRegistry;
 
-public class BusinessReportCommand implements Command {
+/**
+ * Command to generate a business report.
+ */
+public final class BusinessReportCommand implements Command {
 
     private final UserRegistry userRegistry;
     private final ArrayNode output;
@@ -18,7 +21,21 @@ public class BusinessReportCommand implements Command {
     private final String type;
     private final int timestamp;
 
-    public BusinessReportCommand(UserRegistry userRegistry, ArrayNode output, int startTimestamp, int endTimestamp, String accountIban, String type, int timestamp) {
+    /**
+     * Constructor for the BusinessReportCommand.
+     *
+     * @param userRegistry   the user registry
+     * @param output         the output
+     * @param startTimestamp the start timestamp
+     * @param endTimestamp   the end timestamp
+     * @param accountIban    the account iban
+     * @param type           the type (transaction or commerciant)
+     * @param timestamp      the timestamp
+     */
+    public BusinessReportCommand(final UserRegistry userRegistry, final ArrayNode output,
+                                 final int startTimestamp, final int endTimestamp,
+                                 final String accountIban, final String type,
+                                 final int timestamp) {
         this.userRegistry = userRegistry;
         this.output = output;
         this.startTimestamp = startTimestamp;
@@ -28,6 +45,9 @@ public class BusinessReportCommand implements Command {
         this.timestamp = timestamp;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
 
@@ -44,14 +64,16 @@ public class BusinessReportCommand implements Command {
 
         if (type.equals("transaction")) {
             // Generate a business transaction report
-            ObjectNode report = new BusinessTransactionReport().generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, businessAccount);
+            ObjectNode report =
+                    new BusinessTransactionReport().generateReportBetweenTimestamps(startTimestamp,
+                            endTimestamp, timestamp, businessAccount);
             output.add(report);
 
-            // output.add(report.generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, account));
         } else {
             // Generate a business spendings report
             BusinessCommerciantReport report = businessAccount.getBusinessCommerciantReport();
-            ObjectNode reportNode = report.generateReportBetweenTimestamps(startTimestamp, endTimestamp, timestamp, businessAccount);
+            ObjectNode reportNode = report.generateReportBetweenTimestamps(startTimestamp,
+                    endTimestamp, timestamp, businessAccount);
             output.add(reportNode);
         }
 
