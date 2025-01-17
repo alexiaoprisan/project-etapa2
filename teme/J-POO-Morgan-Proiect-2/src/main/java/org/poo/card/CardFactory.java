@@ -10,7 +10,8 @@ public final class CardFactory {
 
     // Private constructor to prevent instantiation
     private CardFactory() {
-        throw new UnsupportedOperationException("Utility class should not be instantiated.");
+        throw new UnsupportedOperationException("Utility class "
+                + "should not be instantiated.");
     }
 
     /**
@@ -20,7 +21,9 @@ public final class CardFactory {
      * @param cardNumber the card number, which was generated previously
      * @return the created card
      */
-    public static Card createCard(final String type, final String cardNumber, final String ownerEmail) {
+    public static Card createCard(final String type,
+                                  final String cardNumber,
+                                  final String ownerEmail) {
         switch (type) {
             case "oneTimePay":
                 return new OneTimePayCard(cardNumber, ownerEmail);

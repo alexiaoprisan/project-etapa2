@@ -225,4 +225,5 @@ public final class Checker {
 
         return CheckerConstants.ZERO_POINTS;
     }
+
 }

@@ -158,31 +158,79 @@ public interface Account {
      *
      * @return the list of commerciants
      */
-    public ArrayList<Commerciant> getCommerciantList();
+    ArrayList<Commerciant> getCommerciantList();
 
     /**
      * Method to add a commerciant to the list of commerciants.
      *
      * @param commerciant
      */
-    public void addCommerciant(final Commerciant commerciant);
+    void addCommerciant(Commerciant commerciant);
 
-    public Commerciant getCommerciantByCommerciantName(final String commerciantName);
+    /**
+     * Method to get a commerciant by its name.
+     *
+     * @param commerciantName the name of the commerciant
+     * @return the commerciant with the given name
+     */
+    Commerciant getCommerciantByCommerciantName(String commerciantName);
 
-    public Commerciant getCommerciantByIBAN(final String IBAN);
+    /**
+     * Method to get a commerciant by its iban.
+     *
+     * @param iban the iban of the commerciant
+     * @return the commerciant with the given iban
+     */
+    Commerciant getCommerciantByIBAN(String iban);
 
+    /**
+     * Method to get the amount spent on the Spending Threshold Commerciants
+     *
+     * @return the amount spent on the ST Commerciant
+     */
     double getAmountSpentOnSTCommerciants();
 
+    /**
+     * Method to set the amount spent on the Spending Threshold Commerciants
+     *
+     * @param amountSpentOnSTCommerciants the amount spent on the ST Commerciant
+     */
     void setAmountSpentOnSTCommerciants(double amountSpentOnSTCommerciants);
 
-    public void addAmountSpentOnSTCommerciants(double amountSpent);
+    /**
+     * Method to add the amount spent on the Spending Threshold Commerciants
+     *
+     * @param amountSpent the amount spent on the ST Commerciant
+     */
+    void addAmountSpentOnSTCommerciants(double amountSpent);
 
-    public ArrayList<Discount> getDiscounts();
+    /**
+     * Method to get the list of discounts in an account, for the cashback
+     *
+     * @return the list of discounts
+     */
+    ArrayList<Discount> getDiscounts();
 
-    public void addDiscount(final Discount discount);
+    /**
+     * Method to add a discount to the list of discounts in an account
+     *
+     * @param discount the discount to be added
+     */
+    void addDiscount(Discount discount);
 
-    public void removeDiscount(final Discount discount);
+    /**
+     * Method to remove a discount from the list of discounts in an account
+     *
+     * @param discount the discount to be removed
+     */
+    void removeDiscount(Discount discount);
 
-    public Discount getDiscountByType(final String type);
+    /**
+     * Method to get a discount by its type
+     *
+     * @param type the type of the discount
+     * @return the discount with the given type
+     */
+    Discount getDiscountByType(String type);
 
 }

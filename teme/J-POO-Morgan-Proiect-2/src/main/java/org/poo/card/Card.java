@@ -49,7 +49,15 @@ public interface Card {
      */
     void setType(String type);
 
+    /**
+     * Getter for the card balance.
+     * @param ownerEmail the email of the card owner.
+     */
     void setOwnerEmail(String ownerEmail);
 
+    /**
+     * Getter for the card balance.
+     * @return the card balance.
+     */
     String getOwnerEmail();
 }

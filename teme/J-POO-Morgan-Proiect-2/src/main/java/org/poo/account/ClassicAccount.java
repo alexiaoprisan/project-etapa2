@@ -29,10 +29,10 @@ public final class ClassicAccount implements Account {
     private final ArrayList<Card> cards = new ArrayList<>();
 
     // commerciantsList is a list of all the commerciants that the user has sent money to
-    // it will help with the cashback strategy, counting the number of transactions for each commerciant
+    // it will help with the cashback strategy, counting the transactions for each commerciant
     private final ArrayList<Commerciant> commerciantsList = new ArrayList<>();
 
-    // it will help in the spending report, because these commerciants come only from Online payments
+    // it will help in the spending report, because the commerciants come only from Online payments
     private final ArrayList<Commerciant> commerciantsListForSpendingReport = new ArrayList<>();
 
     // amountSpentOnSTCommerciants is the amount of money spent on the commerciants who
@@ -179,7 +179,7 @@ public final class ClassicAccount implements Account {
      * {@inheritDoc}
      */
     @Override
-    public void createCard(final String type, final String cardNumber, String email) {
+    public void createCard(final String type, final String cardNumber, final String email) {
         // Create a new card
         Card newCard = CardFactory.createCard(type, cardNumber, email);
 
@@ -264,6 +264,7 @@ public final class ClassicAccount implements Account {
      *
      * @return the list of commerciants
      */
+    @Override
     public ArrayList<Commerciant> getCommerciantList() {
         return commerciantsList;
     }
@@ -273,12 +274,10 @@ public final class ClassicAccount implements Account {
      *
      * @param commerciant
      */
+    @Override
     public void addCommerciant(final Commerciant commerciant) {
         for (Commerciant c : commerciantsList) {
             if (c.getCommerciant().equals(commerciant.getCommerciant())) {
-                //c.addAmountSpent(commerciant.getAmountSpent());
-                //c.incrementNrOfTransactions();
-               // System.out.println(this.iban + " " + commerciant.getCommerciant());
                 return;
             }
         }
@@ -290,11 +289,16 @@ public final class ClassicAccount implements Account {
             }
             index++;
         }
-        Commerciant newCommerciant = new Commerciant(commerciant.getCommerciant(), commerciant.getId(),
-                commerciant.getIban(), commerciant.getType(), commerciant.getCashbackStrategy());
+        Commerciant newCommerciant = new Commerciant(commerciant.getCommerciant(),
+                commerciant.getId(), commerciant.getIban(),
+                commerciant.getType(), commerciant.getCashbackStrategy());
         commerciantsList.add(index, newCommerciant);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Commerciant getCommerciantByCommerciantName(final String commerciantName) {
         for (Commerciant commerciant : this.commerciantsList) {
             if (commerciant.getCommerciant().equals(commerciantName)) {
@@ -304,31 +308,55 @@ public final class ClassicAccount implements Account {
         return null;
     }
 
-    public Commerciant getCommerciantByIBAN(final String IBAN) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Commerciant getCommerciantByIBAN(final String accountIban) {
         for (Commerciant commerciant : this.commerciantsList) {
-            if (commerciant.getIban().equals(IBAN)) {
+            if (commerciant.getIban().equals(accountIban)) {
                 return commerciant;
             }
         }
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double getAmountSpentOnSTCommerciants() {
         return amountSpentOnSTCommerciants;
     }
 
-    public void setAmountSpentOnSTCommerciants(double amountSpentOnSTCommerciants) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAmountSpentOnSTCommerciants(final double amountSpentOnSTCommerciants) {
         this.amountSpentOnSTCommerciants = amountSpentOnSTCommerciants;
     }
 
-    public void addAmountSpentOnSTCommerciants(double amountSpent) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addAmountSpentOnSTCommerciants(final double amountSpent) {
         this.amountSpentOnSTCommerciants += amountSpent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ArrayList<Discount> getDiscounts() {
         return discounts;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void addDiscount(final Discount discount) {
         for (Discount d : discounts) {
             if (d.getType().equals(discount.getType()) && d.getValue() == discount.getValue()) {
@@ -338,6 +366,10 @@ public final class ClassicAccount implements Account {
         discounts.add(discount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Discount getDiscountByType(final String type) {
         for (Discount discount : discounts) {
             if (discount.getType().equals(type)) {
@@ -347,14 +379,28 @@ public final class ClassicAccount implements Account {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void removeDiscount(final Discount discount) {
         discounts.remove(discount);
     }
 
+    /**
+     * Getter for the list of commerciants, which the user has sent money to
+     *
+     * @return the list of commerciants
+     */
     public ArrayList<Commerciant> getCommerciantsListForSpendingReport() {
         return commerciantsListForSpendingReport;
     }
 
+    /**
+     * Method to add a commerciant to the list of commerciants for the spending report.
+     *
+     * @param commerciant the commerciant to be added
+     */
     public void addCommerciantForSpendingReport(final Commerciant commerciant) {
         for (Commerciant c : commerciantsListForSpendingReport) {
             if (c.getCommerciant().equals(commerciant.getCommerciant())) {

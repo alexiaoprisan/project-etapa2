@@ -7,7 +7,11 @@ import org.poo.commerciants.Commerciant;
 import org.poo.commerciants.CommerciantRegistry;
 import org.poo.exchangeRates.ExchangeInputFormat;
 import org.poo.exchangeRates.ExchangeRates;
-import org.poo.fileio.*;
+import org.poo.fileio.CommandInput;
+import org.poo.fileio.ObjectInput;
+import org.poo.fileio.UserInput;
+import org.poo.fileio.CommerciantInput;
+import org.poo.fileio.ExchangeInput;
 import org.poo.splitPayment.SplitPaymentsRegistry;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
@@ -89,8 +93,7 @@ public final class BankManager {
 
             if (user.getOccupation().equals("student")) {
                 newUser.setServicePlan("student");
-            }
-            else {
+            } else {
                 newUser.setServicePlan("standard");
             }
             userRegistry.addUser(newUser);
@@ -117,11 +120,19 @@ public final class BankManager {
         }
     }
 
+    /**
+     * Process the commerciants from the input data and save them
+     * to the commerciants registry
+     *
+     * @param inputData the input data to process
+     */
     public void processCommerciants(final ObjectInput inputData) {
         CommerciantRegistry commerciantRegistry = CommerciantRegistry.getInstance();
         for (CommerciantInput commerciant : inputData.getCommerciants()) {
-            Commerciant newCommerciant = new Commerciant(commerciant.getCommerciant(), commerciant.getId(),
-                    commerciant.getAccount(), commerciant.getType(), commerciant.getCashbackStrategy());
+            Commerciant newCommerciant = new Commerciant(commerciant.getCommerciant(),
+                    commerciant.getId(),
+                    commerciant.getAccount(), commerciant.getType(),
+                    commerciant.getCashbackStrategy());
 
             commerciantRegistry.addCommerciant(newCommerciant);
         }

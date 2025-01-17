@@ -46,7 +46,7 @@ public final class SavingsAccount implements Account {
 
     // commerciantsList is a list of all the commerciants that the user has sent money to
     // it will help in the spending report
-    // it will help with the cashback strategy, counting the number of transactions for each commerciant
+    // it will help with the cashback strategy, counting the transactions for each commerciant
     private final ArrayList<Commerciant> commerciantsList = new ArrayList<>();
 
     // amountSpentOnSTCommerciants is the amount of money spent on the commerciants who
@@ -190,7 +190,7 @@ public final class SavingsAccount implements Account {
      * {@inheritDoc}
      */
     @Override
-    public void createCard(final String type, final String cardNumber, String email) {
+    public void createCard(final String type, final String cardNumber, final String email) {
         // Create and add a new card
         Card newCard = CardFactory.createCard(type, cardNumber, email);
         cards.add(newCard);
@@ -257,12 +257,10 @@ public final class SavingsAccount implements Account {
      *
      * @param commerciant
      */
+    @Override
     public void addCommerciant(final Commerciant commerciant) {
         for (Commerciant c : commerciantsList) {
             if (c.getCommerciant().equals(commerciant.getCommerciant())) {
-                //c.addAmountSpent(commerciant.getAmountSpent());
-                //c.incrementNrOfTransactions();
-                //System.out.println(this.iban + " " + commerciant.getCommerciant());
                 return;
             }
         }
@@ -274,15 +272,24 @@ public final class SavingsAccount implements Account {
             }
             index++;
         }
-        Commerciant newCommerciant = new Commerciant(commerciant.getCommerciant(), commerciant.getId(),
-                commerciant.getIban(), commerciant.getType(), commerciant.getCashbackStrategy());
+        Commerciant newCommerciant = new Commerciant(commerciant.getCommerciant(),
+                commerciant.getId(), commerciant.getIban(),
+                commerciant.getType(), commerciant.getCashbackStrategy());
         commerciantsList.add(index, newCommerciant);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void removeDiscount(final Discount discount) {
         discounts.remove(discount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Commerciant getCommerciantByCommerciantName(final String commerciantName) {
         for (Commerciant commerciant : commerciantsList) {
             if (commerciant.getCommerciant().equals(commerciantName)) {
@@ -292,26 +299,50 @@ public final class SavingsAccount implements Account {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double getAmountSpentOnSTCommerciants() {
         return amountSpentOnSTCommerciants;
     }
 
-    public void setAmountSpentOnSTCommerciants(double amountSpentOnSTCommerciants) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAmountSpentOnSTCommerciants(final double amountSpentOnSTCommerciants) {
         this.amountSpentOnSTCommerciants = amountSpentOnSTCommerciants;
     }
 
-    public void addAmountSpentOnSTCommerciants(double amountSpent) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addAmountSpentOnSTCommerciants(final double amountSpent) {
         this.amountSpentOnSTCommerciants += amountSpent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ArrayList<Discount> getDiscounts() {
         return discounts;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void addDiscount(final Discount discount) {
         discounts.add(discount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Discount getDiscountByType(final String type) {
         for (Discount discount : discounts) {
             if (discount.getType().equals(type)) {
@@ -321,9 +352,13 @@ public final class SavingsAccount implements Account {
         return null;
     }
 
-    public Commerciant getCommerciantByIBAN(final String IBAN) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Commerciant getCommerciantByIBAN(final String accountIban) {
         for (Commerciant commerciant : commerciantsList) {
-            if (commerciant.getIban().equals(IBAN)) {
+            if (commerciant.getIban().equals(accountIban)) {
                 return commerciant;
             }
         }

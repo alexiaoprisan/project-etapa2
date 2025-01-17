@@ -18,8 +18,9 @@ public final class AddAccountCommand implements Command {
     private final String email;
     private final String accountType;
     private final String currency;
-    final double interestRate;
-    final ExchangeRates exchangeRates;
+    private final double interestRate;
+    private final ExchangeRates exchangeRates;
+    private static final int MINIMUM_BALANCE = 500;
 
     /**
      * Constructor for the AddAccountCommand.
@@ -68,7 +69,7 @@ public final class AddAccountCommand implements Command {
         User user = userRegistry.getUserByEmail(email);
 
         double rate = exchangeRates.convertExchangeRate("RON", currency);
-        double auxiliarAmountBusiness = 500 * rate;
+        double auxiliarAmountBusiness = MINIMUM_BALANCE * rate;
 
         String iban = Utils.generateIBAN();
         user.addAccount(accountType, currency, iban, interestRate, user, auxiliarAmountBusiness);

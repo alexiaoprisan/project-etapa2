@@ -54,7 +54,8 @@ public final class AddFundsCommand implements Command {
 
             User owner = businessAccount.getOwner();
 
-            if (!businessAccount.isManager(user) && !businessAccount.isEmployee(user) && !owner.equals(user)) {
+            if (!businessAccount.isManager(user) && !businessAccount.isEmployee(user)
+                    && !owner.equals(user)) {
                 System.out.println("User is not allowed to deposit funds " + amount);
                 return;
             }
@@ -63,12 +64,12 @@ public final class AddFundsCommand implements Command {
                 if (amount > businessAccount.getMaxDepositedLimit()) {
                     return;
                 }
-               businessAccount.addEmployeeDepositedAmount(user, amount);
-               businessAccount.setTotalDeposited(businessAccount.getTotalDeposited() + amount);
-            }
-            else if (businessAccount.isManager(user)) {
-               businessAccount.addManagerDepositedAmount(user, amount);
-               businessAccount.setTotalDeposited(businessAccount.getTotalDeposited() + amount);
+                businessAccount.addEmployeeDepositedAmount(user, amount);
+                businessAccount.setTotalDeposited(businessAccount.getTotalDeposited() + amount);
+
+            } else if (businessAccount.isManager(user)) {
+                businessAccount.addManagerDepositedAmount(user, amount);
+                businessAccount.setTotalDeposited(businessAccount.getTotalDeposited() + amount);
             }
         }
 

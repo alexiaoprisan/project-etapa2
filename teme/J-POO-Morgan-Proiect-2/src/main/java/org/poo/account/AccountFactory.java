@@ -1,6 +1,5 @@
 package org.poo.account;
 
-import org.poo.exchangeRates.ExchangeRates;
 import org.poo.user.User;
 
 /**
@@ -12,6 +11,7 @@ public final class AccountFactory {
 
     // Prevent instantiation
     private AccountFactory() {
+
         throw new UnsupportedOperationException("Utility class cannot be instantiated.");
     }
 
@@ -51,7 +51,8 @@ public final class AccountFactory {
             case savings:
                 return new SavingsAccount(currency, iban, balance, minBalance, interestRate);
             case business:
-                return new BusinessAccount(currency, iban, balance, minBalance, owner, businessLimit);
+                return new BusinessAccount(currency, iban, balance, minBalance,
+                        owner, businessLimit);
             default:
                 throw new IllegalArgumentException("The account type "
                         + accountType + " is not recognized.");
