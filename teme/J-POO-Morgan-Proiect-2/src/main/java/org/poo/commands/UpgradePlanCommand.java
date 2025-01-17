@@ -9,7 +9,10 @@ import org.poo.transaction.UpgradePlanError;
 import org.poo.user.User;
 import org.poo.user.UserRegistry;
 
-public class UpgradePlanCommand implements Command {
+/**
+ * Command that upgrades the service plan of a user.
+ */
+public final class UpgradePlanCommand implements Command {
     private final UserRegistry userRegistry;
     private final String iban;
     private final String newServicePlan;
@@ -17,6 +20,16 @@ public class UpgradePlanCommand implements Command {
     private ArrayNode output;
     private ExchangeRates exchangeRates;
 
+    /**
+     * Constructor for the UpgradePlanCommand.
+     *
+     * @param userRegistry    the user registry
+     * @param output          the output array
+     * @param timestamp       the timestamp
+     * @param iban            the iban of the user
+     * @param newServicePlan  the new service plan
+     * @param exchangeRates   the exchange rates
+     */
     public UpgradePlanCommand(final UserRegistry userRegistry,
                               final ArrayNode output,
                               final int timestamp,
@@ -48,7 +61,8 @@ public class UpgradePlanCommand implements Command {
 
         Account account = user.getAccountByIBAN(iban);
         if (account == null) {
-            Transaction transaction = new UpgradePlanError(timestamp, "Account not found");
+            Transaction transaction = new UpgradePlanError(timestamp,
+                    "Account not found");
             user.addTransaction(transaction);
 
             ObjectNode error = output.addObject();
@@ -60,31 +74,37 @@ public class UpgradePlanCommand implements Command {
             return;
         }
 
-        if (user.getServicePlan().equals("standard") && newServicePlan.equals("student")) {
+        if (user.getServicePlan().equals("standard")
+                && newServicePlan.equals("student")) {
             return;
         }
 
-        if (user.getServicePlan().equals("student") && newServicePlan.equals("standard")) {
+        if (user.getServicePlan().equals("student")
+                && newServicePlan.equals("standard")) {
             return;
         }
 
         // check if the user has the new service plan, so we don't upgrade it again
         if (user.getServicePlan().equals(newServicePlan)) {
-            Transaction transaction = new UpgradePlanError(timestamp, "The user already has the " + newServicePlan + " plan.");
+            Transaction transaction = new UpgradePlanError(timestamp,
+                    "The user already has the " + newServicePlan + " plan.");
             user.addTransaction(transaction);
             account.addTransaction(transaction);
             return;
         }
 
         if (newServicePlan.equals("silver") && user.getServicePlan().equals("gold")) {
-            Transaction transaction = new UpgradePlanError(timestamp, "You cannot downgrade your plan.");
+            Transaction transaction = new UpgradePlanError(timestamp,
+                    "You cannot downgrade your plan.");
             user.addTransaction(transaction);
             return;
         }
 
-        if ((newServicePlan.equals("student") || newServicePlan.equals("standard")) &&
-                ((user.getServicePlan().equals("silver")) || user.getServicePlan().equals("gold"))) {
-            Transaction transaction = new UpgradePlanError(timestamp, "You cannot upgrade your plan.");
+        if ((newServicePlan.equals("student") || newServicePlan.equals("standard"))
+                && ((user.getServicePlan().equals("silver"))
+                        || user.getServicePlan().equals("gold"))) {
+            Transaction transaction = new UpgradePlanError(timestamp,
+                    "You cannot upgrade your plan.");
             user.addTransaction(transaction);
             return;
         }

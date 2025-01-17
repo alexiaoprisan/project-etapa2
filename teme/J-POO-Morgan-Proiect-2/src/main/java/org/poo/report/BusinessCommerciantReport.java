@@ -4,21 +4,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.BusinessAccount;
-import org.poo.commerciants.Commerciant;
 import org.poo.user.User;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-public class BusinessCommerciantReport {
+/**
+ * Represents a report of all commerciants in the business account.
+ * It contains a list of CommerciantBusiness objects.
+ * Each commerciant has listed its employees and managers who made transactions.
+ */
+public final class BusinessCommerciantReport {
 
-    ArrayList<CommerciantBusiness> commerciantBusinesses = new ArrayList<>();
+    private ArrayList<CommerciantBusiness> commerciantBusinesses = new ArrayList<>();
 
+    /**
+     * Default constructor.
+     */
     public BusinessCommerciantReport() {
     }
 
-    public CommerciantBusiness getCommerciantBusiness(String commerciant) {
+    /**
+     * Constructor with commerciantBusinesses.
+     *
+     * @param commerciant the commerciant
+     */
+    public CommerciantBusiness getCommerciantBusiness(final String commerciant) {
         for (CommerciantBusiness commerciantBusiness : commerciantBusinesses) {
             if (commerciantBusiness.getCommerciant().equals(commerciant)) {
                 return commerciantBusiness;
@@ -27,7 +37,12 @@ public class BusinessCommerciantReport {
         return null;
     }
 
-    public void addCommerciantBusiness(CommerciantBusiness commerciantBusiness) {
+    /**
+     * Add a commerciant to the report.
+     *
+     * @param commerciantBusiness the commerciant
+     */
+    public void addCommerciantBusiness(final CommerciantBusiness commerciantBusiness) {
         // Add the commerciant alphabetically by its name
         for (int i = 0; i < commerciantBusinesses.size(); i++) {
             if (commerciantBusinesses.get(i).getCommerciant()
@@ -41,12 +56,13 @@ public class BusinessCommerciantReport {
     }
 
 
-    public ArrayList<CommerciantBusiness> getCommerciantBusinesses() {
-        return commerciantBusinesses;
-    }
-
-
-
+    /**
+     * Generate a report of all commerciants in the business account.
+     *
+     * @param timestamp the timestamp of the report
+     * @param account   the business account
+     * @return the report as a JSON object
+     */
     public ObjectNode generateReportBetweenTimestamps(
             final int timestampStart,
             final int timestampEnd,
@@ -70,18 +86,6 @@ public class BusinessCommerciantReport {
             accountNode.put("statistics type", "commerciant");
 
             ArrayNode commerciantsArray = accountNode.putArray("commerciants");
-
-            //"commerciants": [
-            //                {
-            //                    "commerciant": "Amazon",
-            //                    "employees": [
-            //                        "Voinea Valentin"
-            //                    ],
-            //                    "managers": [
-            //                    ],
-            //                    "total received": 220.04999999999998
-            //                },
-            //                {
 
             for (CommerciantBusiness commerciantBusiness : commerciantBusinesses) {
                 ObjectNode commerciantNode = mapper.createObjectNode();
@@ -112,6 +116,5 @@ public class BusinessCommerciantReport {
         }
 
     }
-
 
 }

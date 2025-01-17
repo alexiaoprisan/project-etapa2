@@ -45,7 +45,8 @@ public final class SetMinimumBalanceCommand implements Command {
 
         User user = userRegistry.getUserByIBAN(iban);
 
-        // Check if the account is a BusinessAccount, because only the owner can set the minimum balance
+        // Check if the account is a BusinessAccount,
+        // because only the owner can set the minimum balance
         if (account.getType().equals("business")) {
             BusinessAccount businessAccount = (BusinessAccount) account;
             User owner = businessAccount.getOwner();

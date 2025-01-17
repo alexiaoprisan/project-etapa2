@@ -3,16 +3,28 @@ package org.poo.report;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.poo.account.Account;
 import org.poo.account.BusinessAccount;
 import org.poo.user.User;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BusinessTransactionReport {
+/**
+ * BusinessTransactionReport class is responsible for generating
+ * a report of the transactions
+ * that occurred between two timestamps for a business account.
+ */
+public final class BusinessTransactionReport {
 
+    /**
+     * Generates a report of the transactions that occurred between two t
+     * imestamps for a business account.
+     *
+     * @param timestampStart the start timestamp
+     * @param timestampEnd   the end timestamp
+     * @param timestamp      the current timestamp
+     * @param account        the business account
+     * @return the JSON report
+     */
     public ObjectNode generateReportBetweenTimestamps(
             final int timestampStart,
             final int timestampEnd,
@@ -42,11 +54,13 @@ public class BusinessTransactionReport {
             Map<User, Double> managersDeposited = account.getManagerDepositedAmounts();
 
             for (User manager : managers) {
-                ObjectNode managerNode = managersArray.addObject(); // Correctly adds an object to the array
+                ObjectNode managerNode = managersArray.addObject();
                 String username = manager.getLastName() + " " + manager.getFirstName();
                 managerNode.put("username", username);
-                managerNode.put("spent", managersSpent.getOrDefault(manager, 0.0)); // Use default if null
-                managerNode.put("deposited", managersDeposited.getOrDefault(manager, 0.0)); // Use default if null
+                managerNode.put("spent",
+                        managersSpent.getOrDefault(manager, 0.0)); // Use default if null
+                managerNode.put("deposited",
+                        managersDeposited.getOrDefault(manager, 0.0)); // Use default if null
             }
 
             ArrayNode employeesArray = accountNode.putArray("employees");
@@ -59,8 +73,10 @@ public class BusinessTransactionReport {
                 ObjectNode employeeNode = employeesArray.addObject();
                 String username = employee.getLastName() + " " + employee.getFirstName();
                 employeeNode.put("username", username);
-                employeeNode.put("spent", employeesSpent.getOrDefault(employee, 0.0));
-                employeeNode.put("deposited", employeesDeposited.getOrDefault(employee, 0.0));
+                employeeNode.put("spent",
+                        employeesSpent.getOrDefault(employee, 0.0));
+                employeeNode.put("deposited",
+                        employeesDeposited.getOrDefault(employee, 0.0));
             }
 
             accountNode.put("total spent", account.getTotalSpent());

@@ -1,0 +1,1395 @@
+commit 72910481d9a4d171d8d9d9c12fea60ae50ba6486
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Fri Jan 17 22:02:22 2025 +0200
+
+    cateva schimbari la structura pay
+
+commit 36eada3e801a8df5021085f7e8842b493c4d6d3b
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Fri Jan 17 21:18:06 2025 +0200
+
+    am inceput coding style
+
+commit c48005062ccee8b9b95cdea383a894879e187fc6
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Wed Jan 15 22:36:14 2025 +0200
+
+    de facut coding style si readme
+
+commit c7971fd2ff97d66e618949c67848f7e3b3ff4a93
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Wed Jan 15 22:22:50 2025 +0200
+
+    am terminat, am 80
+
+commit 451190f5aa7d56b68b9a55d9c1562e9a60919bcc
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Mon Jan 13 22:42:13 2025 +0200
+
+    AM REUSIT, AM REPARAT CASHBACK UL - 54 P
+
+commit deceaf37cdcd6f80aa7a4b784870393bc814cf9f
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Mon Jan 13 21:47:35 2025 +0200
+
+    commit sa nu pierd punctele ca incerc ceva
+
+commit adcbbfa70403e0346083c74f911f532c9637630f
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Mon Jan 13 12:00:47 2025 +0200
+
+    testele cu erori, pana la 12, dar nu imi iese testul 9 - o suma - 36p
+
+commit 0ba78f395a9d79f28f43b7c96924e378e2816a01
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Sun Jan 12 14:47:34 2025 +0200
+
+    am reprat iar tema cu noile teste - pana la bus acc - 18 p
+
+commit 0a108ee9982491fdd1974f1deaa0614e30469628
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Sun Jan 5 23:20:34 2025 +0200
+
+    am inceput business account, am facut pana la testul 8 - 16 p
+
+commit a27d5e6472004ba402f858d9660e483c94dbfd41
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Sun Jan 5 18:49:10 2025 +0200
+
+    primul test pe split payment, dar s-au stricat altele de la update-ul de refs :((((
+
+commit 7369aeea80103a45840d7f8b8902538ceda753ca
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Sun Jan 5 16:20:05 2025 +0200
+
+    incep split payment - 12 p
+
+commit 5ce768accbc964a7f6b1e3ae91df66eb2cdfbcfc
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Sat Jan 4 16:34:29 2025 +0200
+
+    cred ca mi a iesit cashback ul yaaaaay
+
+commit 185136e3e8c99ba5a2bbf8daf985d2cef66426ba
+Author: Oprisan <alexia.oprisan@stud.acs.upb.ro>
+Date:   Sat Jan 4 11:32:45 2025 +0200
+
+    am facut pana la cashback - 4p
+
+commit 86034c8cecd0d54a1fdca5fe856d2255d9056053
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Thu Jan 2 18:19:09 2025 +0200
+
+    Updated refs for t1,4,6,7
+
+commit c325001e0ba0455eb9537f96aa005895c0950b5e
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Thu Jan 2 15:42:37 2025 +0200
+
+    Updated exchange rate for t1
+
+commit afc71853862bc51bc818f0b2e9d7ef54a317f26e
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Wed Jan 1 21:55:44 2025 +0200
+
+    Final ref for t3
+
+commit 4e32e41deda5d0fc925bfaeb373da57fc38139eb
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Wed Jan 1 21:53:24 2025 +0200
+
+    Added refs for t7-12 & updated t7,t12
+
+commit 3dfbf9cb7ba0468b8d51b2ba03fb4e9518f900b4
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Wed Jan 1 20:40:40 2025 +0200
+
+    Fixed exchange rates for t4-6
+
+commit 72990031e3b9a143a4033fa2423b0aa8b63f6463
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Sun Dec 29 14:17:37 2024 +0200
+
+    Revert "Updated ref for t3"
+    
+    This reverts commit 7ac9155fa63baf32aecd96be2d0c4fc750428297.
+
+commit 7ac9155fa63baf32aecd96be2d0c4fc750428297
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Sun Dec 29 13:52:36 2024 +0200
+
+    Updated ref for t3
+
+commit 4a0ce2bf0b67d4dbceb1319a263e9dd796e93ff3
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Sat Dec 28 20:08:10 2024 +0200
+
+    Checker update for decimals
+
+commit 83d5d820c9af2c11ce93252eeb5f38dfd227f38a
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Sat Dec 28 20:03:13 2024 +0200
+
+    Added all tests
+
+commit bf938f8cdc7f0831d9c94fa6fea6d772206d728e
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Fri Dec 27 11:29:08 2024 +0200
+
+    Exchange fix for t2,4,6
+
+commit 26456d4d4f00963f0175c71cb4aee59ddab67891
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Fri Dec 27 10:06:23 2024 +0200
+
+    Updated ref for t6
+
+commit 5bb748eefa1f0cfab6a89bceb2dbd9cc0099e13e
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Fri Dec 27 09:56:05 2024 +0200
+
+    Updated t1-3 and added t4-6
+
+commit 830e396a22929cd781908f959b01f68c35aa2967
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Sat Dec 21 23:52:24 2024 +0200
+
+    Added 3 new tests
+
+commit 9ccc7c44cc31c5c7c01dd81ae220fca30d22e532
+Author: alina-t-872 <alina.tudorache872@gmail.com>
+Date:   Fri Dec 20 23:47:22 2024 +0200
+
+    Skel for Phase 2 project
+
+commit 2e781d85219b6b831b9f241396c1fe867d7c8ad0
+Author: David Capragiu <dievaid@10.13.13.3>
+Date:   Tue Dec 10 18:33:29 2024 +0200
+
+    Checker update for decimals, fixed checkstyle errors
+
+commit ebf4dc6ab6d402f8e849ef6e9aaa4d411dcbd213
+Author: David Capragiu <dievaid@10.13.13.3>
+Date:   Sat Dec 7 18:35:53 2024 +0200
+
+    Update spending report
+
+commit bdd4c1db73e152b8db553563ebb255ce63141f64
+Author: David Capragiu <dievaid@Davids-MacBook-Pro.local>
+Date:   Thu Dec 5 12:16:54 2024 +0200
+
+    fix spending reports not displaying errors
+
+commit d4c72d92e57420373553be0abf9ebc47eaedab65
+Author: David Capragiu <dievaid@Davids-MacBook-Pro.local>
+Date:   Wed Dec 4 21:51:49 2024 +0200
+
+    Checker permissive decimal check and fix split payment tests
+
+commit 00bae5a59ab6fe296c7655e6078a8238eca522ed
+Author: David Capragiu <dievaid@Davids-MacBook-Pro.local>
+Date:   Wed Dec 4 00:45:48 2024 +0200
+
+    Fixed big tests and spendingsReport
+
+commit 82807d68f7e76a92574c69026209b4ae6a29f509
+Author: David Capragiu <dievaid@Davids-MacBook-Pro.local>
+Date:   Thu Nov 28 22:44:31 2024 +0200
+
+    Alias tests fix
+
+commit e2f1934aab410a81a096ddd3a6e173fd8f07cb21
+Merge: 246ea09 6af025f
+Author: Cocioran Ștefan <57491945+stefancocioran@users.noreply.github.com>
+Date:   Thu Nov 28 22:26:17 2024 +0200
+
+    Merge pull request #52 from oop-pub/test11-card-status
+    
+    Update test11_card_status.json
+
+commit 6af025f53098167cc6a3d26e63cd1e493053e55c
+Author: Cleopatra Popescu <80599922+Cynerdus@users.noreply.github.com>
+Date:   Thu Nov 28 22:22:09 2024 +0200
+
+    Update test11_card_status.json
+    
+    Updated with the version of the input used to generate the ref file
+
+commit 246ea09acd3560a9308192566e4aa538f8e2252e
+Author: David Capragiu <dievaid@Davids-MacBook-Pro.local>
+Date:   Wed Nov 27 23:49:12 2024 +0200
+
+    Added fixes for tests
+
+commit a1dd10376762d17fae1dc8d1f3b1bfa205fa0340
+Author: David Capragiu <dievaid@Davids-MacBook-Pro.local>
+Date:   Tue Nov 26 00:52:51 2024 +0200
+
+    Modified tests & references
+
+commit 126acb01a6ad8d213262ae5a4161ecc9392a9d95
+Author: David Capragiu <dievaid@Davids-MacBook-Pro.local>
+Date:   Fri Nov 22 11:23:19 2024 +0200
+
+    Added readme for project
+
+commit ce52e97fc09dddee2a65cac3d3bc175f0e3072d8
+Author: David Capragiu <dievaid@Davids-MacBook-Pro.local>
+Date:   Fri Nov 22 11:12:17 2024 +0200
+
+    Skel for Phase 1 project
+
+commit 1852d59421f43478aa9f2dbea9ffe6da3e462270
+Author: Earthbert <daraban_timotei@tutanota.com>
+Date:   Mon Nov 11 20:47:37 2024 +0200
+
+    Update test04 to actually check cardUsesAttack command
+    
+    Signed-off-by: Earthbert <daraban_timotei@tutanota.com>
+
+commit 5663f7d923113105d3310d1c13b966548501943c
+Author: Florian-Luis Micu <miculuis1@gmail.com>
+Date:   Mon Nov 11 19:33:02 2024 +0200
+
+    updated checkstyle jar
+
+commit 1c4f2d2b33a0881d6ea940c99acc2bb522fc3eac
+Author: Florian-Luis Micu <miculuis1@gmail.com>
+Date:   Sun Nov 10 18:09:05 2024 +0200
+
+    added git log checking support
+
+commit d1c0099cbf15c133092173427d5de929a2650e08
+Merge: 2131947 b7012e4
+Author: Luis Micu <42833908+luis6156@users.noreply.github.com>
+Date:   Sun Nov 10 14:21:47 2024 +0200
+
+    Merge pull request #50 from teodorobert/fix-checkstyle
+    
+    GwentStone Light - Maven: Fix checkstyle test not running
+
+commit b7012e4273e4262304433916411c8a448d4c1359
+Author: Robert-Andrei Teodorescu <puro@teodorobert.com>
+Date:   Sun Nov 10 19:20:35 2024 +0900
+
+    GwentStone Light - Maven: Fix checkstyle test not running
+    
+    The path to the checkstyle jar has not been changed for the Maven
+    version of the assignment, which results in the checkstyle test not
+    running.
+    
+    This was probably not noticed because the checker reports the test as
+    passing because the erroneous checkstyle output is only one line.
+
+commit 213194757defa462b0c0a31df70ccde32c44702e
+Author: Florian-Luis Micu <miculuis1@gmail.com>
+Date:   Sat Nov 9 14:04:40 2024 +0200
+
+    added maven version for assignment 0
+
+commit 033db46293675739a020bee4f15617e5fde4b33c
+Author: Earthbert <daraban_timotei@tutanota.com>
+Date:   Thu Oct 31 11:31:09 2024 +0200
+
+    Update tests to include edge cases
+    
+    Signed-off-by: Earthbert <daraban_timotei@tutanota.com>
+
+commit 1add5018d0e6b216ee6e290f6c7305f6df02ed5b
+Author: Earthbert <daraban_timotei@tutanota.com>
+Date:   Sun Oct 27 19:43:42 2024 +0200
+
+    Update readme
+    
+    Signed-off-by: Earthbert <daraban_timotei@tutanota.com>
+
+commit c77fa17368230adf88b0d2eca625da8b4d24fa25
+Author: Earthbert <daraban_timotei@tutanota.com>
+Date:   Sun Oct 27 19:40:08 2024 +0200
+
+    Update checker score logic
+    
+    Signed-off-by: Earthbert <daraban_timotei@tutanota.com>
+
+commit 4aca881669fb6e0eb418c9f565eceecbfffadc29
+Author: Earthbert <daraban_timotei@tutanota.com>
+Date:   Fri Oct 25 19:47:44 2024 +0300
+
+    Update homework to 2024 version
+
+commit ba7f473cb63e8ecb29e0971015c60d99191c0c9f
+Merge: 8918b66 2bce160
+Author: Andrei Vasiliu <andreivasiliu2211@users.noreply.github.com>
+Date:   Wed Jan 11 09:54:22 2023 +0200
+
+    Merge pull request #47 from mariasfiraiala/sort-test-files
+    
+    {teme/tema, proiect1}: Sort input files
+
+commit 8918b6641d171bd87ec42507e4495e05221e6e5f
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Mon Jan 2 18:38:39 2023 +0200
+
+    Add files via upload
+
+commit 1c0d70b896bb27e58a46cae32b95580fad0319ef
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Mon Jan 2 18:33:16 2023 +0200
+
+    Add files via upload
+
+commit 126679be58f1724698776273bdb058e9e0b8d31a
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Mon Jan 2 18:32:46 2023 +0200
+
+    Add files via upload
+
+commit 89f14b359907a3dfcdcd2b0b2a10a240fb2eedf4
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Tue Dec 27 20:35:30 2022 +0200
+
+    Add files via upload
+
+commit 34c570774d013b6b55ebbf13ffa04caa16f1ad2f
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Tue Dec 27 20:18:57 2022 +0200
+
+    Add files via upload
+
+commit 03b65c6d1ee02fdb12e291349f77c67cabef2c5e
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Tue Dec 27 20:11:38 2022 +0200
+
+    Add files via upload
+
+commit 669e41897403877631a2bba191a10407ef0b1ae4
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Tue Dec 27 18:55:38 2022 +0200
+
+    Add files via upload
+
+commit dd803df9f66b9de75ae5d061f2ceefa4ce4ac40c
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Tue Dec 27 18:22:49 2022 +0200
+
+    Add files via upload
+
+commit 0c8ab544d95d7ff2aba4f0be3c0843af1525558e
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Tue Dec 27 18:20:17 2022 +0200
+
+    Add files via upload
+
+commit fd039d9c9c17ccd98d68fdbbb1e76640f54aeaa4
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Fri Dec 23 00:08:52 2022 +0200
+
+    Add files via upload
+
+commit bd185086972ec185052d43a750f6fc34a247be4c
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Fri Dec 23 00:01:11 2022 +0200
+
+    Update Main.java
+
+commit b188f8b762d0aa8d7e8f8799509cbdb79a6bbeea
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 22 23:59:17 2022 +0200
+
+    Delete checker.sh
+
+commit ac85e0fb8aa3cfc42cb1d2e651c8ae6a1ebd5125
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 22 23:59:09 2022 +0200
+
+    Delete Makefile
+
+commit 2080928da9cca1523aff8f183084ffc19f3a11b8
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 22 23:58:51 2022 +0200
+
+    Add files via upload
+
+commit 2bce16090bb07f79533225e2d3b87f01f78c6ce1
+Author: Maria Sfiraiala <maria.sfiraiala@gmail.com>
+Date:   Sat Dec 17 22:06:21 2022 +0200
+
+    teme/tema, proiect1: Sort input files
+    
+    This commit sorts input files alphabetically in order to ensure that
+    they are parsed in a consistent manner. It manages both the first
+    assignment and the project.
+    
+    Signed-off-by: Maria Sfiraiala <maria.sfiraiala@gmail.com>
+
+commit 5f703aa0afbc3d6736cfef2ab60db0ec4c5ec83f
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 8 23:44:55 2022 +0200
+
+    Add files via upload
+
+commit ccc7aef51891784738933a230a364dc5f51887d8
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 8 23:21:09 2022 +0200
+
+    Add files via upload
+
+commit fabffe8284f893cbc1ac6f90215d096e5a6c3972
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 8 23:20:39 2022 +0200
+
+    Add files via upload
+
+commit 3033c7906d5935593cf4fa9c9ab03fcef62e8cab
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Mon Dec 5 13:33:39 2022 +0200
+
+    Add files via upload
+
+commit d744ed871090ca1a12be810162fe512176726a46
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Mon Dec 5 13:23:06 2022 +0200
+
+    Add files via upload
+
+commit 19cc84e6db1885a8a61699615aa011757f152280
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Sat Dec 3 15:24:39 2022 +0200
+
+    Add files via upload
+
+commit 73e5c6f59d3496ca199addd88ab7137e92105efe
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 1 16:53:01 2022 +0200
+
+    Add files via upload
+
+commit af7c3bcb2f55f5c09ccda33dde2195d48691fb27
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 1 16:48:08 2022 +0200
+
+    Add files via upload
+
+commit b5f2f3c77e386711123751a20fb6b6bb73ec069a
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 1 00:46:28 2022 +0200
+
+    Add files via upload
+    
+    CheckStyle Fix
+
+commit afbd5f04dc6c53c338d65b35784ceff062918dae
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Thu Dec 1 00:43:14 2022 +0200
+
+    Add files via upload
+    
+    Input/Ref normalization
+
+commit 38b3659eb8c92838a80aed62dafbf71781af6d12
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Wed Nov 30 17:03:14 2022 +0200
+
+    Delete proiect1/out/production/ProiectPOO2022 directory
+
+commit edf3c841b643558af845482a1f6583d6d2ff38c7
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Fri Nov 25 00:07:43 2022 +0200
+
+    Add files via upload
+
+commit 5756e3f82e34a65aa53d3efce9993faac7afa14a
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Fri Nov 25 00:06:29 2022 +0200
+
+    Delete proiect1 directory
+
+commit b9c87a2dc367bd3ad460d98f9c2cb773293c23ec
+Author: Mihai00-roacs <56954718+Mihai00-roacs@users.noreply.github.com>
+Date:   Fri Nov 25 00:06:12 2022 +0200
+
+    Delete proiect2 directory
+
+commit 39ca2f9e2bff0edc43312897fdaabdb2861be8c7
+Author: Luis Micu <42833908+luis6156@users.noreply.github.com>
+Date:   Sun Nov 13 14:06:53 2022 +0200
+
+    Update README.md
+
+commit ad88a9bddbf3ca666606385b1282b5a31914b602
+Author: Andrei Otetea <andreiotetea23@gmail.com>
+Date:   Sun Nov 13 14:05:53 2022 +0200
+
+    Added x and y fields in output for getCardAtPosition command
+
+commit 009e7c04e4bfb2fe15a339eb0206d8a19270056b
+Merge: 6fe9903 aeda2eb
+Author: Luis Micu <42833908+luis6156@users.noreply.github.com>
+Date:   Wed Nov 9 14:56:34 2022 +0200
+
+    Merge pull request #45 from corneliu-rotari/master
+    
+    Tema: Fixed the src.main.Test calling the Main.action
+
+commit aeda2eb41cdf9459cedd7f77a0dbb0cea5a558b7
+Author: Corneliu Rotari <corneliu.rotari99@gmail.com>
+Date:   Wed Nov 9 12:39:45 2022 +0200
+
+    Tema: Fixed the src.main.Test calling the Main.action with the wrong file path
+
+commit 6fe990365d0faf20c52f5fd8df08b691237466a5
+Author: Luis Micu <miculuis1@gmail.com>
+Date:   Tue Nov 8 11:21:54 2022 +0200
+
+    reversed test order
+
+commit 4c7c5af149c9fe7dd1ed42ec1d3ec96b51cae0f1
+Author: Luis Micu <miculuis1@gmail.com>
+Date:   Tue Nov 8 09:21:54 2022 +0200
+
+    fixed jackson dependencies
+
+commit 754ef4ac35cd07fe50f7b9e121e47f760aaa2e3f
+Author: Luis Micu <miculuis1@gmail.com>
+Date:   Tue Nov 8 09:19:51 2022 +0200
+
+    added intellij files
+
+commit d746e8b5a227205123a2206e1a24b4d953511ba4
+Author: Luis Micu <miculuis1@gmail.com>
+Date:   Mon Nov 7 22:39:45 2022 +0200
+
+    added assignment 1
+
+commit 9742dec25098d40badd548c202814707ae6455c5
+Author: mateihermina <56994639+mateihermina@users.noreply.github.com>
+Date:   Mon Jan 10 12:29:10 2022 +0200
+
+    Solve checkstyle errors
+
+commit 08057c153ebbea9a6c9098be140c5db37657d81f
+Author: mateihermina <56994639+mateihermina@users.noreply.github.com>
+Date:   Mon Jan 10 12:07:12 2022 +0200
+
+    Update refs for tests 28 and 29
+
+commit 6855355c14fdaed04f098b3cbae03f051312851b
+Author: mariaLeoveanu <maria.leoveanu@yahoo.com>
+Date:   Sun Jan 9 22:18:09 2022 +0200
+
+    updated inputs 15, 28, 29, 30
+
+commit 7eca120e7878e42569568a04f1e1c03870ace7c2
+Author: mateihermina <56994639+mateihermina@users.noreply.github.com>
+Date:   Sat Jan 8 00:47:30 2022 +0200
+
+    Sort cities in lexicographic order if they have the same niceScore
+
+commit 365863c3f380ac3b6e34635c696cc95d34d696ec
+Author: mateihermina <56994639+mateihermina@users.noreply.github.com>
+Date:   Sat Jan 8 00:27:44 2022 +0200
+
+    Fix bug (decrease gift quantity when the yellow elf assigns a gift)
+
+commit 4966947bf69b87e0f8c69c9fcab4e014b7ddf495
+Author: mateihermina <56994639+mateihermina@users.noreply.github.com>
+Date:   Fri Jan 7 19:40:26 2022 +0200
+
+    Update refs (solve bug related to elves in annual changes)
+
+commit d75de8fa72bfa3d3b70803f6a81124f9b9350a27
+Author: Ionela Nicuta <ionela.nicuta05@gmail.com>
+Date:   Fri Jan 7 18:19:08 2022 +0200
+
+    Updated refs
+
+commit 47ebbede55a5a599c6668a139ef28363aa3ab8b9
+Author: Ionela Nicuta <ionela.nicuta05@gmail.com>
+Date:   Fri Jan 7 13:08:51 2022 +0200
+
+    Updated tests (30)
+
+commit 48a6010452e8c40d830fcf8f0e51847aab067b73
+Author: Ionela Nicuta <ionela.nicuta05@gmail.com>
+Date:   Fri Jan 7 13:06:44 2022 +0200
+
+    Deleted unused file
+
+commit 7d0e981ad9c4a55bffe6cd5eb656abd5d26fdf56
+Author: Ionela Nicuta <ionela.nicuta05@gmail.com>
+Date:   Fri Jan 7 13:05:56 2022 +0200
+
+    Updated checker
+
+commit fcd818e8488ffa47c9ea83cbd96c31d6ae7fdb88
+Author: Ionela Nicuta <ionela.nicuta05@gmail.com>
+Date:   Mon Jan 3 20:55:52 2022 +0200
+
+    Updated enums
+
+commit bf222844b1c79025044d766ce140b9106732d894
+Author: Ionela Nicuta <ionela.nicuta05@gmail.com>
+Date:   Mon Jan 3 20:52:52 2022 +0200
+
+    Added project 2 folder
+
+commit 0094477e4766d14169ac81677831e3d7bdb843a9
+Author: mateihermina <56994639+mateihermina@users.noreply.github.com>
+Date:   Wed Dec 8 11:55:52 2021 +0200
+
+    Update ref25
+
+commit 1189c7c18646726ebc926da42cb9add23807c717
+Author: mateihermina <56994639+mateihermina@users.noreply.github.com>
+Date:   Mon Dec 6 18:48:55 2021 +0200
+
+    Add all cities in Cities Enum
+
+commit b17f02c608a1e37930f74b6e6d4608344e51f428
+Author: mateihermina <56994639+mateihermina@users.noreply.github.com>
+Date:   Mon Dec 6 18:21:39 2021 +0200
+
+    Modified tests and ref (18, 19, 24)
+
+commit 9310f208e461d991bc1fa5be4bbd33406bc04fa3
+Author: Ionela Nicuta <ionela.nicuta05@gmail.com>
+Date:   Sun Dec 5 20:33:00 2021 +0200
+
+    Updated ref test 25 to sort by id's
+
+commit 1f6612757fb725057f573791effffbc9c291b80c
+Author: Ionela Nicuta <ionela.nicuta05@gmail.com>
+Date:   Fri Dec 3 11:43:16 2021 +0200
+
+    Updated ref test
+
+commit ae82b4b52f5b01ca051f3481675bbbe1bf617911
+Author: Nicuta Loredana Ionela <ionela.nicuta05@gmail.com>
+Date:   Sun Nov 28 23:39:20 2021 +0200
+
+    Added skel for etapa1 (#43)
+    
+    * Added skel for etapa1
+    
+    * Added jars
+    
+    Co-authored-by: Florin Mihalache <florinrm@users.noreply.github.com>
+
+commit 112f391ebf05cdcc0b96c204711c7bb1f8f5ea9e
+Author: Florin Mihalache <florinrm@users.noreply.github.com>
+Date:   Wed Nov 10 14:12:20 2021 +0200
+
+    Added lombok jar
+
+commit f956a20d4d5dcd3476ffaed77ac44057e68bbf2d
+Author: Florin Mihalache <flomih@signicat.com>
+Date:   Thu Nov 4 13:58:07 2021 +0200
+
+    Added import
+
+commit d0154e241622b8783a3a80271eff901b82a0403c
+Author: Florin Mihalache <flomih@signicat.com>
+Date:   Thu Nov 4 13:56:33 2021 +0200
+
+    Added skel
+
+commit 7c7e3ea426c0beede0c9877b24b823bd43eb698a
+Author: Florin Mihalache <flomih@signicat.com>
+Date:   Thu Nov 4 13:43:37 2021 +0200
+
+    Moved old files
+
+commit a0757e1ea002fbdbc8784e16a4d3b45fe60fdbba
+Merge: 3acb6b3 249936e
+Author: Florin Mihalache <florinrm@users.noreply.github.com>
+Date:   Tue Jan 26 23:07:18 2021 +0200
+
+    Merge pull request #39 from oop-pub/proiect-etapa2-2020
+    
+    Proiect etapa2 2020 - schelet
+
+commit 249936eb93aec4a1f722ff0a3d779d04297dd2bc
+Author: Adriana Cristina Draghici <adraghici@fitbit.com>
+Date:   Tue Jan 5 18:37:47 2021 +0200
+
+    Adding fixed tests
+
+commit 19492cb3e27e90451f3635af74b31c25c6e1d626
+Author: Adriana Cristina Draghici <adriana.draghici@cs.pub.ro>
+Date:   Wed Dec 30 19:01:13 2020 +0200
+
+    update typos readme
+
+commit 059cd3c5d52b2523509a27cd5cee2bcebbe6b72a
+Author: Adriana Cristina Draghici <adriana.draghici@cs.pub.ro>
+Date:   Wed Dec 30 19:00:33 2020 +0200
+
+    Update README_TEMPLATE.md
+
+commit f1f766546ab68ad9a57a9d3bcf306b76ee5b4395
+Author: Adriana Cristina Draghici <adriana.draghici@cs.pub.ro>
+Date:   Wed Dec 30 18:59:47 2020 +0200
+
+    Rename README_TEMPLATE to README_TEMPLATE.md
+
+commit 12883d94750507618ab37623b917398a1e0d5a3d
+Author: Adriana Cristina Draghici <adraghici@fitbit.com>
+Date:   Wed Dec 30 18:57:41 2020 +0200
+
+    Added checker and skeleton for second stage
+
+commit 3acb6b38826152438719d416b27462d5217db801
+Author: Adriana Cristina Draghici <adriana008@gmail.com>
+Date:   Wed Dec 30 18:29:53 2020 +0200
+
+    Project phase1 2020 (#38)
+    
+    * add schel + checker for project phase 1
+    
+    * move Main and Test classes to src
+    
+    * Fix tests ref files
+    
+    * fix test ref files
+    
+    * fix tests ref files
+    
+    * Updated max checkstyle errors number
+    
+    * Update test 14 ref
+    
+    * Fix ref 14 & 15
+    
+    Co-authored-by: BirsuIonut <ionut.birsu@gmail.com>
+
+commit 959e019488cdcca558ae195fe2438800e455ddd1
+Merge: e9478bf 0ae467f
+Author: Florin Mihalache <florinrm@users.noreply.github.com>
+Date:   Sat Dec 19 12:44:34 2020 +0200
+
+    Merge pull request #36 from oop-pub/tema1-2020
+    
+    add skel for first homework
+
+commit 0ae467f3325a02c8725e9ceafd6209740651bb0d
+Author: radupatrascoiu <patrascoiu.ion.radu@gmail.com>
+Date:   Mon Nov 30 00:46:05 2020 +0200
+
+    Fix checkstyle
+
+commit 4c5cd539b4e65f8ff208cfa854c157422573f422
+Author: EpureRares <rares_stefan1999@yahoo.ro>
+Date:   Thu Nov 12 19:15:16 2020 +0200
+
+    fix refs -> queries
+
+commit 83ff99493f33cf48117006e87a1d979f9cea0f96
+Author: EpureRares <rares_stefan1999@yahoo.ro>
+Date:   Tue Nov 10 21:31:26 2020 +0200
+
+    fix refs -> best rated unseen
+
+commit 8491c8e7c72154ef17c722eec079fa87422599b5
+Author: radupatrascoiu <patrascoiu.ion.radu@gmail.com>
+Date:   Tue Nov 10 20:27:43 2020 +0200
+
+    Fixed show ratings
+
+commit c287a989b78ea5b76d2e78afbeb9199443703c4e
+Author: Florin Mihalache <florinrm@users.noreply.github.com>
+Date:   Tue Nov 10 01:36:16 2020 +0200
+
+    Corrected ref_recommendation_invalid_user.json
+
+commit 44b241b7f295e5efe2d6959f768bd817e619286c
+Author: Florin Mihalache <florinrm@users.noreply.github.com>
+Date:   Mon Nov 9 20:45:45 2020 +0200
+
+    Fixed "recommendations" in Constants.java
+
+commit 3e29ee63d3c21a64e7e015f0b134a9fd44e80a5b
+Author: EpureRares <rares_stefan1999@yahoo.ro>
+Date:   Sun Nov 8 22:41:57 2020 +0200
+
+    add getters
+
+commit 0357ab4e8b648c8da65e6af9d3e3314097ce5277
+Author: EpureRares <rares_stefan1999@yahoo.ro>
+Date:   Sun Nov 8 15:22:33 2020 +0200
+
+    add skel for first homework
+
+commit e9478bf8d6ccb6c429322c525ea84cf7563f403a
+Merge: 679fb38 3d9c621
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Sat Oct 3 17:16:25 2020 +0300
+
+    Merge pull request #35 from oop-pub/move-to-old
+    
+    move files to old for archiving for 2019-2020
+
+commit 3d9c6215c5ca70d2c0f4177392b091ac05a7e16a
+Author: Laurentiu Stamate <laurentiu.stamate@mybloc.ro>
+Date:   Sat Oct 3 17:15:35 2020 +0300
+
+    move files to old for archiving
+
+commit 679fb38b8ca0b224ac97bd0c7d2fd77b53c69656
+Author: Bogdan-Cristian Firuți <firutibogdan@yahoo.com>
+Date:   Tue Jan 7 13:47:14 2020 +0200
+
+    [Project-2] new refs (#33)
+
+commit b0a0cdc01f016910477b273b872b29a320546304
+Author: Bogdan-Cristian Firuți <firutibogdan@yahoo.com>
+Date:   Tue Jan 7 13:46:36 2020 +0200
+
+    Add files via upload (#32)
+
+commit ba45725ff337611b08058ac59b0159dede4f6b9a
+Author: Bogdan-Cristian Firuți <firutibogdan@yahoo.com>
+Date:   Mon Jan 6 01:02:47 2020 +0200
+
+    Add files via upload (#31)
+
+commit fc4631b31f1dc3d240c272fd74fa85f55e1fcdd7
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Tue Dec 24 18:03:33 2019 +0200
+
+    Improve checker with forum comments (#30)
+
+commit 24485c2102bfbdc0fb701fa3d861d677d81d6d94
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Tue Dec 24 18:03:03 2019 +0200
+
+    Fix inconsisten line endings (#29)
+
+commit eae1057b6cf76de196f315237208a2db3df47ff9
+Author: Bogdan-Cristian Firuți <firutibogdan@yahoo.com>
+Date:   Wed Dec 18 13:58:12 2019 +0200
+
+    [Project-2] Correct output (#28)
+
+commit 4f89b727c76f6ae97cc4f34ecf861974484f710b
+Author: Bogdan-Cristian Firuți <firutibogdan@yahoo.com>
+Date:   Wed Dec 18 11:51:16 2019 +0200
+
+    [Project-2] Correct output (#27)
+
+commit 6ea35c948d0e997aed2e52053003ed1de1fd8949
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Mon Dec 2 23:38:46 2019 +0200
+
+    Update checker.sh with appropriate scaling
+
+commit 0d5e2c0e9fa2e5f53c65f084dd0ef6b21483727a
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Sun Dec 1 19:56:59 2019 +0200
+
+    Move tema1 to the correct folder (#26)
+
+commit b691c75d9410709bb81b26fdced553e78a2f273f
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Sun Dec 1 19:43:35 2019 +0200
+
+    Add checker and homework (#25)
+
+commit 156e835d06736708c5077f8ef61fcf17ee6b993f
+Author: Adriana Cristina Draghici <adriana008@gmail.com>
+Date:   Sun Nov 17 21:42:36 2019 +0200
+
+    proiect-etapa1: change outdated output messages in checker script (#24)
+
+commit 47be927ba685c029bffffb358e459d3d4550846c
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Sun Nov 10 22:42:14 2019 +0200
+
+    Create etapa1
+
+commit b6c3ee91f8e61d400436b94965324c7dd157ef46
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Sun Nov 10 21:32:23 2019 +0200
+
+    Proiect #etapa1 2019-2020 (#23)
+    
+    * Add checker
+    
+    * Use tabs made from spaces for checkstyle
+
+commit 432fae45323d1d1617ca8392aa87152ce561eb23
+Merge: 45cd3b7 aefbc7b
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Sun Oct 20 20:20:46 2019 +0200
+
+    Merge pull request #21 from oop-pub/skel-tema-2019
+    
+    Schelet tema 2019
+
+commit aefbc7b1ad56ef901d012a1fdb2d41cecc5ce182
+Author: Florin Mihalache <florinrm@users.noreply.github.com>
+Date:   Sun Oct 20 20:43:07 2019 +0300
+
+    Corrected input reading
+
+commit 3623eedc6eb95f47365f42098061f6061375fa57
+Author: Florin Mihalache <florinrm@users.noreply.github.com>
+Date:   Sun Oct 20 20:31:55 2019 +0300
+
+    Added first set of tests
+
+commit a2109d293eb9952ca95478c91c3a2cf7150b462f
+Author: Florin <florin.razvan.mihalache@gmail.com>
+Date:   Sun Oct 20 12:50:46 2019 +0300
+
+    Added skel for tema 2019
+
+commit 45cd3b7e38be4b16b93459a57be6b884ee20860a
+Author: Birsu Ionut <ionut.birsu@gmail.com>
+Date:   Sun Dec 23 13:48:22 2018 +0200
+
+    Tema3 - fix tests issue with isSurgeon (#20)
+
+commit fb7e02bae9958df12decea61570043f521ef016c
+Author: Adriana Cristina Draghici <adriana008@gmail.com>
+Date:   Wed Nov 28 00:30:42 2018 +0200
+
+    Tema3 2018 (#19)
+    
+    tema3: checker si schelet
+
+commit 8db2d82b25f465c642976a959ae712835931fca7
+Author: mihai-burduselu <mihai-burduselu@users.noreply.github.com>
+Date:   Sat Nov 10 14:18:16 2018 +0200
+
+    Solve mistakes in test9.ref and test11.ref (#17)
+
+commit 3053485393695ae8c04afdfc8c3edebd83f175be
+Author: mihai-burduselu <mihai-burduselu@users.noreply.github.com>
+Date:   Wed Nov 7 21:35:14 2018 +0200
+
+    Remove typo from tema-checker-local.sh (#16)
+
+commit 43dcfd5dc2cb9fd4a6a0e0ee34ffec255cac4f07
+Author: mihai-burduselu <mihai-burduselu@users.noreply.github.com>
+Date:   Wed Nov 7 20:50:16 2018 +0200
+
+    Tema2 2018 (#15)
+    
+    * Add skel
+    
+    * Add checker and descriptions
+    
+    * Update HowToRun.txt
+    
+    * Update tema-checker-local.sh
+    
+    * Update tema-checker-local.sh
+    
+    * Update OperationParser.java
+
+commit 9a302ba1bfc5dab33bf46010d707e16663c709c8
+Author: mihai-burduselu <mihai-burduselu@users.noreply.github.com>
+Date:   Tue Nov 6 23:49:55 2018 +0200
+
+    Add skel (#14)
+
+commit 86ae15bd45c81cdf404ce1ec3f17c07fc66c8fc4
+Author: Abi2737 <4ndreiene@gmail.com>
+Date:   Fri Nov 2 14:38:03 2018 +0200
+
+    Tema1 2018 (#13)
+    
+    * Added tests v3
+    
+    * Added scheleton of code.
+    
+    * moved checker in rigth folder
+    
+    * Added tests
+    
+    * Update test4.in.ref
+    
+    * Update test6.in.ref
+    
+    * Update test7.in.ref
+    
+    * bonus tests
+    
+    * fixed bonus checker
+
+commit 0627cba48dc0146cac1399ff69513d1471061d53
+Author: Abi2737 <4ndreiene@gmail.com>
+Date:   Fri Nov 2 12:36:36 2018 +0200
+
+    Tema1 2018 (#12)
+    
+    * Added tests v3
+    
+    * Added scheleton of code.
+    
+    * moved checker in rigth folder
+    
+    * Added tests
+    
+    * Update test4.in.ref
+    
+    * Update test6.in.ref
+    
+    * Update test7.in.ref
+    
+    * bonus tests
+
+commit b310b1d41cd3fb93d99e4ee4229073700db5bbe9
+Author: Abi2737 <4ndreiene@gmail.com>
+Date:   Sun Oct 28 17:39:34 2018 +0200
+
+    Tema1 2018 (#11)
+    
+    * Added tests v3
+    
+    * Added scheleton of code.
+    
+    * moved checker in rigth folder
+    
+    * Added tests
+    
+    * Update test4.in.ref
+    
+    * Update test6.in.ref
+    
+    * Update test7.in.ref
+
+commit 891a7a95fbe157f538f49a6f648a19ee1105420a
+Author: Abi2737 <4ndreiene@gmail.com>
+Date:   Fri Oct 26 20:44:34 2018 +0300
+
+    Tema1 2018 (#10)
+    
+    * Added tests v3
+    
+    * Added scheleton of code.
+    
+    * moved checker in rigth folder
+
+commit ef387dafeec53a2a6751f6958781c8328161c501
+Merge: fc49a7a f4cec7b
+Author: Adriana Cristina Draghici <adriana008@gmail.com>
+Date:   Fri Oct 26 18:38:27 2018 +0300
+
+    Merge pull request #9 from oop-pub/tema1-2018
+    
+    tema1 checker
+
+commit f4cec7b0e966372731445b853e4a677c5ea6a39e
+Author: Andrei Ene <aene@fitbit.com>
+Date:   Fri Oct 26 18:31:15 2018 +0300
+
+    tema1 checker
+
+commit fc49a7a3c374c9f862ea5a74d98f592fe3625a40
+Merge: a42a60b 4ffc424
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Sat Oct 6 13:34:43 2018 +0200
+
+    Merge pull request #8 from oop-pub/cleanup-2018-2019
+    
+    Cleanup 2018 2019
+
+commit 4ffc42483c86956892d57f00abae162ca0116375
+Author: Laurentiu Stamate <laurentiu.stamate@equilobe.com>
+Date:   Sat Oct 6 12:57:04 2018 +0200
+
+    Add placeholders for 2018-2019 homeworks
+
+commit b03927501412c3c16c76b1786a6f3e2ea5e8cf0a
+Author: Laurentiu Stamate <laurentiu.stamate@equilobe.com>
+Date:   Sat Oct 6 12:56:43 2018 +0200
+
+    Exclude checkstyle from ignore list
+
+commit fd06d54b042e3938615893942ea6e4e05f8f80ca
+Author: Laurentiu Stamate <laurentiu.stamate@equilobe.com>
+Date:   Sat Oct 6 12:51:53 2018 +0200
+
+    Update typo in README
+
+commit c70468b08f50db63b90e8efed8b60a09b519e824
+Author: Laurentiu Stamate <laurentiu.stamate@equilobe.com>
+Date:   Sat Oct 6 12:51:45 2018 +0200
+
+    Cleanup tema3
+
+commit f76ebbd3f7d269e6df985799d1d697844c29731e
+Author: Laurentiu Stamate <laurentiu.stamate@equilobe.com>
+Date:   Sat Oct 6 12:51:38 2018 +0200
+
+    Cleanup tema2
+
+commit 30698d3a6ae65f4fdb324bc626a07a72acd96e6c
+Author: Laurentiu Stamate <laurentiu.stamate@equilobe.com>
+Date:   Sat Oct 6 12:51:26 2018 +0200
+
+    Cleanup tema1
+
+commit a42a60b5978b4a146deeefc4b574bf15e2032293
+Merge: 4d4a3f0 e8817c1
+Author: Laurentiu Stamate <laurentiu.stamate@outlook.com>
+Date:   Sun Aug 19 13:57:03 2018 +0200
+
+    Merge pull request #7 from MihneaS/patch-3
+    
+    Fixed checkstyle bonus score
+
+commit e8817c13cfcd651ea6fda9517b188bd0f0cc3427
+Author: Mihnea SERBAN <mihnea.serban@inflop.ro>
+Date:   Sun Jan 7 18:57:45 2018 +0200
+
+    Fixed checkstyle bonus score
+    
+    Fixed a bug where with a perfect checkstyle test the checkstyle score was not counted
+
+commit 4d4a3f0716f088496ce768617b9d4ac46e830e33
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Mon Dec 11 03:26:46 2017 +0200
+
+    Update checker script
+
+commit a87e17cedf41c8cdde9b746b439b50e00913384f
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Mon Dec 11 03:16:17 2017 +0200
+
+    Add LRU vs FIFO tests
+
+commit fb56f61a38a0bab129e6dec0927d384ec203063e
+Merge: 66471fb 82a69be
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Sat Dec 2 00:23:14 2017 +0200
+
+    Merge pull request #6 from oop-pub/tema3
+    
+    Add missing operation and fix checkstyle issues
+
+commit 82a69bee49cba309757dbb1e3d0c8819e664fc68
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Fri Dec 1 13:49:05 2017 +0200
+
+    Fix checkstyle issues
+
+commit 7af75adb928b2225c5a752a38f3ec3fc8eaafbcc
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Thu Nov 30 23:32:02 2017 +0200
+
+    Add performance test for LRU cache
+
+commit c510cdc83b01289c26328d5fde1941a7e370cf88
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Thu Nov 30 23:27:02 2017 +0200
+
+    Implement put operation for file cache
+
+commit 66471fb3c04ab0f7f94201cbf9ec90275f75d0b1
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Thu Nov 30 21:17:44 2017 +0200
+
+    Fix Main.java
+
+commit f34be7a039acf5a7bf854f02c9f5049a769bf8cf
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Tue Nov 28 00:51:14 2017 +0200
+
+    Rename README
+
+commit 7f402eb2d4e8dbbf985cfc42f7c526bd2fd52efd
+Merge: 6190b76 c7657df
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Tue Nov 28 00:49:54 2017 +0200
+
+    Merge pull request #5 from oop-pub/tema3
+    
+    Add tema3
+
+commit c7657dff62030b97f60fe50e913bb281aaa045b4
+Author: Razvan Chitu <razvan.ch95@gmail.com>
+Date:   Tue Nov 28 00:47:38 2017 +0200
+
+    Add tema3
+
+commit 6190b76c83bf54214786904fdf9e659472f77a88
+Author: mihai-burduselu <michelcatalin@gmail.com>
+Date:   Wed Nov 22 20:30:35 2017 +0200
+
+    Modify tema2_checker.sh
+
+commit ea2ad14579fe84a4eac66009ce1f25b549b57568
+Author: mihai-burduselu <michelcatalin@gmail.com>
+Date:   Sun Nov 12 19:31:50 2017 +0200
+
+    Update tests: 34,35,37
+
+commit ef4785cd75c745158617c68775d0da0d9760abff
+Author: mihai-burduselu <michelcatalin@gmail.com>
+Date:   Sat Nov 11 23:10:41 2017 +0200
+
+    Update checker
+
+commit 195157b384c465c66f579b3e956da2e732881f6b
+Author: Tudor Paraschivescu <tudorp97@gmail.com>
+Date:   Sat Nov 11 17:11:10 2017 +0200
+
+    Add the newly generated input and ref files
+
+commit 6859860aecd6dc5d400f45650ca3376080627d40
+Author: Tudor Paraschivescu <tudorp97@gmail.com>
+Date:   Tue Nov 7 19:12:15 2017 +0200
+
+    Rectify CANVAS shape format in checker input files
+
+commit 5d433288f140761bd35f6eff48d9cf45b318a52b
+Author: mihai-burduselu <michelcatalin@gmail.com>
+Date:   Mon Nov 6 22:43:55 2017 +0200
+
+    Modify makefile name
+
+commit 3fd8088289b6f39aaad77d4edd191a9a09ad88e0
+Author: mihai-burduselu <michelcatalin@gmail.com>
+Date:   Mon Nov 6 21:47:56 2017 +0200
+
+    Add checkstyle jar
+
+commit cd6b720bf9fbe147bdbef36470608dcf8f5d9da6
+Author: Tudor Paraschivescu <tudorp97@gmail.com>
+Date:   Mon Nov 6 16:23:33 2017 +0200
+
+    Add checker and media for Tema 2 2017-2018
+
+commit fd28b2fc778ee7b9ac30a864ae7b8bb4ad3ce8a2
+Author: Ionut <ionut.birsu@gmail.com>
+Date:   Sun Oct 29 18:51:10 2017 +0200
+
+    Add checkstyle jar
+
+commit 6e79e405814f9f76b029a22e4e0dd82c69fb5f8c
+Author: Ionut <ionut.birsu@gmail.com>
+Date:   Fri Oct 27 00:12:18 2017 +0300
+
+    solve checkstyle bugs
+
+commit ac86c19efcd61013eaabfee403aa1f002933fd5c
+Author: Adriana <adriana.draghici@cs.pub.ro>
+Date:   Thu Oct 26 23:00:07 2017 +0300
+
+    tema1: added checker
+
+commit cd88ac6ba0e1fc550857728dac3ffef64330cd9c
+Author: Laurentiu Stamate <laurentiustamate94@yahoo.com>
+Date:   Sun Aug 6 14:56:18 2017 +0300
+
+    Fix typo in document
+
+commit 22056e252f9b79e3f7f1f6eb671199f47fa6bdcf
+Author: Laurentiu Stamate <laurentiustamate94@yahoo.com>
+Date:   Fri Aug 4 18:18:40 2017 +0300
+
+    Update README.md
+
+commit c28f807d69ae38b839286be7a64bef3016abd863
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Sun Jul 30 23:50:35 2017 +0300
+
+    Bitbucket migration
+    - add homework 4 for year 2016-2017
+
+commit eb875ff9fc2ef65c602f6d8e67b01e92ef322c80
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Sun Jul 30 23:50:12 2017 +0300
+
+    Bitbucket migration
+    - add homework 3 for year 2016-2017
+
+commit 02a4179de5994e76eac00d38bbbca601dbe629bf
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Sun Jul 30 23:49:56 2017 +0300
+
+    Bitbucket migration
+    - add homework 2 for year 2016-2017
+
+commit b0e09b0b708b576a489b1b318ed0a1fd3de18c05
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Sun Jul 30 23:49:41 2017 +0300
+
+    Bitbucket migration
+    - add homework 1 for year 2016-2017
+
+commit 40c9ff71ea5e2a89ee83682f28cd8f3d1cd6ac97
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Sun Jul 30 23:49:03 2017 +0300
+
+    Bitbucket migration
+    - add homework 4 for year 2015-2016
+
+commit 8e33749b49afab31d48b35901e91767b0178b4ac
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Sun Jul 30 23:48:46 2017 +0300
+
+    Bitbucket migration
+    - add homework 3 for year 2015-2016
+
+commit 501bea4c00d94ce5cec61dd2c031120e94b32cbe
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Sun Jul 30 23:48:25 2017 +0300
+
+    Bitbucket migration
+    - add homework 2 for year 2015-2016
+
+commit aba892f90225557048e43a7c12cd65945d07ebc2
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Sun Jul 30 23:47:00 2017 +0300
+
+    Bitbucket migration
+    - add homework 1 for year 2015-2016
+
+commit 12866099194d2f4ab57a4a8de172a94df2439b06
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Fri Jun 30 13:49:41 2017 +0300
+
+    Bitbucket migration
+    - add homework 4 for year 2014-2015
+
+commit 07570252e64eaa1a2a616bb0fbbc8f56a08b3d7a
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Fri Jun 30 13:49:06 2017 +0300
+
+    Bitbucket migration
+    - add homework 3 for year 2014-2015
+
+commit 9d81c2df11c29b40922fe179eb3265253201921e
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Fri Jun 30 13:48:21 2017 +0300
+
+    Bitbucket migration
+    - add homework 2 for year 2014-2015
+
+commit 8259f59fd2debe0cadc1c1cfdae0f134d0da6421
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Fri Jun 30 13:47:50 2017 +0300
+
+    Bitbucket migration
+    - add homework 1 for year 2014-2015
+
+commit 034e68651c5a42e5174d1d2dc527ef0529d2bf1c
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Fri Jun 30 13:45:21 2017 +0300
+
+    Add folder placeholders for 2017-2018 homeworks
+
+commit b30246499a8c48c2a3f62c5ffedb2112ed122b48
+Author: laurentiustamate94 <laurentiustamate94@yahoo.com>
+Date:   Fri Jun 30 13:43:15 2017 +0300
+
+    Update gitignore file
+
+commit 006f2536048ff5a6e97ecbf1b990d4d1ea0d88b3
+Author: Laurentiu Stamate <laurentiustamate94@yahoo.com>
+Date:   Sat Oct 29 17:54:07 2016 +0300
+
+    Initial commit

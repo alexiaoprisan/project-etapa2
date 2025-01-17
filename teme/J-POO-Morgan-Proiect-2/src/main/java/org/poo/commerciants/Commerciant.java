@@ -8,15 +8,13 @@ package org.poo.commerciants;
 public final class Commerciant {
     private String commerciant;
     private int timestamp;
-
-    int id;
-    String iban;
-    String type;
-    String cashbackStrategy;
+    private int id;
+    private String iban;
+    private String type;
+    private String cashbackStrategy;
 
     // how many transactions the user has made to this commerciant
-    int nrOfTransactions;
-
+    private int nrOfTransactions;
     private double amountSpent = 0;
 
     /**
@@ -32,7 +30,20 @@ public final class Commerciant {
         this.timestamp = timestamp;
     }
 
-    public Commerciant(final String name, final int id, final String iban, final String type, final String cashbackStrategy) {
+    /**
+     * Constructor for the Commerciant class.
+     *
+     * @param name             The commerciant of the commerciant
+     * @param id               The ID of the commerciant
+     * @param iban             The IBAN of the commerciant
+     * @param type             The type of the commerciant
+     * @param cashbackStrategy The cashback strategy of the commerciant
+     */
+    public Commerciant(final String name,
+                       final int id,
+                       final String iban,
+                       final String type,
+                       final String cashbackStrategy) {
         this.commerciant = name;
         this.id = id;
         this.iban = iban;
@@ -41,7 +52,7 @@ public final class Commerciant {
     }
 
     /**
-     * Constructor for the Commerciant class.
+     * Default constructor for the Commerciant class.
      */
     public Commerciant() {
     }
@@ -56,24 +67,6 @@ public final class Commerciant {
     }
 
     /**
-     * Getter for the timestamp of the commerciant.
-     *
-     * @return The timestamp of the commerciant.
-     */
-    public int getTimestamp() {
-        return this.timestamp;
-    }
-
-    /**
-     * Getter for the amount spent by the user.
-     *
-     * @return The amount spent by the user.
-     */
-    public double getAmountSpent() {
-        return this.amountSpent;
-    }
-
-    /**
      * Setter for the commerciant of the commerciant.
      *
      * @param commerciant The commerciant of the commerciant.
@@ -83,12 +76,12 @@ public final class Commerciant {
     }
 
     /**
-     * Setter for the amount spent by the user.
+     * Getter for the timestamp of the commerciant.
      *
-     * @param amountSpent The amount spent by the user.
+     * @return The timestamp of the commerciant.
      */
-    public void setAmountSpent(final double amountSpent) {
-        this.amountSpent = amountSpent;
+    public int getTimestamp() {
+        return this.timestamp;
     }
 
     /**
@@ -101,6 +94,24 @@ public final class Commerciant {
     }
 
     /**
+     * Getter for the amount spent by the user.
+     *
+     * @return The amount spent by the user.
+     */
+    public double getAmountSpent() {
+        return this.amountSpent;
+    }
+
+    /**
+     * Setter for the amount spent by the user.
+     *
+     * @param amountSpent The amount spent by the user.
+     */
+    public void setAmountSpent(final double amountSpent) {
+        this.amountSpent = amountSpent;
+    }
+
+    /**
      * Method to add an amount spent by the user.
      *
      * @param amount The amount to be added to the total amount spent
@@ -110,57 +121,100 @@ public final class Commerciant {
         this.amountSpent += amount;
     }
 
-    // int id;
-    //    String iban;
-    //    String type;
-    //    String cashbackStrategy;
-    //
-    //    int nrOfTransactions;
-
+    /**
+     * Getter for the ID of the commerciant.
+     *
+     * @return The ID of the commerciant.
+     */
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    /**
+     * Setter for the ID of the commerciant.
+     *
+     * @param id The ID of the commerciant.
+     */
+    public void setId(final int id) {
         this.id = id;
     }
 
+    /**
+     * Getter for the IBAN of the commerciant.
+     *
+     * @return The IBAN of the commerciant.
+     */
     public String getIban() {
         return iban;
     }
 
-    public void setIban(String iban) {
+    /**
+     * Setter for the IBAN of the commerciant.
+     *
+     * @param iban The IBAN of the commerciant.
+     */
+    public void setIban(final String iban) {
         this.iban = iban;
     }
 
+    /**
+     * Getter for the type of the commerciant.
+     *
+     * @return The type of the commerciant.
+     */
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
+    /**
+     * Setter for the type of the commerciant.
+     *
+     * @param type The type of the commerciant.
+     */
+    public void setType(final String type) {
         this.type = type;
     }
 
+    /**
+     * Getter for the cashback strategy of the commerciant.
+     *
+     * @return The cashback strategy of the commerciant.
+     */
     public String getCashbackStrategy() {
         return cashbackStrategy;
     }
 
-    public void setCashbackStrategy(String cashbackStrategy) {
+    /**
+     * Setter for the cashback strategy of the commerciant.
+     *
+     * @param cashbackStrategy The cashback strategy of the commerciant.
+     */
+    public void setCashbackStrategy(final String cashbackStrategy) {
         this.cashbackStrategy = cashbackStrategy;
     }
 
+    /**
+     * Getter for the number of transactions made to the commerciant.
+     *
+     * @return The number of transactions made to the commerciant.
+     */
     public int getNrOfTransactions() {
         return nrOfTransactions;
     }
 
-    public void setNrOfTransactions(int nrOfTransactions) {
+    /**
+     * Setter for the number of transactions made to the commerciant.
+     *
+     * @param nrOfTransactions The number of transactions made to the commerciant.
+     */
+    public void setNrOfTransactions(final int nrOfTransactions) {
         this.nrOfTransactions = nrOfTransactions;
     }
 
+    /**
+     * Increment the number of transactions made to the commerciant by one.
+     */
     public void incrementNrOfTransactions() {
         this.nrOfTransactions++;
     }
-
-
-
 }

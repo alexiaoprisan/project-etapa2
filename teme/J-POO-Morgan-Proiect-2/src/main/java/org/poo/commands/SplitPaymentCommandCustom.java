@@ -1,7 +1,6 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.exchangeRates.ExchangeRates;
 import org.poo.splitPayment.SplitPayment;
@@ -11,16 +10,22 @@ import org.poo.user.UserRegistry;
 
 import java.util.List;
 
-public class SplitPaymentCommandCustom implements Command {
-    private UserRegistry userRegistry;
-    private ArrayNode output;
-    private int timestamp;
-    private double totalAmount;
-    private String currency;
-    private List<String> accountsIBAN;
-    private ExchangeRates exchangeRates;
-    private List<Double> amountForEachAccount;
-    private SplitPaymentsRegistry splitPaymentsRegistry;
+/**
+ * The SplitPaymentCommand class is a command that splits a
+ * payment between multiple users.
+ * The payment is split in a custom way, meaning that the user specifies the
+ * amount that each user will receive.
+ */
+public final class SplitPaymentCommandCustom implements Command {
+    private final UserRegistry userRegistry;
+    private final ArrayNode output;
+    private final int timestamp;
+    private final double totalAmount;
+    private final String currency;
+    private final List<String> accountsIBAN;
+    private final ExchangeRates exchangeRates;
+    private final List<Double> amountForEachAccount;
+    private final SplitPaymentsRegistry splitPaymentsRegistry;
 
 
     /**
@@ -35,14 +40,14 @@ public class SplitPaymentCommandCustom implements Command {
      * @param exchangeRates the ExchangeRates object
      */
     public SplitPaymentCommandCustom(final UserRegistry userRegistry,
-                               final ArrayNode output,
-                               final int timestamp,
-                               final double totalAmount,
-                               final String currency,
-                               final List<String> accounts,
-                               final ExchangeRates exchangeRates,
-                               final List<Double> amountForEachAccount,
-                               final SplitPaymentsRegistry splitPaymentsRegistry) {
+                                     final ArrayNode output,
+                                     final int timestamp,
+                                     final double totalAmount,
+                                     final String currency,
+                                     final List<String> accounts,
+                                     final ExchangeRates exchangeRates,
+                                     final List<Double> amountForEachAccount,
+                                     final SplitPaymentsRegistry splitPaymentsRegistry) {
         this.userRegistry = userRegistry;
         this.output = output;
         this.timestamp = timestamp;
@@ -77,7 +82,8 @@ public class SplitPaymentCommandCustom implements Command {
             }
         }
 
-        // check if the sum of the amounts for each account is equal to the total amount - nu stiu daca e nevoie
+        // check if the sum of the amounts for each
+        // account is equal to the total amount
         double sumForCheck = 0;
         for (double amount : amountForEachAccount) {
             sumForCheck += amount;
@@ -95,7 +101,9 @@ public class SplitPaymentCommandCustom implements Command {
         splitPayment.setTimestamp(timestamp);
         for (int i = 0; i < accountsIBAN.size(); i++) {
             String accountIBAN = accountsIBAN.get(i);
-            splitPayment.addUserPayment(accountsIBAN.get(i), amountForEachAccount.get(i), userRegistry.getUserByIBAN(accountIBAN));
+            splitPayment.addUserPayment(accountsIBAN.get(i),
+                    amountForEachAccount.get(i),
+                    userRegistry.getUserByIBAN(accountIBAN));
         }
 
         // add the split payment to the split payments registry

@@ -107,6 +107,12 @@ public final class UserRegistry {
         return null;
     }
 
+    /**
+     * Finds an account by the card number of one of its cards.
+     *
+     * @param cardNumber the card number.
+     * @return the account that holds the card, or null if not found.
+     */
     public Account getAccountByCardNumber(final String cardNumber) {
         for (final User user : users) {
             for (final Account account : user.getAccounts()) {

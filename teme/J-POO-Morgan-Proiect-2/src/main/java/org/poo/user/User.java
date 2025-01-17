@@ -15,7 +15,7 @@ import java.util.Comparator;
  * Represents a user.
  * The user can have multiple accounts and each account can have multiple cards.
  */
-public class User {
+public final class User {
     private String firstName;
     private String lastName;
     private String email;
@@ -32,13 +32,22 @@ public class User {
     // the transaction report for the user
     private TransactionReport transactionReport = new TransactionReport();
 
-    // 0 means the user did not decide yet, 1 means the user accepts custom split payment, 2 means the user did not accept custom split payment
+    // 0 means the user did not decide yet, 1 means the user accepts
+    // custom split payment, 2 means the user did not accept custom split payment
     private int acceptCustomSplitPayment = 0;
     private int acceptEqualSplitPayment = 0;
 
     // how many times a user has made payments over 300 RON
     // if he makes more than 5, he will be upgraded to gold
     private int paymentsOverThreeHundred = 0;
+
+    private static final double SILVER_UPGRADE_COST = 100.0;
+    private static final double GOLD_FROM_SILVER_UPGRADE_COST = 250.0;
+    private static final double GOLD_FROM_STUDENT_STANDARD_UPGRADE_COST = 350.0;
+    private static final double TRANSACTION_FEE_RATE = 0.002;
+    private static final double SILVER_PLAN_RATE = 500.0;
+    private static final double GOLD_PLAN_RATE = 0.001;
+
 
     /**
      * Constructs a User instance with the specified details.
@@ -56,7 +65,11 @@ public class User {
         this.occupation = occupation;
     }
 
-    public User(User user) {
+    /**
+     * Constructs a User instance with the specified details.
+     * @param user
+     */
+    public User(final User user) {
     }
 
     /**
@@ -167,10 +180,18 @@ public class User {
         return accounts;
     }
 
+    /**
+     * Gets the number of payments over 300 RON made by the user.
+     *
+     * @return the number of payments over 300 RON
+     */
     public int getPaymentsOverThreeHundred() {
         return paymentsOverThreeHundred;
     }
 
+    /**
+     * Increments the number of payments over 300 RON made by the user.
+     */
     public void incrementPaymentsOverThreeHundred() {
         paymentsOverThreeHundred++;
     }
@@ -182,7 +203,9 @@ public class User {
      * @param currency    the currency of the account
      * @param iban        the IBAN of the account
      */
-    public void addAccount(final String accountType, final String currency, final String iban, double interestRate, User owner, double businessAmount) {
+    public void addAccount(final String accountType, final String currency,
+                           final String iban, final double interestRate,
+                           final User owner, final double businessAmount) {
         // create a new account based on the account type, using the factory pattern
         AccountFactory.AccountType type = AccountFactory.AccountType.valueOf(accountType);
         Account newAccount = AccountFactory.createAccount(type,
@@ -273,6 +296,11 @@ public class User {
     }
 
 
+    /**
+     * Gets the age of the user.
+     *
+     * @return the age of the user
+     */
     public double getAge() {
         // calculate the age of the user
         // the birth date is in the format yyyy-mm-dd
@@ -292,50 +320,74 @@ public class User {
 
         // calculate the age
         int age = currentYear - birthYear;
-        if (currentMonth < birthMonth || (currentMonth == birthMonth && currentDay < birthDay)) {
+        if (currentMonth < birthMonth || (currentMonth == birthMonth
+                && currentDay < birthDay)) {
             age--;
         }
         return age;
 
     }
 
+    /**
+     * Gets the service plan of the user.
+     *
+     * @return the service plan of the user
+     */
     public String getServicePlan() {
         return servicePlan;
     }
 
-    public void setServicePlan(String servicePlan) {
+    /**
+     * Sets the service plan of the user.
+     *
+     * @param servicePlan the new service plan of the user
+     */
+    public void setServicePlan(final String servicePlan) {
         this.servicePlan = servicePlan;
     }
 
-    public void upgradeServicePlan(String newServicePlan, double rate, Account account, int timestamp) {
+    /**
+     * Upgrades the service plan of the user.
+     *
+     * @param newServicePlan the new service plan
+     * @param rate           the exchange rate
+     * @param account        the account of the user
+     * @param timestamp      the timestamp of the transaction
+     */
+    public void upgradeServicePlan(final String newServicePlan,
+                                   final double rate,
+                                   final Account account,
+                                   final int timestamp) {
         if (newServicePlan.equals("silver")) {
             // the user has to pay 100 RON to upgrade from student/standard to silver
-            double amountToPay = rate * 100;
+            double amountToPay = rate * SILVER_UPGRADE_COST;
             if (account.getBalance() < amountToPay) {
-                Transaction transaction = new UpgradePlanError(timestamp, "Insufficient funds");
+                Transaction transaction = new UpgradePlanError(timestamp,
+                        "Insufficient funds");
                 addTransaction(transaction);
                 return;
             }
             account.setBalance(account.getBalance() - amountToPay);
             setServicePlan(newServicePlan);
-        }
-        else {
+        } else {
             if (getServicePlan().equals("silver")) {
                 // the user has to pay 250 RON to upgrade from silver to gold
-                double amountToPay = rate * 250;
+                double amountToPay = rate * GOLD_FROM_SILVER_UPGRADE_COST;
                 if (account.getBalance() < amountToPay) {
-                    Transaction transaction = new UpgradePlanError(timestamp, "Insufficient funds");
+                    Transaction transaction = new UpgradePlanError(timestamp,
+                            "Insufficient funds");
                     addTransaction(transaction);
                     return;
                 }
                 account.setBalance(account.getBalance() - amountToPay);
                 setServicePlan(newServicePlan);
-            }
-            else if(getServicePlan().equals("student") || getServicePlan().equals("standard")) {
+            } else if (getServicePlan().equals("student")
+                    || getServicePlan().equals("standard")) {
                 // the user has to pay 350 RON to upgrade from student/standard to gold
-                double amountToPay = rate * 350;
+                double amountToPay = rate * GOLD_FROM_STUDENT_STANDARD_UPGRADE_COST;
                 if (account.getBalance() < amountToPay) {
-                    Transaction transaction = new UpgradePlanError(timestamp, "Insufficient funds");
+                    Transaction transaction = new UpgradePlanError(timestamp,
+                            "Insufficient funds");
                     addTransaction(transaction);
                     return;
                 }
@@ -343,69 +395,95 @@ public class User {
                 setServicePlan(newServicePlan);
             }
         }
-        Transaction transaction = new UpgradePlanTransaction(timestamp, "Upgrade plan", newServicePlan, account.getIBAN());
+        Transaction transaction = new UpgradePlanTransaction(timestamp,
+                "Upgrade plan", newServicePlan, account.getIBAN());
         addTransaction(transaction);
         account.addTransaction(transaction);
     }
 
-    public double addCommission(double amount, ExchangeRates exchangeRates, String currency) {
+    /**
+     * Adds a commission to the amount based on the service plan of the user.
+     *
+     * @param amount        the amount to which the commission is added
+     * @param exchangeRates the exchange rates
+     * @param currency      the currency of the amount
+     * @return the amount with the commission added
+     */
+    public double addCommission(final double amount,
+                                final ExchangeRates exchangeRates,
+                                final String currency) {
 
         if (getServicePlan().equals("student")) {
             return amount;
-        }
-        else if (getServicePlan().equals("standard")) {
-            return amount + 0.002 * amount;
-        }
-        else if (getServicePlan().equals("silver")) {
+        } else if (getServicePlan().equals("standard")) {
+            return amount + TRANSACTION_FEE_RATE * amount;
+        } else if (getServicePlan().equals("silver")) {
             double rate = exchangeRates.convertExchangeRate(currency, "RON");
             double amountInRON = amount * rate;
-            if (amountInRON < 500) {
+            if (amountInRON < SILVER_PLAN_RATE) {
                 return amount;
+            } else {
+                return amount + GOLD_PLAN_RATE * amount;
             }
-            else {
-                return amount + 0.001 * amount;
-            }
-        }
-        else if (getServicePlan().equals("gold")) {
+        } else if (getServicePlan().equals("gold")) {
             return amount;
         }
         return amount;
     }
 
-    public void setAcceptCustomSplitPayment(int acceptCustomSplitPayment) {
+    /**
+     * Gets the user's decision regarding custom split payment.
+     *
+     * @param acceptCustomSplitPayment the user's decision regarding custom split payment
+     */
+    public void setAcceptCustomSplitPayment(final int acceptCustomSplitPayment) {
         this.acceptCustomSplitPayment = acceptCustomSplitPayment;
     }
 
-    public int getAcceptCustomSplitPayment() {
-        return acceptCustomSplitPayment;
-    }
 
-    public void acceptSplitPayment(String splitPaymentType) {
+    /**
+     * Accepts the split payment.
+     * Selects the type of the split payment
+     *
+     * @param splitPaymentType the type of the split payment
+     */
+    public void acceptSplitPayment(final String splitPaymentType) {
         if (splitPaymentType.equals("custom")) {
             setAcceptCustomSplitPayment(1);
-        }
-        else {
+        } else {
             setAcceptEqualSplitPayment(1);
         }
     }
 
-    public void rejectSplitPayment(String splitPaymentType) {
+    /**
+     * Rejects the split payment.
+     * Selects the type of the split payment
+     *
+     * @param splitPaymentType the type of the split payment
+     */
+    public void rejectSplitPayment(final String splitPaymentType) {
         if (splitPaymentType.equals("custom")) {
             setAcceptCustomSplitPayment(2);
-        }
-        else {
+        } else {
             setAcceptEqualSplitPayment(2);
         }
     }
 
-    public void setAcceptEqualSplitPayment(int acceptEqualSplitPayment) {
+    /**
+     * Sets the user's decision regarding custom split payment.
+     *
+     * @param acceptEqualSplitPayment the user's decision regarding custom split payment
+     */
+    public void setAcceptEqualSplitPayment(final int acceptEqualSplitPayment) {
         this.acceptEqualSplitPayment = acceptEqualSplitPayment;
     }
 
-    public int getAcceptEqualSplitPayment() {
-        return acceptEqualSplitPayment;
-    }
 
+    /**
+     * Checks if the user has accepted custom split payment.
+     *
+     * @return true if the user has accepted custom split payment, false otherwise
+     */
     public boolean hasAcceptedCustomPayment() {
         if (acceptCustomSplitPayment == 1) {
             return true;
@@ -413,6 +491,11 @@ public class User {
         return false;
     }
 
+    /**
+     * Checks if the user has accepted equal split payment.
+     *
+     * @return true if the user has accepted equal split payment, false otherwise
+     */
     public boolean hasAcceptedEqualPayment() {
         if (acceptEqualSplitPayment == 1) {
             return true;

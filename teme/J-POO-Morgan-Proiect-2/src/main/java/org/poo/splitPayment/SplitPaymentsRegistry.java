@@ -34,7 +34,7 @@ public final class SplitPaymentsRegistry {
      *
      * @param splitPayment the split payment to add.
      */
-    public void addSplitPayment(SplitPayment splitPayment) {
+    public void addSplitPayment(final SplitPayment splitPayment) {
         splitPayments.add(splitPayment);
     }
 
@@ -54,19 +54,30 @@ public final class SplitPaymentsRegistry {
         splitPayments.clear();
     }
 
-    public SplitPayment getSplitPaymentByUserEmail(String email, String splitPaymentType) {
-        for (SplitPayment splitPayment : splitPayments) {
-            if (splitPayment.checkIfUserIsInPaymentByEmail(email) && splitPayment.getSplitPaymentType().equals(splitPaymentType)) {
+    /**
+     * Retrieves a split payment based on the user's email and split payment type.
+     *
+     * @param email the email of the user.
+     * @param splitPaymentType the type of split payment.
+     * @return the split payment if found, otherwise null.
+     */
+    public SplitPayment getSplitPaymentByUserEmail(final String email,
+                                                   final String splitPaymentType) {
+        for (final SplitPayment splitPayment : splitPayments) {
+            if (splitPayment.checkIfUserIsInPaymentByEmail(email)
+                    && splitPayment.getSplitPaymentType().equals(splitPaymentType)) {
                 return splitPayment;
             }
-
         }
         return null;
     }
 
-    public void removeSplitPayment(SplitPayment splitPayment) {
+    /**
+     * Removes the specified split payment from the registry.
+     *
+     * @param splitPayment the split payment to remove.
+     */
+    public void removeSplitPayment(final SplitPayment splitPayment) {
         splitPayments.remove(splitPayment);
     }
-
-
 }

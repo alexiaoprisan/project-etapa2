@@ -32,6 +32,8 @@ public final class SendMoneyCommand implements Command {
     private final String receiverIBAN;
     private final ExchangeRates exchangeRates;
     private final CommerciantRegistry commerciantRegistry;
+    private static final int UPGRADE_LIMIT = 300;
+    private static final int UPGRADE_COUNT = 5;
 
     /**
      * Constructor for the SendMoneyCommand class.
@@ -69,17 +71,63 @@ public final class SendMoneyCommand implements Command {
     }
 
     /**
+     * Check if the commerciant will give cashback and if any discounts apply.
+     *
+     * @param giverAccount        the account of the giver
+     * @param giver               the user that sends the money
+     * @param amountToSend              the amount of money to send
+     * @param amountRon           the amount of money in RON
+     * @param currencyFrom        the currency of the giver
+     * @param existingCommerciant the commerciant
+     */
+    public void checkCashback(final Account giverAccount,
+                              final User giver,
+                              final double amountToSend,
+                              final double amountRon,
+                              final String currencyFrom,
+                              final Commerciant existingCommerciant) {
+        // now check if i had any discounts to apply to receive cashback and apply them
+        // Apply discounts based on commerciant type
+        DiscountStrategy commerciantStrategy =
+                DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
+        if (commerciantStrategy != null) {
+            commerciantStrategy.applyDiscount(giverAccount, existingCommerciant, amountToSend);
+        }
+
+        // use the strategy pattern to apply the cashback
+        // i saved the discounts in the account with this strategy
+        CashbackManager cashbackManager = new CashbackManager();
+
+        if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+            giverAccount.addAmountSpentOnSTCommerciants(amountRon);
+            cashbackManager.setStrategy(new SpendingThresholdCashback(giver.getServicePlan()));
+        } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
+            cashbackManager.setStrategy(new NrOfTransactionsCashback());
+        }
+
+        cashbackManager.applyCashback(existingCommerciant, giverAccount, amountToSend,
+                currencyFrom, exchangeRates);
+
+
+        // Apply the spending threshold discount
+        DiscountStrategy spendingThresholdStrategy =
+                DiscountStrategyFactory.getStrategy("SpendingThreshold");
+        if (spendingThresholdStrategy != null) {
+            spendingThresholdStrategy.applyDiscount(giverAccount,
+                    existingCommerciant, amountToSend);
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public void execute() {
-
         // find the user that sends the money using the email
         User giver = userRegistry.getUserByEmail(email);
         if (giver == null) {
             return;
         }
-
         // find the account of the giver using the IBAN
         Account giverAccount = giver.getAccountByIBAN(giverIBAN);
         if (giverAccount == null) {
@@ -109,7 +157,6 @@ public final class SendMoneyCommand implements Command {
 
         // check if the user sends money to another user
         if (receiver != null) {
-
             // save the currency of the giver and the receiver
             String currencyFrom = giverAccount.getCurrency();
             String currencyTo = receiverAccount.getCurrency();
@@ -117,7 +164,8 @@ public final class SendMoneyCommand implements Command {
             // check if the currency of the giver is the same as the currency of the receiver
             if (currencyFrom.equals(currencyTo)) {
                 // add the commission to the amount for the giver
-                double amountWithCommission = giver.addCommission(amount, exchangeRates, currencyFrom);
+                double amountWithCommission = giver.addCommission(amount,
+                        exchangeRates, currencyFrom);
                 if (giverAccount.getBalance() < amountWithCommission) {
                     // if the giver does not have enough money,
                     // create a transaction with the message "Insufficient funds"
@@ -127,7 +175,6 @@ public final class SendMoneyCommand implements Command {
                     giverAccount.addTransaction(transaction);
                     return;
                 }
-
                 // update the balance of the giver and the receiver
                 giverAccount.setBalance(giverAccount.getBalance() - amountWithCommission);
                 receiverAccount.setBalance(receiverAccount.getBalance() + amount);
@@ -141,7 +188,6 @@ public final class SendMoneyCommand implements Command {
                         currencyTo, "received");
                 giver.addTransaction(transaction);
                 receiver.addTransaction(receiverTransaction);
-
                 giverAccount.addTransaction(transaction);
                 receiverAccount.addTransaction(receiverTransaction);
                 return;
@@ -150,12 +196,10 @@ public final class SendMoneyCommand implements Command {
             // calculate the amount to transfer using the exchange rate
             double exchangeRate = exchangeRates.convertExchangeRate(currencyFrom, currencyTo);
             double amountToTransfer = amount * exchangeRate;
-
             double amountWithCommission = giver.addCommission(amount, exchangeRates, currencyFrom);
 
             // check if the giver has enough money
             if (giverAccount.getBalance() < amountWithCommission) {
-                // if the giver does not have enough money,
                 // create a transaction with the message "Insufficient funds"
                 Transaction transaction = new InsufficientFunds(timestamp,
                         "Insufficient funds");
@@ -180,12 +224,8 @@ public final class SendMoneyCommand implements Command {
             giverAccount.addTransaction(transaction);
             receiverAccount.addTransaction(receiverTransaction);
 
-        }
-        else {
+        } else {
             // the user sends money to a commerciant
-            // the user will send money in his currency
-
-            // add the commission to the amount for the giver
             String currencyFrom = giverAccount.getCurrency();
             double amountWithCommission = giver.addCommission(amount, exchangeRates, currencyFrom);
             if (giverAccount.getBalance() < amountWithCommission) {
@@ -200,69 +240,36 @@ public final class SendMoneyCommand implements Command {
 
             // update the balance of the giver and the receiver
             giverAccount.setBalance(giverAccount.getBalance() - amountWithCommission);
-
-
-            // create a transaction for the giver and the receiver
             Transaction transaction = new SendMoneyTransaction(timestamp,
                     description, giverIBAN, receiverIBAN, amount,
                     currencyFrom, "sent");
             giver.addTransaction(transaction);
             giverAccount.addTransaction(transaction);
 
-
             double rateForRon = exchangeRates.convertExchangeRate(currencyFrom, "RON");
             double amountRon = amount * rateForRon;
 
             String commerciant = commerciantReceiver.getCommerciant();
-
             Commerciant newCommerciant = commerciantRegistry.getCommerciantByName(commerciant);
             giverAccount.addCommerciant(newCommerciant);
 
-            Commerciant existingCommerciant = giverAccount.getCommerciantByCommerciantName(commerciant);
-
-
-
+            Commerciant existingCommerciant =
+                    giverAccount.getCommerciantByCommerciantName(commerciant);
             existingCommerciant.addAmountSpent(amount);
-            // check if the account can receive cashback
 
-            // now check if i had any discounts to apply to receive cashback and apply them
-            // Apply discounts based on commerciant type
-            DiscountStrategy commerciantStrategy = DiscountStrategyFactory.getStrategy(existingCommerciant.getType());
-            if (commerciantStrategy != null) {
-                commerciantStrategy.applyDiscount(giverAccount, existingCommerciant, amount);
-            }
+            // check if the commerciant will give cashback and if any discounts apply
+            checkCashback(giverAccount, giver, amount, amountRon,
+                    currencyFrom, existingCommerciant);
 
-            // use the strategy pattern to apply the cashback
-            // i saved the discounts in the account with this strategy
-            CashbackManager cashbackManager = new CashbackManager();
-
-            if (existingCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
-                giverAccount.addAmountSpentOnSTCommerciants(amountRon);
-                cashbackManager.setStrategy(new SpendingThresholdCashback(giver.getServicePlan()));
-            } else if (existingCommerciant.getCashbackStrategy().equals("nrOfTransactions")) {
-                cashbackManager.setStrategy(new NrOfTransactionsCashback());
-            }
-
-            cashbackManager.applyCashback(existingCommerciant, giverAccount, amount, currencyFrom, exchangeRates);
-
-
-            // Apply the spending threshold discount
-            DiscountStrategy spendingThresholdStrategy = DiscountStrategyFactory.getStrategy("SpendingThreshold");
-            if (spendingThresholdStrategy != null) {
-                spendingThresholdStrategy.applyDiscount(giverAccount, existingCommerciant, amount);
-            }
-
-            if (amountRon > 300 && giver.getServicePlan().equals("silver")) {
+            if (amountRon > UPGRADE_LIMIT && giver.getServicePlan().equals("silver")) {
                 giver.incrementPaymentsOverThreeHundred();
-                if (giver.getPaymentsOverThreeHundred() == 5) {
+                if (giver.getPaymentsOverThreeHundred() == UPGRADE_COUNT) {
                     giver.setServicePlan("gold");
                     Transaction transaction1 = new UpgradePlanTransaction(timestamp,
                             "Upgrade plan", "gold", giverAccount.getIBAN());
                     giver.addTransaction(transaction1);
                 }
             }
-
-
         }
     }
 }

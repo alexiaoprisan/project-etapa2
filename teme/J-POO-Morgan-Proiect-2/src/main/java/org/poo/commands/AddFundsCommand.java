@@ -56,7 +56,6 @@ public final class AddFundsCommand implements Command {
 
             if (!businessAccount.isManager(user) && !businessAccount.isEmployee(user)
                     && !owner.equals(user)) {
-                System.out.println("User is not allowed to deposit funds " + amount);
                 return;
             }
 
