@@ -236,7 +236,7 @@ public final class PayOnlineCommand implements Command {
 
         // check if it may be a business account
         if (!card.getOwnerEmail().equals(email)) {
-            // if it is not a business account, than it is a classic or savings account
+            // if it is not a business account, then it is a classic or savings account
             // and it must belong to the user, so the email is wrong - error
             if (!account.getType().equals("business")) {
                 ObjectNode outputNode = output.addObject();
